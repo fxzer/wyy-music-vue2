@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-10 22:13:41
+ * @LastEditTime: 2022-10-10 23:50:25
  * @FilePath: \vue-wyy-music\src\views\personalRecommend\components\SongListBox.vue
  * @Description: 
 -->
@@ -17,7 +17,7 @@
       </span> 
       <span class="iconfont icon-playfill" ></span> 
     </div>
-    <p class="list-title text-of-multi">{{algInfo.name}}</p>
+    <p class="album-des text-of-multi">{{algInfo.name}}</p>
   </div>
 </template>
 <script>
@@ -67,6 +67,7 @@ export default {
       top: 8px;
       right: 8px;
       color: #fff;
+      font-weight: 500;
       display: flex;
       align-items: center;
       vertical-align:middle;
@@ -96,7 +97,7 @@ export default {
      opacity: 1;
     }
   }
-  .list-title{
+  .album-des{
     margin-top: 4px;
     font-size: 16px;
     color: #333;
