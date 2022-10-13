@@ -1,10 +1,11 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-10 22:12:47
+ * @LastEditTime: 2022-10-12 15:18:39
  * @FilePath: \vue-wyy-music\src\utils\filters.js
  * @Description: 
  */
-import { playCount } from './playCount'
+import { playCount,formatTime } from './filtersFn'
 export function registerFilters(Vue){
   Vue.filter('playCountFilter',playCount )
+  Vue.filter('formatTime',formatTime )
 }

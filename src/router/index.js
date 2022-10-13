@@ -1,17 +1,18 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-10 21:50:38
+ * @LastEditTime: 2022-10-13 21:40:30
  * @FilePath: \vue-wyy-music\src\router\index.js
  * @Description: 
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DiscoverMusic from '../views/discoverMusic'
-import PersonalRecommend from '../views/personalRecommend'
+import PersonalRecommend from '../views/personalized'
 Vue.use(VueRouter)
 
 const routes = [
-    { path: '/', redirect: '/discoverMusic/personalRecommend' },
+    // { path: '/', redirect: '/discoverMusic/personalized' },
+    { path: '/', redirect: '/discoverMusic/songList' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -20,7 +21,7 @@ const routes = [
             // 二级路由重定向
             { path: '/', redirect: { name: 'PersonalRecommend' } },
             {
-                path: 'personalRecommend',
+                path: 'personalized',
                 name: 'PersonalRecommend',
                 component: PersonalRecommend,
             },

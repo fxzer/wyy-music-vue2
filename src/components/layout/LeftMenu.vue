@@ -1,3 +1,9 @@
+<!--
+ * @Author: FXJ
+ * @LastEditTime: 2022-10-13 20:20:18
+ * @FilePath: \vue-wyy-music\src\components\layout\LeftMenu.vue
+ * @Description: 
+-->
 <template>
   <div id='LeftMenu'  class='LeftMenu'>
   <el-menu  :default-active="menuList[0].path" router  >
@@ -65,17 +71,18 @@ export default {
     border-right:1px solid #e0e0e0;
     .el-menu{
       border:none;
+      overflow: hidden;
       .el-menu-item{
         height: 36px;
+        font-size: 16px;
         padding:0 6px;
         margin: 2px 2px;
         line-height: 36px;
         border-radius: 8px 0 0 8px;
         transition: all 0.3s;
-        transform-origin: right top;
+        transform-origin: left top;
         &.is-active{
             color:#313131;
-            transform: scale(1.06);
             font-weight: 600;
             background-color:#f6f6f7;
         }

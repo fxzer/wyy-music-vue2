@@ -1,3 +1,9 @@
+<!--
+ * @Author: FXJ
+ * @LastEditTime: 2022-10-11 14:23:31
+ * @FilePath: \vue-wyy-music\src\components\layout\index.vue
+ * @Description: 
+-->
 <template>
   <div>
     <Header />
@@ -39,7 +45,6 @@ export default {
     width: 90%;
     margin: auto;
     height: 100%;
-    border:1px solid red;
   }
 }
 </style>

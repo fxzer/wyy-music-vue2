@@ -1,47 +1,103 @@
+<!--
+ * @Author: FXJ
+ * @LastEditTime: 2022-10-13 18:17:01
+ * @FilePath: \vue-wyy-music\src\components\layout\BottomBar.vue
+ * @Description: 
+-->
 <template>
-  <div    class='bottom-bar'>
-    <div class="song">
-      <img src="https://p1.music.126.net/dkD6oVl5Vlky3mStxUFpHA==/109951167015368904.jpg?param=34y34" alt="" class="song-img">
+  <div class='bottom-bar'>
+    <div class="song-box">
+      <img :src="picSrc" :alt="song.name" class="song-img">
       <div class="song-info">
         <div class="song-info-top">
-          <div class="song-name text-overflow">暗藏深海</div>
+          <div class="song-name text-overflow">{{song.name || '开源云音乐'}} 
+            <span class="alia" v-for="aliaItem in song.alia">{{ aliaItem }}</span>
+          </div>
           <span class="iconfont icon-heart"></span>
         </div>
-        <div class="singer-name">戴雨桐</div>
+        <div class="singer-name">
+          <span class="name-item" v-for="ar in ars" :key="ar.id">{{ar.name}}</span>
+        </div>
       </div>
     </div>
-    <div class="paly-opt"></div>
-    <div class="tool"></div>
+    <div class="paly-actions">
+      <div class="top-control">
+        <span class="iconfont icon-shunxubofang"></span>
+        <!-- <span class="iconfont icon-danquxunhuan"></span>
+        <span class="iconfont icon-suiji"></span> -->
+        <span class="iconfont icon-shangyi"></span>
+        <span class="iconfont icon-pause" v-if="playing"></span>
+        <span class="iconfont icon-playfill" v-else ></span>
+        <span class="iconfont icon-xiayi"></span>
+        <span class="iconfont icon-list"></span>
+      </div>
+     <div class="bottom-slider">
+      <span class="start-time">{{ currentTime | formatTime(false)}}</span>
+       <el-slider v-model="currentTime" :show-tooltip="false" :max="duration" @change="handleDrag"></el-slider>
+      <span class="end-time">{{totalDt | formatTime}}</span>
+     </div>
+    </div>
+    <div class="tools-box"></div>
   </div>
 </template>
 
 <script>
+import { mapState,mapGetters,mapMutations } from 'vuex'
 export default {
   name: 'BottomBar',
   props: {
   },
   data () {
     return {
-
+      currentTime: 0,
+      interval: null,
+      defaultPicUrl: require('../../assets/images/default_music_pic.png')
     }
-  },
-  created () { 
-
-  },
-  computed: { 
-
   },
   components: { 
 
   },
   methods: {
-
+    ...mapMutations('player',['setAudioTime','setPalyState']),
+    // 拖动进度条
+    handleDrag(val) {
+      console.log('val: ', val);
+      // this.audio.currentTime = val
+      this.setAudioTime(val)
+      this.currentTime = val
+    },
   },
   mounted () { 
-
+        this.audio.addEventListener('ended', () =>{
+          console.log('ended: ',this.audio);
+           //监听到播放结束后，在此处可调用自己的接口
+           this.setPalyState(false)
+      }, false);
+  },
+  computed: {
+    ...mapState('player',['audio','playing','song']),
+    ...mapGetters('player',['totalDt','isPlaying']),
+    //时长
+    duration() {
+      return parseInt(this.totalDt / 1000) 
+    },
+    picSrc(){
+      return this.song.picUrl || this.defaultPicUrl
+    },
+    ars(){
+      return this.song.ar || [{id:999999,name:'FXJ'}]
+    }
   },
   watch: { 
-
+    isPlaying(val){
+      if(val){
+       this.interval =  setInterval(() => {
+          this.currentTime =  parseInt(this.audio.currentTime)
+        }, 1000);
+      }else{
+        clearInterval(this.interval)
+      }
+    }
   }
 }
 </script>
@@ -56,8 +112,9 @@ export default {
    display: flex;
    background-color: #fff;
    justify-content: space-between;
-   .song{
+   .song-box{
       padding:10px;
+      width: 364px;
       display: flex;
       cursor: pointer;
       .song-img{
@@ -76,6 +133,16 @@ export default {
            .song-name{
              max-width: 300px;
              font-size: 16px;
+             white-space: nowrap;
+             overflow: hidden;
+             text-overflow: ellipsis;
+             display: flex;
+             align-items: center;
+             .alia{
+                font-size: 14px;
+                margin-left:4px;
+                color:#999;
+             }
            }
            .iconfont{
             margin-left:5px;
@@ -87,6 +154,69 @@ export default {
           color:#373737;
         }
       }
+   }
+   .paly-actions{
+    width: 50%;
+    min-width: 500px;
+    padding:10px 20px;
+    padding-bottom: 4px;
+    // 播放相关控制按钮
+    .top-control{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .iconfont{
+        font-size: 18px;
+        margin:0 12px;
+        cursor: pointer;
+        color:#313131;
+        &:hover{
+          color: #EC4141;
+        }
+      }
+      .icon-playfill,.icon-pause{
+        font-size: 24px;
+        background-color: #F5F5F5;
+        border-radius: 50%;
+        padding: 8px;
+        padding-left:9px;
+      }
+    }
+    .bottom-slider{
+      display: flex;
+      justify-content: center;
+      align-items:center;
+      .start-time,.end-time{
+        font-size: 12px;
+        color:#373737;
+        vertical-align:middle;
+      }
+      .start-time{
+        margin-right: 10px;
+      }
+      .end-time{
+        margin-left: 8px;
+      }
+    }
+    .el-slider {
+      //滑块进度条
+      width: 86%;
+      ::v-deep .el-slider__runway{
+        margin:10px 0;
+      }
+      ::v-deep .el-slider__runway .el-slider__bar{
+        background-color: #EC4141;
+      }
+      ::v-deep .el-slider__button{
+        width: 10px;
+        height: 10px;
+        background-color: #EC4141;
+        border-color:#EC4141;
+      }
+    }
+   }
+   .tools-box{
+    width: 300px;
    }
 
  }

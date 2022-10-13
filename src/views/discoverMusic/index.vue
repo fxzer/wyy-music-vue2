@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-10 21:50:52
+ * @LastEditTime: 2022-10-13 21:50:42
  * @FilePath: \vue-wyy-music\src\views\discoverMusic\index.vue
  * @Description: 
 -->
@@ -9,13 +9,14 @@
     <el-menu
       mode="horizontal"
       router
-      default-active="/discoverMusic/personalRecommend"
       text-color="#373737"
     >
       <el-menu-item
+        default-active="/discoverMusic/songList"
         v-for="(item, index) in secondaryMenuList"
         :index="'/discoverMusic' + item.path"
         :key="item.path"
+        active-text-color="#303133"
         >{{ item.title }}
       </el-menu-item>
     </el-menu>
@@ -32,7 +33,7 @@ export default {
       secondaryMenuList: [
         {
           title: "个性推荐",
-          path: "/personalRecommend",
+          path: "/personalized",
         },
         {
           title: "专属定制",

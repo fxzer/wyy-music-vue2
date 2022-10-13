@@ -1,3 +1,9 @@
+/*
+ * @Author: FXJ
+ * @LastEditTime: 2022-10-12 22:55:04
+ * @FilePath: \vue-wyy-music\src\network\request.js
+ * @Description: 
+ */
 import axios from 'axios'
 
 export default function http(url, params) {
@@ -25,10 +31,7 @@ export default function http(url, params) {
         })
         // 请求
     if (params) {
-        params = {
-            params: params
-        }
-        return instance.get(url, params)
+        return instance.post(url, params)
     } else {
         return instance.get(url)
     }
