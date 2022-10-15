@@ -1,13 +1,13 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-13 18:17:01
+ * @LastEditTime: 2022-10-15 12:40:20
  * @FilePath: \vue-wyy-music\src\components\layout\BottomBar.vue
  * @Description: 
 -->
 <template>
   <div class='bottom-bar'>
     <div class="song-box">
-      <img :src="picSrc" :alt="song.name" class="song-img">
+      <img :src="picSrc" :alt="song.name" class="song-img"  >
       <div class="song-info">
         <div class="song-info-top">
           <div class="song-name text-overflow">{{song.name || '开源云音乐'}} 
@@ -20,14 +20,14 @@
         </div>
       </div>
     </div>
-    <div class="paly-actions">
+    <div class="play-actions">
       <div class="top-control">
         <span class="iconfont icon-shunxubofang"></span>
         <!-- <span class="iconfont icon-danquxunhuan"></span>
         <span class="iconfont icon-suiji"></span> -->
         <span class="iconfont icon-shangyi"></span>
-        <span class="iconfont icon-pause" v-if="playing"></span>
-        <span class="iconfont icon-playfill" v-else ></span>
+        <span class="iconfont icon-pause" v-if="playing" @click.stop="setPalyState(false)"></span>
+        <span class="iconfont icon-playfill" v-else @click.stop="setPalyState(true)"></span>
         <span class="iconfont icon-xiayi"></span>
         <span class="iconfont icon-list"></span>
       </div>
@@ -61,20 +61,11 @@ export default {
     ...mapMutations('player',['setAudioTime','setPalyState']),
     // 拖动进度条
     handleDrag(val) {
-      console.log('val: ', val);
-      // this.audio.currentTime = val
       this.setAudioTime(val)
       this.currentTime = val
     },
   },
-  mounted () { 
-        this.audio.addEventListener('ended', () =>{
-          console.log('ended: ',this.audio);
-           //监听到播放结束后，在此处可调用自己的接口
-           this.setPalyState(false)
-      }, false);
-  },
-  computed: {
+    computed: {
     ...mapState('player',['audio','playing','song']),
     ...mapGetters('player',['totalDt','isPlaying']),
     //时长
@@ -87,6 +78,12 @@ export default {
     ars(){
       return this.song.ar || [{id:999999,name:'FXJ'}]
     }
+  },
+  mounted () { 
+        this.audio.addEventListener('ended', () =>{
+           //监听到播放结束后，在此处可调用自己的接口
+           this.setPalyState(false)
+      }, false);
   },
   watch: { 
     isPlaying(val){
@@ -122,6 +119,9 @@ export default {
         height: 52px;
         border-radius:5px;
         margin-right:12px;
+        // &.rotate{
+        //   animation: rotate 10s linear infinite;
+        // }
       }
       .song-info{
          color:#373737;
@@ -155,7 +155,7 @@ export default {
         }
       }
    }
-   .paly-actions{
+   .play-actions{
     width: 50%;
     min-width: 500px;
     padding:10px 20px;
@@ -218,6 +218,13 @@ export default {
    .tools-box{
     width: 300px;
    }
-
+    // @keyframes rotate {
+    //   0% {
+    //     transform: rotate(0deg);
+    //   }
+    //   100% {
+    //     transform: rotate(360deg);
+    //   }
+    // }
  }
 </style>

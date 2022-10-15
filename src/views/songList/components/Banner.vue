@@ -1,22 +1,22 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-13 23:08:14
+ * @LastEditTime: 2022-10-14 22:49:07
  * @FilePath: \vue-wyy-music\src\views\songList\components\Banner.vue
  * @Description: 
 -->
 <template>
 <!--   -->
   <div class="top-banner"  >
-    <div class="bg-filter">  </div>
+    <div class="bg-filter" ref="bgRef" >  </div>
     <div class="banner-content">
       <img :src="picSrc" class="left-img" >
       <div class="right-info">
         <div class="opt-box"> 
-           <span class="high-btn"><i class="el-icon-star-off"></i> <span>精品歌单</span></span>
+           <span class="high-btn" @click="$emit('jump')"><i class="el-icon-star-off"></i> <span>精品歌单</span></span>
         </div>
         <div class="info-desc">
-          <p class="title">{{banner.title}} </p>
-          <p class="desc">{{banner.desc}} </p>
+          <p class="title">{{banner.name}} </p>
+          <p class="desc">{{banner.copywriter}} </p>
         </div>
       </div>
   </div>
@@ -40,11 +40,18 @@ export default {
   },
   computed: { 
     picSrc(){
-      return this.banner.picUrl || this.defaultImg
+      return this.banner.coverImgUrl || this.defaultImg
     }
   },
   watch: { 
-
+    picSrc:{
+      immediate:true,
+      handler(val){
+        this.$nextTick(()=>{
+          this.$refs.bgRef.style.backgroundImage = `url(${val})`
+        })
+      }
+    }
   },
   components: { 
 
@@ -74,7 +81,8 @@ export default {
     width:100%;
     height:100%;
     border-radius: 6px;
-    background-image: url(../../../assets/images/highquality.jpg);
+    // background-image: url(var(--bgImg));
+    // background-image: var(--bg-img);
     background-repeat: no-repeat;
     background-size: cover;
     z-index: -1;

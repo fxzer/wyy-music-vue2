@@ -1,6 +1,6 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-13 21:40:30
+ * @LastEditTime: 2022-10-15 15:23:01
  * @FilePath: \vue-wyy-music\src\router\index.js
  * @Description: 
  */
@@ -12,7 +12,7 @@ Vue.use(VueRouter)
 
 const routes = [
     // { path: '/', redirect: '/discoverMusic/personalized' },
-    { path: '/', redirect: '/discoverMusic/songList' },
+    { path: '/', redirect: '/discoverMusic/leaderBoard' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -54,6 +54,12 @@ const routes = [
                 name: 'LatestMusic',
                 component: () =>
                     import ('@/views/latestMusic'),
+            },
+            {
+                path: 'highQuality',
+                name: 'HighQuality',
+                component: () =>
+                    import ('@/views/songList/components/HighQuality'),
             },
 
         ]

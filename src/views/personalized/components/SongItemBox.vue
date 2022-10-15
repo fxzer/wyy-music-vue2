@@ -1,14 +1,20 @@
 <!--
  * @Author: FXJ
+ * @LastEditTime: 2022-10-15 12:17:42
+ * @FilePath: \vue-wyy-music\src\views\personalized\components\SongItemBox.vue
+ * @Description: 
+-->
+<!--
+ * @Author: FXJ
  * @LastEditTime: 2022-10-13 21:22:51
  * @FilePath: \vue-wyy-music\src\views\personalized\components\SongItemBox.vue
  * @Description: 
 -->
 <template>
   <div class="song-box" :class="'song-box--'+size" >
-    <div class="img-box">
+    <div class="img-box" @click="getSongUrl(songInfo.id)">
       <img :src="songInfo.picUrl" :alt="name" /> 
-      <span class="iconfont icon-playfill" @click="getSongUrl(songInfo.id)"></span>
+      <PlayBtn  :size="size"  />
     </div>
     <div class="song-des"  @click.stop="$emit('bgClick', songInfo.id)">
       <p class="song-name">
@@ -64,11 +70,9 @@ export default {
     },
     isHr(){//Hi-Res音乐
       return this.songInfo?.song?.hrMusic?.bitrate > 320000
-      // return this.songInfo?.song?.hrMusic || false
     },
     isSq(){//SQ音乐
       return this.songInfo?.song?.sqMusic?.bitrate > 320000
-      // return this.songInfo?.song?.sqMusic || false
     },
   },
   components: { 
@@ -76,7 +80,6 @@ export default {
   },
   methods: {
     ...mapActions('player',['getSongUrl']),
-
   },
   mounted () { 
 
@@ -96,20 +99,11 @@ export default {
     position: relative;
     border-radius: 5px;
     overflow: hidden;
+    cursor: pointer;
     img{
       display: block;
       width: 100%;
       height: 100%;
-    }
-    .icon-playfill{
-      position: absolute;
-      border-radius: 50%;
-      background-color: rgba(255,255,255,.9);
-      text-align: right;
-      vertical-align: middle;
-      font-size: 18px;
-      color: #EC4141;
-      cursor: pointer;
     }
   }
   .song-des{
@@ -159,25 +153,12 @@ export default {
   &.song-box--small .img-box{
     width: 60px;
     height: 60px;
-    .icon-playfill{
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      padding:6px;
-      padding-left:7px;
-    }
   }
   &.song-box--medium .img-box{
     width: 90px;
     height: 90px;
     .song-name{
       font-size: 18px;
-    }
-    .icon-playfill{
-      right:8px;
-      bottom: 8px;
-      padding:7px;
-      padding-left:8px;
     }
   }
   &:hover{

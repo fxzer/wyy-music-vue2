@@ -2,7 +2,7 @@
  * @Author: FXJ
  * @CreateDate: Do not edit
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-13 20:47:00
+ * @LastEditTime: 2022-10-15 13:14:43
  * @FilePath: \vue-wyy-music\src\views\personalized\index.vue
  * @Description: 首页个性推荐
 -->
@@ -26,7 +26,8 @@
     </div>
     <h2 class="area-title">最新音乐<i class="iconfont icon-icon_left_arrow"></i></h2>
     <div class="mv-list private-content-list">
-      <SongItemBox v-for="item in newSongList" :key="item.id" :songInfo="item"  :class="{'is-foucs':newSongId===item.id}" @bgClick="handleBgClick"/>
+      <SongItemBox v-for="item in newSongList" :key="item.id" :songInfo="item"  
+      :class="{'is-foucs':newSongId===item.id}" @bgClick="handleBgClick"/>
     </div>
     <!-- <h2 class="area-title">推荐电台<i class="iconfont icon-icon_left_arrow"></i></h2>
     <div class="mv-list private-content-list">
@@ -81,7 +82,6 @@ export default {
     //点击banner
     handleBannerClick(banner){
       if(banner.song){
-        console.log('banner.song: ', banner.song);
         // this.getSongDetail(banner.song.id)
         if(this.id !== banner.song.id){
           this.getSongUrl(banner.song.id)
@@ -103,11 +103,9 @@ export default {
     async getNewSong(){
       const data = await this.$http("/personalized/newsong?limit=12")
       this.newSongList = data.result
-      console.log('this.newSongList: ', this.newSongList);
     },
     //点击背景
     handleBgClick(id){
-      console.log('id: ', id);
       this.newSongId = id
       console.log('点击背景');
     }

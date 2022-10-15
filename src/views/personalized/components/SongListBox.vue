@@ -1,21 +1,26 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-11 13:51:25
+ * @LastEditTime: 2022-10-15 09:51:48
  * @FilePath: \vue-wyy-music\src\views\personalized\components\SongListBox.vue
- * @Description: 
+ * @Description: 上下结构的歌单盒子
 -->
 
 <template>
   <div class="song-list-box">
     <div class="img-box"  :class="ishover ? 'active':''"
     @mouseenter="ishover=true"  @mouseleave="ishover=false" >
-    <img :src="algInfo.picUrl"
-     :alt="algInfo.name" /> 
-      <span class="paly-number">
-        <i class="iconfont icon-paly"></i>
+    <img :src="algInfo.picUrl" :alt="algInfo.name" /> 
+      <span class="play-number">
+        <i class="iconfont icon-play"></i>
         <span class="number">{{algInfo.playCount | playCountFilter}}</span>
       </span> 
-      <span class="iconfont icon-playfill" ></span> 
+      <PlayBtn  position="br" />
+      <!-- 歌单创建者 -->
+      <p class="creator" v-if="cname">
+         <i class="iconfont icon-user"></i>
+         <span class="name text-of-single">{{cname}}</span>
+         <i class="iconfont icon-dengji1"></i>
+      </p>
     </div>
     <p class="album-des text-of-multi">{{algInfo.name}}</p>
   </div>
@@ -28,6 +33,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    showCreator: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -35,7 +44,11 @@ export default {
     };
   },
   created() {},
-  computed: {},
+  computed: {
+    cname(){
+      return this.algInfo?.creator?.nickname || ''
+    }
+  },
   components: {},
   methods: {},
   mounted() {},
@@ -62,7 +75,7 @@ export default {
       width: 100%;
       height:100%;
     }
-    .paly-number{
+    .play-number{
       position: absolute;
       top: 8px;
       right: 8px;
@@ -71,30 +84,56 @@ export default {
       display: flex;
       align-items: center;
       vertical-align:middle;
-      .icon-paly{
+      .icon-play{
         font-size: 14px;
       }
       .number{
         font-size: 10px;
       }
     }
-    .icon-playfill{
-      padding:6px;
-      padding-left:7px;
-      border-radius: 50%;
-      background-color: #fff;
-      text-align: right;
-      vertical-align: middle;
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      font-size: 18px;
-      color: #EC4141;
+    //播放按钮
+     .play-btn{
       opacity: 0;
-      transition: all 0.4s ease-in-out;
     }
-    &.active .icon-playfill{
+    &.active .play-btn {
      opacity: 1;
+    }
+    //歌单创建者
+    .creator{
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      max-width: 80%;
+      overflow:hidden;
+      height: 30px;
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      padding: 10px ;
+      .icon-user{
+        font-size:14px;
+      }
+      .name{
+         opacity: .9;
+         margin:0 4px;
+         &:hover{
+            opacity: 1;
+         }
+      }
+      .icon-dengji1{
+        font-size: 10px;
+        background-color: #EC4141;
+        opacity: 1;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        text-align: center;
+        vertical-align:middle;
+        padding-top:1px;
+        padding-right:.5px;
+      }
     }
   }
   .album-des{

@@ -9,8 +9,8 @@
     <div class="img-box">
       <div class="banner-info" v-if="bannerShow">{{mvInfo.copywriter}}</div>
       <img :src="mvInfo.picUrl" :alt="mvInfo.name" /> 
-      <span class="paly-number"  v-if="bannerShow">
-        <i class="iconfont icon-paly"></i>
+      <span class="play-number"  v-if="bannerShow">
+        <i class="iconfont icon-play"></i>
         <span class="number">{{mvInfo.playCount | playCountFilter}}</span>
       </span> 
       <span class="iconfont icon-playfill" v-if="palyBtnShow"></span> 
@@ -82,7 +82,7 @@ export default {
       .banner-info{
          top:0;
       }
-      .paly-number{
+      .play-number{
         opacity: 0;
       }
     }
@@ -107,7 +107,7 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .paly-number{
+    .play-number{
       position: absolute;
       opacity:1;
       top: 8px;
@@ -117,7 +117,7 @@ export default {
       align-items: center;
       vertical-align:middle;
       transition: all 0.3s;
-      .icon-paly{
+      .icon-play{
         font-size: 14px;
       }
       .number{

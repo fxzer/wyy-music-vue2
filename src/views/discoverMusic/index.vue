@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-13 21:50:42
+ * @LastEditTime: 2022-10-15 15:28:20
  * @FilePath: \vue-wyy-music\src\views\discoverMusic\index.vue
  * @Description: 
 -->
@@ -12,9 +12,10 @@
       text-color="#373737"
     >
       <el-menu-item
-        default-active="/discoverMusic/songList"
+        default-active="/discoverMusic/leaderBoard"
         v-for="(item, index) in secondaryMenuList"
         :index="'/discoverMusic' + item.path"
+        :class="{'is-active':isActive(item)}"
         :key="item.path"
         active-text-color="#303133"
         >{{ item.title }}
@@ -56,14 +57,15 @@ export default {
           path: "/latestMusic",
         },
       ],
-    
     };
   },
   created() {},
   computed: {},
   components: {},
   methods: {
-   
+    isActive(menuItem){
+      return this.$route.path === '/discoverMusic' + menuItem.path
+    }
   },
   mounted() {
    
