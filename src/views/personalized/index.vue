@@ -2,7 +2,7 @@
  * @Author: FXJ
  * @CreateDate: Do not edit
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-15 13:14:43
+ * @LastEditTime: 2022-10-15 15:56:45
  * @FilePath: \vue-wyy-music\src\views\personalized\index.vue
  * @Description: 首页个性推荐
 -->
@@ -136,8 +136,6 @@ export default {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 20px;
-    .list-box {
-    }
   }
 }
 .area-title i{

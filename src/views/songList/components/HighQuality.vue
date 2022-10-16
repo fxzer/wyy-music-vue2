@@ -1,13 +1,14 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 13:13:43
+ * @LastEditTime: 2022-10-15 18:51:53
  * @FilePath: \vue-wyy-music\src\views\songList\components\HighQuality.vue
  * @Description: 
 -->
 <template>
   <div class="hq-list-wrap">
     <div class="hq-header">
-      <h2 class="title"><span>精品歌单</span> <i class="el-icon-question" title="如何成为精品歌单" @click="showHqIssues"></i>
+      <h2 class="title">
+        <span>精品歌单</span> <i class="el-icon-question" title="如何成为精品歌单" @click="showHqIssues"></i>
        <Panel :visible="hqIssuesShow" :styleObj="issuesStyle">
         <template #content>
           <iframe src="https://music.163.com/#/topic?id=202001" frameborder="0" style="width:1000px;height:800px;"></iframe>
@@ -22,7 +23,7 @@
       </div>
     </div>
     <div class="hq-list-body">
-      <HqListBox v-for="hqInfo in highQualitys" :key="hqInfo.id"  
+      <HqListBox v-for="hqInfo in highQualitys" :key="hqInfo.id"   
       :hqInfo="hqInfo"/>
     </div>
    

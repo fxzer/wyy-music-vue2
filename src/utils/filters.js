@@ -4,8 +4,9 @@
  * @FilePath: \vue-wyy-music\src\utils\filters.js
  * @Description: 
  */
-import { playCount,formatTime } from './filtersFn'
+import { playCount,formatDuration ,formatTime} from './filtersFn'
 export function registerFilters(Vue){
   Vue.filter('playCountFilter',playCount )
+  Vue.filter('formatDuration',formatDuration )
   Vue.filter('formatTime',formatTime )
 }

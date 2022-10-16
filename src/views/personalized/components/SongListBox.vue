@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 09:51:48
+ * @LastEditTime: 2022-10-15 23:58:51
  * @FilePath: \vue-wyy-music\src\views\personalized\components\SongListBox.vue
  * @Description: 上下结构的歌单盒子
 -->
@@ -14,7 +14,7 @@
         <i class="iconfont icon-play"></i>
         <span class="number">{{algInfo.playCount | playCountFilter}}</span>
       </span> 
-      <PlayBtn  position="br" />
+      <PlayBtn  :position="position"  :size="size" :bgFilter="true"/>
       <!-- 歌单创建者 -->
       <p class="creator" v-if="cname">
          <i class="iconfont icon-user"></i>
@@ -32,6 +32,14 @@ export default {
     algInfo: {
       type: Object,
       default: () => {},
+    },
+    position: {
+      type: String,
+      default: "br",
+    },
+    size: {
+      type: String,
+      default: "normal",
     },
     showCreator: {
       type: Boolean,

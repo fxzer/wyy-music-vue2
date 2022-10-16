@@ -1,6 +1,6 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 15:23:01
+ * @LastEditTime: 2022-10-15 16:34:00
  * @FilePath: \vue-wyy-music\src\router\index.js
  * @Description: 
  */
@@ -44,10 +44,10 @@ const routes = [
                     import ('@/views/leaderBoard'),
             },
             {
-                path: 'singers',
-                name: 'Singers',
+                path: 'singerList',
+                name: 'SingerList',
                 component: () =>
-                    import ('@/views/singers'),
+                    import ('@/views/singerList'),
             },
             {
                 path: 'latestMusic',
@@ -56,7 +56,7 @@ const routes = [
                     import ('@/views/latestMusic'),
             },
             {
-                path: 'highQuality',
+                path: 'songList/highQuality',
                 name: 'HighQuality',
                 component: () =>
                     import ('@/views/songList/components/HighQuality'),

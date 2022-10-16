@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 15:28:20
+ * @LastEditTime: 2022-10-15 15:47:42
  * @FilePath: \vue-wyy-music\src\views\discoverMusic\index.vue
  * @Description: 
 -->
@@ -46,11 +46,11 @@ export default {
         },
         {
           title: "排行榜",
-          path: "/leaderboard",
+          path: "/leaderBoard",
         },
         {
           title: "歌手",
-          path: "/singers",
+          path: "/singerList",
         },
         {
           title: "最新音乐",
@@ -97,7 +97,7 @@ export default {
   ::v-deep .el-menu--horizontal > .el-menu-item.is-active {
     font-size: 20px;
     font-weight: 600;
-    border-bottom: 3px solid #ec4141;
+    border-bottom: 3px solid #ec4141 !important;
   }
   
 }

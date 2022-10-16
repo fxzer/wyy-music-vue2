@@ -1,12 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 12:17:42
- * @FilePath: \vue-wyy-music\src\views\personalized\components\SongItemBox.vue
- * @Description: 
--->
-<!--
- * @Author: FXJ
- * @LastEditTime: 2022-10-13 21:22:51
+ * @LastEditTime: 2022-10-16 12:33:50
  * @FilePath: \vue-wyy-music\src\views\personalized\components\SongItemBox.vue
  * @Description: 
 -->

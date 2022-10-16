@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 11:34:04
+ * @LastEditTime: 2022-10-15 18:57:57
  * @FilePath: \vue-wyy-music\src\views\songList\index.vue
  * @Description: 
 -->
@@ -21,7 +21,7 @@
       </div>
       <!-- 歌单列表 -->
       <div class="songlist-wrap">
-        <SongListBox v-for="item in playLists" :key="item.id" :algInfo="{...item,picUrl:item.coverImgUrl}"  showCreator/>
+        <SongListBox v-for="item in playLists" :key="item.id" :algInfo="{...item,picUrl:item.coverImgUrl}" size="large"  showCreator/>
       </div>
       <Pagination v-bind="pageOption" @current-change="handleCurrentChange"/>
   </div>
@@ -119,7 +119,7 @@ export default {
     toHighQuality(){
       let { activeName:cat} = this
       let query = cat ? {cat} : {}
-      this.$router.push({name:'highQuality',query })
+      this.$router.push({name:'HighQuality',query })
     }
   },
   created () { 

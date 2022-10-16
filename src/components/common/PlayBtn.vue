@@ -1,14 +1,15 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 12:11:38
+ * @LastEditTime: 2022-10-15 18:55:21
  * @FilePath: \vue-wyy-music\src\components\common\PlayBtn.vue
  * @Description: 
 -->
 <template>
   <span class="play-btn" 
   :class="[
-        size ? 'play-btn--' + size : 'play-btn--large',
+        size ? 'play-btn--' + size : 'play-btn--normal',
         position ?  'is-'+ position : 'is-center',
+        bgFilter ?  'is-bg-filter': '',
       ]" >
     <i class="iconfont icon-playfill"></i>
   </span>
@@ -17,10 +18,7 @@
 <script>
 export default {
   name: "PlayBtn",
-  props: [
-    'size',
-    'position',
-  ],
+  props: ['size','position','bgFilter'],
   data() {
     return {
     };
@@ -46,6 +44,10 @@ export default {
   position: absolute;
   cursor: pointer;
   z-index:2;
+  &.is-bg-filter{
+    backdrop-filter: blur(1px);
+    background-color: rgba(255,255,255,0.6);
+  }
   //位置
   &.is-center{
     top: 50%;
@@ -58,6 +60,15 @@ export default {
   }
   //尺寸
   &.play-btn--large {
+    width: 40px;
+    height: 40px;
+    .icon-playfill {
+      font-size: 22px;
+      margin-bottom: 3px;
+      margin-left: 1px;
+    }
+  }
+  &.play-btn--normal {
     width: 32px;
     height: 32px;
     .icon-playfill {

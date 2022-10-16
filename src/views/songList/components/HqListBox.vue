@@ -2,7 +2,7 @@
  <div class="hq-list-box" >
     <div class="cover-box">
       <img   :src="coverSrc"  /> 
-      <PlayBtn  />
+      <PlayBtn  position="br" />
       <span class="rec-icon iconfont icon-xianxinghuangguan"></span>
     </div>
     <div class="list-des"  >
@@ -82,9 +82,12 @@ export default {
       height: 100%;
     }
     .play-btn{
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
+      opacity: 0;
+    }
+    &:hover{
+      .play-btn{
+        opacity: 1;
+      }
     }
     .rec-icon{
       position:absolute;
@@ -127,7 +130,6 @@ export default {
       }
       .list-copy-writer{
         font-size: 12px;
-        // color: #9F9F9F;
          color: #1d1d1d;
           opacity: .5;
           margin-bottom:10px;

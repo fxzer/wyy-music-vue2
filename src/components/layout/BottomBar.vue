@@ -32,9 +32,9 @@
         <span class="iconfont icon-list"></span>
       </div>
      <div class="bottom-slider">
-      <span class="start-time">{{ currentTime | formatTime(false)}}</span>
+      <span class="start-time">{{ currentTime | formatDuration(false)}}</span>
        <el-slider v-model="currentTime" :show-tooltip="false" :max="duration" @change="handleDrag"></el-slider>
-      <span class="end-time">{{totalDt | formatTime}}</span>
+      <span class="end-time">{{totalDt | formatDuration}}</span>
      </div>
     </div>
     <div class="tools-box"></div>
