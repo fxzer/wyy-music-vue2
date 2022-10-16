@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 13:14:57
+ * @LastEditTime: 2022-10-16 21:09:17
  * @FilePath: \vue-wyy-music\src\components\common\Panel.vue
  * @Description: 通用面板
 -->
@@ -11,6 +11,9 @@
      </h2>
      <div class="panel-content">
         <slot name="content"></slot>
+     </div>
+     <div class="defaul">
+        <slot></slot>
      </div>
   </div>
 </template>
@@ -103,6 +106,9 @@ export default {
     //   height: 1px;
     //   border-bottom: 1px solid #E0E0E0;
     // }
+  }
+  .panel-content{
+    height: 100%;
   }
 }
 </style>

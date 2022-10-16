@@ -11,7 +11,7 @@ export default {
             "rtUrls": null,
             "audition": null,
             "ringtone": "",
-            "disc": "01",
+            "": "01",
             "no": 1,
             "status": 0,
             "crbt": null,

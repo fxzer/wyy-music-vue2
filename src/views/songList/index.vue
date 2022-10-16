@@ -1,14 +1,20 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 18:57:57
+ * @LastEditTime: 2022-10-16 17:12:49
  * @FilePath: \vue-wyy-music\src\views\songList\index.vue
  * @Description: 
 -->
 <template>
   <div  class='song-list'>
-      <Banner :banner="banner" @jump="toHighQuality"/>
+      <Banner :banner="banner" @jump="toHighQuality" 
+      v-loading="bannerLoading" 
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="载入中..."/>
       <!-- 分类选择 -->
-      <div class="cates-select-box">
+      <div class="cates-select-box"  
+      v-loading="cateLoading" 
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="载入中...">
         <div class="left-button" @click="selectPanelChange">
            <span>{{activeName || '全部歌单'}}</span><i class="iconfont icon-icon_left_arrow"></i>
         </div>
@@ -20,7 +26,10 @@
          :subGroup="subGroup"  :panelStyle="panelStyle" :categories="categories"/>
       </div>
       <!-- 歌单列表 -->
-      <div class="songlist-wrap">
+      <div class="songlist-wrap" 
+        v-loading="listLoading" 
+        element-loading-spinner="el-icon-loading"
+        element-loading-text="载入中...">
         <SongListBox v-for="item in playLists" :key="item.id" :algInfo="{...item,picUrl:item.coverImgUrl}" size="large"  showCreator/>
       </div>
       <Pagination v-bind="pageOption" @current-change="handleCurrentChange"/>
@@ -48,8 +57,10 @@ export default {
       panelStyle:{
         width:'900px',
       },
-     
-      panelShow:false,//是否显示分类选择面板
+     cateLoading:false,
+     bannerLoading:false,
+     listLoading:false,
+    panelShow:false,//是否显示分类选择面板
     }
   },
 
@@ -69,8 +80,11 @@ export default {
   },
   methods: {
     async getHotCates(){
+      this.cateLoading = true
       let res = await this.$http('/playlist/hot')
       this.hotList = res.tags || []
+      this.cateLoading = false
+
     },
     async getCateList(){
       const {all,categories,sub} = await this.$http('/playlist/catlist')
@@ -80,22 +94,25 @@ export default {
     },
     //获取歌单列表
     async getSongListByCate(cat){
+      this.listLoading = true
       let baseUrl = '/top/playlist'
       let catStr = cat  ? `cat=${cat}` : ''
       let url = `${baseUrl}?limit=10&offset=${this.offset}&${catStr}` 
       let { playlists,total } = await this.$http(url)
-      
       this.playLists = playlists || []
       this.pageOption.total = total || 0
+      this.listLoading = false
     },
     //精品歌单
     async getHighQuality(cat,limit = 1){
+      this.bannerLoading = true
       let baseUrl = '/top/playlist/highquality'
       let catStr = cat ? `&cat=${cat}` : ''
       let url = `${baseUrl}?limit=${limit}${catStr}` 
       let { playlists } = await this.$http(url)
       this.highQualitys = playlists || []
       this.banner = this.highQualitys[0] || {copywriter:'', name:'',}
+      this.bannerLoading = false
     },
     //点击分类
     handleCateClick({id,name}){

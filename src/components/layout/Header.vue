@@ -1,16 +1,33 @@
 <template>
-  <div id="Header" class="Header">
+  <div class="header">
     <a href="#" class="home-link">
       <img src="@/assets/images/header-logo.png" alt="首页" />
     </a>
+    <!-- placeholder="请输入歌名、歌手、专辑" -->
     <div class="search-box">
       <el-input
-        v-model="keyword"
-        placeholder="请输入歌名、歌手、专辑"
+        v-model.trim="keywords"
         size="small"
         clearable
+        ref="searchInputRef"
+        :placeholder="placeholder"
         prefix-icon="iconfont icon-search"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @keyup.native.enter="handleSearch"
+        @input="handleInput"
       ></el-input>
+      <!-- 搜索提示面板 -->
+      <Panel :visible.sync="showSearchPanel" :styleObj="panelStyle">
+        <template #content>
+        <vuescroll  v-if="showHotSearchBoard">
+          <SearchHistory  :list="historyList" 
+          @deleteOne="handleDeleteOne" @deleteAll="handleDeleteAll" />
+          <HotSearchBoard   @select="handleSelect" />
+        </vuescroll>
+          <SearchTips v-if="!showHotSearchBoard" :keywords="keywords" @select="handleSelect" />
+        </template>
+      </Panel>
     </div>
     <div class="info">
       <img
@@ -31,21 +48,125 @@ export default {
   props: {},
   data() {
     return {
-      keyword: "",
+      keywords: "",
+      searchType: 1,
+      placeholder: "",
+      showSearchPanel: false,
+      showHotSearchBoard: false,
+      panelStyle: {
+        width: "440px",
+        height: "calc(100vh - 180px)",
+        top: "70px",
+        left: "20px",
+        padding: "10px 0",
+      },
+      prefixIcon: null,
+      historyList: [], // 搜索历史
+      kwSearchResult: [], //关键字搜索结果
+      hotSearchBoard: [], //热搜榜
     };
   },
-  created() {},
+  created() {
+    this.getDefaultKeywoard();
+  },
   computed: {},
-  components: {},
-  methods: {},
-  mounted() {},
-  watch: {},
+  components: {
+    SearchTips: () => import("./components/SearchTips.vue"),
+    SearchHistory: () => import("./components/SearchHistory.vue"),
+    HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
+  },
+  methods: {
+    //获取默认搜索关键字
+    async getDefaultKeywoard() {
+      let { data: { showKeyword, searchType },} = await this.$http("/search/default");
+      this.placeholder = showKeyword;
+      this.searchType = searchType;
+    },
+    //搜索
+    async defaultSearch() {
+      let { keywords } = this;
+      let {
+        result: { songs } 
+      } = await this.$http(`/cloudsearch?keywords=${keywords}&limit=100`);
+      this.historyList.push(keywords);
+      this.kwSearchResult = songs;
+    },
+
+    handleSearch() {
+      if (this.keywords) {
+        this.defaultSearch();
+      } else {
+        this.handlePreIconClick();
+      }
+    },
+    //监听搜索框前置图标点击事件
+    initPreIconEvent() {
+      this.prefixIcon =
+        this.$refs.searchInputRef.$el.querySelector(".el-input__prefix");
+      this.prefixIcon.addEventListener("click", this.handlePreIconClick);
+    },
+    handlePreIconClick() {
+      this.keywords = this.placeholder;
+      this.defaultSearch();
+      //TODO:防抖或节流
+    },
+    handleFocus() {
+      this.showSearchPanel = true;
+      if (!this.keywords) {
+        this.showHotSearchBoard = true;
+      }
+    },
+    handleBlur() {
+      // this.showSearchPanel = false;
+      // this.showHotSearchBoard = false;
+    },
+    handleSelect(item) {
+      //点击热搜榜
+      let { searchWord } = item;
+      this.keywords = searchWord;
+      this.showSearchPanel = false;
+      this.showHotSearchBoard = false;
+      // this.defaultSearch()
+    },
+    //监听搜索框输入事件
+    handleInput(val) {
+      if (val) {
+        this.showHotSearchBoard = false;
+      }
+    },
+    handleDeleteOne(index){
+      this.historyList.splice(-index-1,1)
+    },
+    handleDeleteAll(){
+      this.historyList = []
+    }
+  },
+  mounted() {
+    this.initPreIconEvent();
+  },
+  beforeDestroy() {
+    this.prefixIcon.removeEventListener("click", this.handlePreIconClick);
+  },
+  watch: {
+    historyList: {
+      handler(newVal) {
+        localStorage.setItem("historyList", JSON.stringify(newVal));
+      },
+      deep: true,
+    },
+    showHotSearchBoard(val){
+      if(val){
+        //获取历史记录
+        this.historyList = JSON.parse(localStorage.getItem("historyList"));
+      }
+    }
+  },
 };
 </script>
 <style scoped lang='scss'>
-.Header {
+.header {
   position: fixed;
-  left:0;
+  left: 0;
   top: 0;
   z-index: 99;
   width: 100%;
@@ -73,15 +194,20 @@ export default {
     align-items: center;
     .el-input {
       width: 240px;
-      caret-color: #f5f5f7;
       ::v-deep .el-input__inner {
+        color: #fff;
         border-radius: 16px;
         border: none;
         background-color: #e13e3e;
       }
       ::v-deep .el-input__icon {
         padding-left: 5px;
-        color: #f5f5f7;
+        color: #fff;
+        opacity: 0.8;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
       }
     }
     ::placeholder {
@@ -100,6 +226,10 @@ export default {
       border-radius: 50%;
       margin-right: 10px;
     }
+  }
+  //搜索提示面板
+  .search-tips-wrap {
+    color: #333;
   }
 }
 </style>

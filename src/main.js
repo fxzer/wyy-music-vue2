@@ -1,6 +1,6 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-13 21:06:15
+ * @LastEditTime: 2022-10-16 20:52:08
  * @FilePath: \vue-wyy-music\src\main.js
  * @Description: 
  */
@@ -21,7 +21,7 @@ Vue.use(ElementUI);
 Vue.use(vuescroll, {
     ops: {
         bar: {
-            background: '#c1c1c1'
+            background: '#E0E0E0'
         }
     },
     name: 'vuescroll'

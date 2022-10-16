@@ -1,6 +1,6 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 23:58:51
+ * @LastEditTime: 2022-10-16 16:47:59
  * @FilePath: \vue-wyy-music\src\views\personalized\components\SongListBox.vue
  * @Description: 上下结构的歌单盒子
 -->
@@ -12,7 +12,7 @@
     <img :src="algInfo.picUrl" :alt="algInfo.name" /> 
       <span class="play-number">
         <i class="iconfont icon-play"></i>
-        <span class="number">{{algInfo.playCount | playCountFilter}}</span>
+        <span class="number" v-if="algInfo.playCount">{{algInfo.playCount | playCountFilter}}</span>
       </span> 
       <PlayBtn  :position="position"  :size="size" :bgFilter="true"/>
       <!-- 歌单创建者 -->
@@ -23,6 +23,8 @@
       </p>
     </div>
     <p class="album-des text-of-multi">{{algInfo.name}}</p>
+    <p class="album-artist text-of-single" v-if="algInfo.artist">
+       {{algInfo.artist.name}}</p>
   </div>
 </template>
 <script>
@@ -82,6 +84,8 @@ export default {
       position: absolute;
       width: 100%;
       height:100%;
+      top: 0;
+      left: 0;
     }
     .play-number{
       position: absolute;
@@ -151,6 +155,16 @@ export default {
     line-height: 1.5;
     text-align: left;
     cursor: pointer;
+  }
+  .album-artist{
+    margin-top:4px;
+    text-align: left;
+    font-size: 14px;
+    color:#888;
+    cursor: pointer;
+    &:hover{
+      color: #555;
+    }
   }
 }
 </style>

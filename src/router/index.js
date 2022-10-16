@@ -1,6 +1,6 @@
 /*
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 16:34:00
+ * @LastEditTime: 2022-10-16 15:23:36
  * @FilePath: \vue-wyy-music\src\router\index.js
  * @Description: 
  */
@@ -9,6 +9,7 @@ import VueRouter from 'vue-router'
 import DiscoverMusic from '../views/discoverMusic'
 import PersonalRecommend from '../views/personalized'
 Vue.use(VueRouter)
+
 
 const routes = [
     // { path: '/', redirect: '/discoverMusic/personalized' },
@@ -78,5 +79,9 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 })
+const VueRouterPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (to) {
+    return VueRouterPush.call(this, to).catch(err => err)
+}
 
 export default router

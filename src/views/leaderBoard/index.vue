@@ -1,11 +1,13 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 19:20:45
+ * @LastEditTime: 2022-10-16 17:06:38
  * @FilePath: \vue-wyy-music\src\views\leaderBoard\index.vue
  * @Description: 
 -->
 <template>
-  <div   class='leader-board'>
+  <div   class='leader-board' v-loading="loading" 
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="载入中...">
      <h2 class="area-title">官方榜</h2>
      <div class="board-top5" v-for="(board,index) in officialBoards" :key="board.id">
       <!-- 榜单封面 -->
@@ -61,6 +63,7 @@ export default {
   data () {
     return {
       list:[],
+      loading:false,
       artistToplist:[],
       officialBoards:[],//官方榜
       globalBoards:[],//全球榜
@@ -132,6 +135,7 @@ export default {
       }
     },
     async getTopList(){
+      this.loading = true
       const { list ,artistToplist } = await this.$http('/toplist')
       this.list = list
       this.artistToplist = artistToplist
@@ -143,6 +147,7 @@ export default {
       });
       let top5List = await Promise.all(promistList)
       this.songsTop5List = top5List
+      this.loading = false
     },
     async getOfficialTop5(id){
       let { songs } = await this.$http(`/playlist/track/all?id=${id}&limit=5`)

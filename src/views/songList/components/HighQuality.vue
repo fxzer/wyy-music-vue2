@@ -1,11 +1,15 @@
 <!--
  * @Author: FXJ
- * @LastEditTime: 2022-10-15 18:51:53
+ * @LastEditTime: 2022-10-16 17:14:28
  * @FilePath: \vue-wyy-music\src\views\songList\components\HighQuality.vue
  * @Description: 
 -->
 <template>
-  <div class="hq-list-wrap">
+  <div class="hq-list-wrap"
+      v-loading="loading" 
+      element-loading-spinner="el-icon-loading"
+      element-loading-text="载入中..."
+  >
     <div class="hq-header">
       <h2 class="title">
         <span>精品歌单</span> <i class="el-icon-question" title="如何成为精品歌单" @click="showHqIssues"></i>
@@ -40,6 +44,7 @@ export default {
       activeName:'',
       subGroup:[],
       categories:{0:'全部'},
+      loading: false,
       panelShow: false,
       hqIssuesShow: false,
       panelStyle:{
@@ -61,11 +66,13 @@ export default {
   methods: {
        //精品歌单
     async getHighQuality(cat,limit = 9){
+      this.loading = true
       let baseUrl = '/top/playlist/highquality'
       let catStr = cat ? `&cat=${cat}` : ''
       let url = `${baseUrl}?limit=${limit}${catStr}` 
       let { playlists } = await this.$http(url)
       this.highQualitys = playlists || []
+      this.loading = false
     },
     async getHqCates(){
       let url  = '/playlist/highquality/tags'
