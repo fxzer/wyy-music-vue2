@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "s": "vue-cli-service serve --port 9999",
     "serve": "vue-cli-service serve --open --port 9999",
     "build": "vue-cli-service build"
   },
