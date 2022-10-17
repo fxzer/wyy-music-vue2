@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import Header from "@/components/layout/Header";
-import LeftMenu from "@/components/layout/LeftMenu";
-import BottomBar from "@/components/layout/BottomBar";
+import Header from "@/layouts/Header";
+import LeftMenu from "@/layouts/LeftMenu";
+import BottomBar from "@/layouts/BottomBar";
 export default {
   name: "Layout",
   props: {},

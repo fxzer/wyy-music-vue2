@@ -4,10 +4,10 @@
  * @FilePath: \vue-wyy-music\src\utils\components.js
  * @Description: 
  */
-import Mtag from '@/components/common/Mtag.vue'
-import Panel from '@/components/common/Panel.vue'
-import PlayBtn from '@/components/common/PlayBtn.vue'
-import Pagination from '@/components/common/Pagination.vue'
+import Mtag from '@/components/Mtag.vue'
+import Panel from '@/components/Panel.vue'
+import PlayBtn from '@/components/PlayBtn.vue'
+import Pagination from '@/components/Pagination.vue'
 export default (Vue) => {
   Vue.component(Mtag.name, Mtag)
   Vue.component(Panel.name, Panel)

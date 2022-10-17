@@ -64,33 +64,33 @@ export default {
   components: {},
   methods: {
     //搜索单个类别
-    // async search({ type, limit }) {
-    //   let { keywords } = this;
-    //   let {
-    //     result: { songs = [], artists = [], albums = [], playlists = [] },
-    //   } = await this.$http( `/cloudsearch?keywords=${keywords}&type=${type}&limit=${limit}`);
-    //   switch (type) {
-    //     case 1:
-    //       return songs;
-    //     case 100:
-    //       return artists;
-    //     case 10:
-    //       return albums;
-    //     case 1000:
-    //       return playlists;
-    //   }
-    // },
+ /*    async search({ type, limit }) {
+      let { keywords } = this;
+      let {
+        result: { songs = [], artists = [], albums = [], playlists = [] },
+      } = await this.$http( `/cloudsearch?keywords=${keywords}&type=${type}&limit=${limit}`);
+      switch (type) {
+        case 1:
+          return songs;
+        case 100:
+          return artists;
+        case 10:
+          return albums;
+        case 1000:
+          return playlists;
+      }
+    }, */
     //搜索全部类别
-    // async searchAll() {
-    //   this.loading = true
-    //   let { searchTypes } = this;
-    //   let promises = searchTypes.map((item) => this.search(item));
-    //   let res = await Promise.all(promises);
-    //   searchTypes.forEach((item, index) => {
-    //     item.list = res[index];
-    //   });
-    //   this.loading = false
-    // },
+/*     async searchAll() {
+      this.loading = true
+      let { searchTypes } = this;
+      let promises = searchTypes.map((item) => this.search(item));
+      let res = await Promise.all(promises);
+      searchTypes.forEach((item, index) => {
+        item.list = res[index];
+      });
+      this.loading = false
+    }, */
     async searchSuggest() {
       let { keywords } = this;
       let { result } = await this.$http(`/search/suggest?keywords=${keywords}`);
@@ -103,6 +103,7 @@ export default {
       return songs 
     },
     async searchDone(){
+      this.loading = true
      let songsGuess = await this.searchGuess()
      let   { albums ,artists,playlists,songs }= await this.searchSuggest()
      this.searchTypes[0].list = songsGuess;
@@ -110,6 +111,7 @@ export default {
      this.searchTypes[2].list = artists;
      this.searchTypes[3].list = albums;
      this.searchTypes[4].list = playlists;
+     this.loading = false
     },
     isEmpty(kindObj){
       return kindObj?.list?.length > 0

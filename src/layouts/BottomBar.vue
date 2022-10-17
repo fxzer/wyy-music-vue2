@@ -51,7 +51,7 @@ export default {
     return {
       currentTime: 0,
       interval: null,
-      defaultPicUrl: require('../../assets/images/default_music_pic.png')
+      defaultPicUrl: require('../assets/images/default_music_pic.png')
     }
   },
   components: { 
