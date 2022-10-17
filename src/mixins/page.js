@@ -23,5 +23,9 @@ export default {
       this.pageOption.currentPage = current
       this.offset = (current - 1) * this.pageOption.pageSize
     },
+  },
+  created(){
+    //输出组件名
+    console.log(this.$options.name)
   }
 }

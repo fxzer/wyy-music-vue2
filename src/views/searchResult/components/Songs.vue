@@ -1,5 +1,9 @@
 <template>
-  <div class="result-songs">
+  <div class="result-songs"
+      v-loading="loading" 
+    element-loading-spinner="el-icon-loading"
+    element-loading-text="载入中..." 
+  >
     <el-table :data="songs"
       :row-style="rowStyle"
       :cell-style="cellStyle"
@@ -43,12 +47,14 @@
 
 <script>
 import page from '@/mixins/page'
+import search from '@/mixins/search'
 export default {
   name: "Songs",
   props: {},
-  mixins: [page],
+  mixins: [page,search],
   data() {
     return {
+      loading: false,
       songs: [],
       headerRowStyle: {
         color: "#666",
@@ -129,6 +135,7 @@ export default {
       this.search()
     },
    async search() {
+      this.loading = true;
       let { offset } = this;
       let { kw } = this.$route.query;
       if(kw){
@@ -136,6 +143,7 @@ export default {
         this.songs = songs;
         this.pageOption.total = songCount
       }
+      this.loading = false;
     },
   },
   created() {
