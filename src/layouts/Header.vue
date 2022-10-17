@@ -66,9 +66,6 @@ export default {
       hotSearchBoard: [], //热搜榜
     };
   },
-  created() {
-    this.getDefaultKeywoard();
-  },
   computed: {},
   components: {
     SearchTips: () => import("./components/SearchTips.vue"),
@@ -117,19 +114,32 @@ export default {
       }
     },
     handleBlur() {
-      // setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
-      //   this.showSearchPanel = false;
-      //   this.showHotSearchBoard = false;
-      // }, 200);
+      setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
+        this.showSearchPanel = false;
+        this.showHotSearchBoard = false;
+      }, 200);
     },
     //点击热搜榜或搜索提示项
     handleSelect(item) { 
-      console.log('item: ', item);
-      let { searchWord } = item;
-      this.keywords = searchWord;
+      let { searchWord ,name} = item;
+      this.keywords = searchWord || name;
       this.showSearchPanel = false;
       this.showHotSearchBoard = false;
-      // this.defaultSearch()
+      console.log('item: ', item);
+      console.log('item.type: ', item.type);
+      let pathMap = {
+        1: "/songs",
+        10: "/albums",
+        100: "/artists",
+        1000: "/playlists",
+      };
+      this.$router.push({
+        path:'/searchResult' + pathMap[item.type],
+        query: {
+          kw: this.keywords,
+          type: item.type,
+        },
+      });
     },
     //监听搜索框输入事件
     handleInput(val) {
@@ -144,8 +154,15 @@ export default {
       this.historyList = []
     }
   },
+  created() {
+    
+    this.getDefaultKeywoard();
+  },
   mounted() {
     this.initPreIconEvent();
+    this.$bus.$on("search", (keywords) => {
+      if(!keywords) this.keywords = keywords;
+    });
   },
   beforeDestroy() {
     this.prefixIcon.removeEventListener("click", this.handlePreIconClick);

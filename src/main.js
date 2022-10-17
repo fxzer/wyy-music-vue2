@@ -32,5 +32,9 @@ Vue.prototype.$http = http
 new Vue({
     router,
     store,
+    //$bus
+    beforeCreate() {
+        Vue.prototype.$bus = this
+    },
     render: h => h(App)
 }).$mount('#app')

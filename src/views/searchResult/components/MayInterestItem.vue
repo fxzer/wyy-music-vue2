@@ -1,15 +1,18 @@
 <template>
-  <div class="may-interest-item is-singer">
+  <div class="may-interest-item" :class="'is-'+type">
     <img
-      src="https://p1.music.126.net/WP8O0ixZNwpm0fG6zymivQ==/109951167957001651.jpg"
+      :src="coverImgUrl"
       class="item-cover"
       alt=""
     />
     <div class="item-info">
       <p class="item-name text-of-single">
-        singerNamesinger NamesingerNamesingerNamesingerNamesingerNamesingerName
+       {{typeMap[type]}} : {{dataObj.name}} <span class="alias" v-if="type==='artist'" >{{alias}}</span>
       </p>
-      <p class="item-desc text-of-single">singerNamesinger NamesingerNamesingerNamesingerNamesingerNamesingerName</p>
+      
+      <p class="item-desc text-of-single" v-if="type==='artist'" >粉丝:{{dataObj.fansSize | playCountFilter}}, 歌曲:{{dataObj.musicSize}}</p>
+      <p class="item-desc text-of-single" v-else-if="type==='playlist'" >歌曲:{{dataObj.trackCount}}, 播放:{{dataObj.playCount | playCountFilter}}</p>
+      <p class="item-desc text-of-single" v-else>{{dataObj.resourceName}}</p>
     </div>
   </div>
 </template>
@@ -17,11 +20,47 @@
 <script>
 export default {
   name: "MayInterestItem",
-  props: {},
-  data() {
-    return {};
+  props: {
+    dataObj: {
+      type: Object,
+      default: () => {},
+    },
+    type:{
+      type: String,
+      default: "artist",
+      validate: function (value) {
+        console.log('this.typeMap: ', this.typeMap);
+        return Object.keys(this.typeMap).indexOf(value) !== -1;
+        // return ["artist", "playlist", "album",'vedio'].indexOf(value) !== -1;
+      },
+    }
   },
-  computed: {},
+  data() {
+    return {
+      typeMap: {
+        artist: "歌手",
+        playlist: "歌单",
+        album: "专辑",
+        vedio: "视频",
+      },
+    };
+  },
+  computed: {
+    alias() {
+      return this.dataObj?.alias?.join("/") || "";
+    },
+    coverImgUrl() {
+      if(this.type ==='artist'){
+        return this.dataObj?.picUrl || this.dataObj?.img1v1Url;
+      }else if(this.type ==='playlist'){
+        return this.dataObj?.coverImgUrl;
+      }else if(this.type ==='album'){
+        return this.dataObj?.picUrl;
+      }else if(this.type ==='vedio'){
+        return this.dataObj?.baseInfo.resource?.mlogBaseData?.coverUrl || this.dataObj?.baseInfo.resource?.userProfile?.avatarUrl;
+      }
+    },
+  },
   watch: {},
   components: {},
   methods: {},
@@ -44,7 +83,7 @@ export default {
     height: 50px;
     border-radius: 5px;
   }
-  &.is-singer {
+  &.is-artist {
     .item-cover {
       border-radius: 50%;
     }
@@ -67,6 +106,12 @@ export default {
     .item-name {
       font-size: 14px;
       color: #333;
+      display: flex;
+      align-items: center;
+      .alias{
+        font-size: 14px;
+        color: #999;
+      }
     }
     .item-desc {
       margin-top: 6px;

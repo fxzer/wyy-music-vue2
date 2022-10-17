@@ -18,7 +18,7 @@
           <span class="title-name">{{ kindObj.name }}</span>
         </div>
         <!-- 列表结果列表 -->
-        <div class="tip-list"  v-if="kindObj.list.length">
+        <div class="tip-list"  >
           <div class="tip-item"
               v-for="item in kindObj.list" :key="item.id"
               @click="$emit('select',{...item,type:kindObj.type})">
@@ -63,23 +63,6 @@ export default {
   },
   components: {},
   methods: {
-    //搜索单个类别
- /*    async search({ type, limit }) {
-      let { keywords } = this;
-      let {
-        result: { songs = [], artists = [], albums = [], playlists = [] },
-      } = await this.$http( `/cloudsearch?keywords=${keywords}&type=${type}&limit=${limit}`);
-      switch (type) {
-        case 1:
-          return songs;
-        case 100:
-          return artists;
-        case 10:
-          return albums;
-        case 1000:
-          return playlists;
-      }
-    }, */
     //搜索全部类别
 /*     async searchAll() {
       this.loading = true
