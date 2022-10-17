@@ -13,14 +13,16 @@
     <vuescroll>
       <div class="kind-item" v-for="kindObj in searchTypes" :key="kindObj.name">
         <!-- 类别标题 -->
-        <div class="kind-title">
+        <div class="kind-title" v-if="isEmpty(kindObj)">
           <span class="title-icon iconfont" :class="kindObj.icon"></span>
           <span class="title-name">{{ kindObj.name }}</span>
         </div>
         <!-- 列表结果列表 -->
-        <div class="tip-list" v-for="item in kindObj.list" :key="item.id">
-          <div class="tip-item" @click="$emit('select',{...item,type:kindObj.type})">
-            <p class="tip-name">{{ item.name }}</p>
+        <div class="tip-list" >
+          <div class="tip-item"
+              v-for="item in kindObj.list" :key="item.id"
+              @click="$emit('select',{...item,type:kindObj.type})">
+            <p class="tip-name" v-html="highlight(item.name)"></p>
           </div>
         </div>
       </div>
@@ -88,6 +90,21 @@ export default {
       });
       this.loading = false
     },
+    isEmpty(kindObj){
+      return kindObj?.list?.length > 0
+    },
+    //高亮搜索关键词
+    highlight(name) {
+      console.log('name: ', name);
+      let { keywords } = this;
+      //不区分大小写
+      let reg = new RegExp(keywords, "gi");
+      console.log('reg: ', reg);
+      //去除xxs攻击
+      let naemStr = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      let hlhtml =  naemStr.replace(reg, `<span class="highlight">${keywords}</span>`);
+      return hlhtml
+    },
   },
   created() {},
   mounted() {},
@@ -120,14 +137,20 @@ export default {
       }
     }
     .tip-list {
-      height: 36px;
-      padding-right:15px;
-      padding-left:38px;
-      line-height: 36px;
       font-size: 12px;
       cursor: pointer;
-      &:hover {
-        background-color: #f5f5f5;
+      .tip-item{
+        height: 36px;
+        line-height: 36px;
+        padding-right:15px;
+        padding-left:38px;
+        &:hover {
+          background-color: #f5f5f5;
+        }
+        .tip-name{
+          display:flex;
+          align-items:center;
+        }
       }
     }
   }

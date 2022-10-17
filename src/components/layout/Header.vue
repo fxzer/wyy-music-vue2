@@ -21,7 +21,7 @@
       <Panel :visible.sync="showSearchPanel" :styleObj="panelStyle">
         <template #content>
         <vuescroll  v-if="showHotSearchBoard">
-          <SearchHistory  :list="historyList" 
+          <SearchHistory  :list="historyList"  @select="handleSelect" 
           @deleteOne="handleDeleteOne" @deleteAll="handleDeleteAll" />
           <HotSearchBoard   @select="handleSelect" />
         </vuescroll>
@@ -117,11 +117,14 @@ export default {
       }
     },
     handleBlur() {
-      // this.showSearchPanel = false;
-      // this.showHotSearchBoard = false;
+      // setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
+      //   this.showSearchPanel = false;
+      //   this.showHotSearchBoard = false;
+      // }, 200);
     },
-    handleSelect(item) {
-      //点击热搜榜
+    //点击热搜榜或搜索提示项
+    handleSelect(item) { 
+      console.log('item: ', item);
       let { searchWord } = item;
       this.keywords = searchWord;
       this.showSearchPanel = false;
@@ -148,6 +151,11 @@ export default {
     this.prefixIcon.removeEventListener("click", this.handlePreIconClick);
   },
   watch: {
+    keywords(val) {
+      if (!val) {
+        this.showHotSearchBoard = true;
+      }
+    },
     historyList: {
       handler(newVal) {
         localStorage.setItem("historyList", JSON.stringify(newVal));

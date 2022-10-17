@@ -12,7 +12,7 @@
     </div>
     <div class="history-list">
       <div class="history-item" v-for="(item,index) in reverseList" :key="index">
-        <span class="history-name">{{item}}</span>
+        <span class="history-name" @click="$emit('select',{searchWord:item})">{{item}}</span>
         <span class="el-icon-close" @click="$emit('deleteOne',index)"></span>
       </div>
     </div>

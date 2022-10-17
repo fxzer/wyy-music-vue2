@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 
 const routes = [
     // { path: '/', redirect: '/discoverMusic/personalized' },
-    { path: '/', redirect: '/discoverMusic/leaderBoard' },
+    { path: '/', redirect: '/searchResult' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -71,6 +71,54 @@ const routes = [
         component: () =>
             import ('@/views/discoverVideo')
     },
+    {
+        path:'/searchResult',
+        name:'SearchResult',
+        component:()=>import('@/views/searchResult'),
+        children:[
+            {
+                path: 'songs',
+                name: 'Songs',
+                component: () => import('@/views/searchResult/components/Songs'),
+            },
+            {
+                path: 'artists',
+                name: 'Artists',
+                component: () => import('@/views/searchResult/components/Artists'),
+            },
+            {
+                path: 'albums',
+                name: 'Albums',
+                component: () => import('@/views/searchResult/components/Albums'),
+            },
+            {
+                path: 'playlists',
+                name: 'Playlists',
+                component: () => import('@/views/searchResult/components/Playlists'),
+            },
+            {
+                path: 'videos',
+                name: 'videos',
+                component: () => import('@/views/searchResult/components/Videos'),
+            },
+            {
+                path: 'podcasts',
+                name: 'Podcasts',
+                component: () => import('@/views/searchResult/components/Podcasts'),
+            },
+            {
+                path: 'sounds',
+                name: 'Sounds',
+                component: () => import('@/views/searchResult/components/Sounds'),
+            },
+            {
+                path: 'users',
+                name: 'Users',
+                component: () => import('@/views/searchResult/components/Users'),
+            },
+
+        ]
+    }
 
 ]
 
