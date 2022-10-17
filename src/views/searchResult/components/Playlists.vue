@@ -14,12 +14,12 @@
 
 <script>
 import page from '@/mixins/page'
-
+import search from '@/mixins/search'
 export default {
   name: 'Playlists',
   props: {
   },
-    mixins: [page],
+    mixins: [page,search],
   data () {
     return {
       loading:false,
@@ -36,26 +36,26 @@ export default {
     SongListBox:() => import('@/views/personalized/components/SongListBox.vue')
   },
   methods: {
-     async search() {
-      this.loading = true
-      let { offset } = this;
-      let { kw } = this.$route.query;
-      if(kw){
-        let { result: { playlists = [], playlistCount = 0} } = await this.$http( `/cloudsearch?keywords=${kw}&type=1000&limit=10&offset=${offset}` );
-        this.playlists = playlists;
-        this.pageOption.total = playlistCount
-      }
-      this.loading = false
+    //  async search() {
+    //   this.loading = true
+    //   let { offset } = this;
+    //   let { kw } = this.$route.query;
+    //   if(kw){
+    //     let { result: { playlists = [], playlistCount = 0} } = await this.$http( `/cloudsearch?keywords=${kw}&type=1000&limit=10&offset=${offset}` );
+    //     this.playlists = playlists;
+    //     this.pageOption.total = playlistCount
+    //   }
+    //   this.loading = false
 
-    },
+    // },
        //当前页变化
-    handleCurrentChange(current){
-      this.currentChange(current)
-      this.search()
-    },
+    // handleCurrentChange(current){
+    //   this.currentChange(current)
+    //   this.search()
+    // },
   },
   created () { 
-    this.search()
+    // this.search()
   },
   mounted () { 
 

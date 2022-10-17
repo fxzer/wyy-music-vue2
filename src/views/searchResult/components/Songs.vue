@@ -129,26 +129,8 @@ export default {
         return baseStyle;
       }
     },
-      //当前页变化
-    handleCurrentChange(current){
-      this.currentChange(current)
-      this.search()
-    },
-   async search() {
-      this.loading = true;
-      let { offset } = this;
-      let { kw } = this.$route.query;
-      if(kw){
-        let { result: { songs = [], songCount = 0} } = await this.$http( `/cloudsearch?keywords=${kw}&type=1&limit=10&offset=${offset}` );
-        this.songs = songs;
-        this.pageOption.total = songCount
-      }
-      this.loading = false;
-    },
   },
-  created() {
-    this.search()
-  },
+ 
   mounted() {
   },
   
