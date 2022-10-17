@@ -140,7 +140,6 @@ export default {
   },
   created() {
     this.search()
-    // this.pageOption.total = 300
   },
   mounted() {
   },
