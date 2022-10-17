@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 
 const routes = [
     // { path: '/', redirect: '/discoverMusic/personalized' },
-    { path: '/', redirect: '/searchResult' },
+    { path: '/', redirect: '/searchResult/songs' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',

@@ -18,7 +18,7 @@
           <span class="title-name">{{ kindObj.name }}</span>
         </div>
         <!-- 列表结果列表 -->
-        <div class="tip-list" >
+        <div class="tip-list"  v-if="kindObj.list.length">
           <div class="tip-item"
               v-for="item in kindObj.list" :key="item.id"
               @click="$emit('select',{...item,type:kindObj.type})">
@@ -42,12 +42,13 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchTypes: [
-        { name: "猜你想搜", type: 1018, limit: 10, icon: "iconfont icon-search", list: [] },
-        { name: "单曲", type: 1, limit: 4, icon: "icon-musicfill", list: [] },
-        { name: "歌手", type: 100, limit: 2, icon: "icon-user", list: [] },
-        { name: "专辑", type: 10, limit: 2, icon: "icon-yinle", list: [] },
-        { name: "歌单", type: 1000, limit: 2, icon: "icon-unorderedlist", list: [] },
+        { name: "猜你想搜", type: 1,  icon: "iconfont icon-search", list: [] },
+        { name: "单曲", type: 1, icon: "icon-musicfill", list: [] },
+        { name: "歌手", type: 100, icon: "icon-user", list: [] },
+        { name: "专辑", type: 10,icon: "icon-yinle", list: [] },
+        { name: "歌单", type: 1000, icon: "icon-unorderedlist", list: [] },
       ],
     };
   },
@@ -56,50 +57,70 @@ export default {
     keywords: {
       immediate: true,
       handler(val) {
-        if (val) this.searchAll()
+        if (val) this.searchDone()
       },
     },
   },
   components: {},
   methods: {
     //搜索单个类别
-    async search({ type, limit }) {
-      let { keywords } = this;
-      let {
-        result: { songs = [], artists = [], albums = [], playlists = [] },
-      } = await this.$http( `/cloudsearch?keywords=${keywords}&type=${type}&limit=${limit}`);
-      switch (type) {
-        case 1:
-          return songs;
-        case 100:
-          return artists;
-        case 10:
-          return albums;
-        case 1000:
-          return playlists;
-      }
-    },
+    // async search({ type, limit }) {
+    //   let { keywords } = this;
+    //   let {
+    //     result: { songs = [], artists = [], albums = [], playlists = [] },
+    //   } = await this.$http( `/cloudsearch?keywords=${keywords}&type=${type}&limit=${limit}`);
+    //   switch (type) {
+    //     case 1:
+    //       return songs;
+    //     case 100:
+    //       return artists;
+    //     case 10:
+    //       return albums;
+    //     case 1000:
+    //       return playlists;
+    //   }
+    // },
     //搜索全部类别
-    async searchAll() {
-      this.loading = true
-      let { searchTypes } = this;
-      let promises = searchTypes.map((item) => this.search(item));
-      let res = await Promise.all(promises);
-      searchTypes.forEach((item, index) => {
-        item.list = res[index];
-      });
-      this.loading = false
+    // async searchAll() {
+    //   this.loading = true
+    //   let { searchTypes } = this;
+    //   let promises = searchTypes.map((item) => this.search(item));
+    //   let res = await Promise.all(promises);
+    //   searchTypes.forEach((item, index) => {
+    //     item.list = res[index];
+    //   });
+    //   this.loading = false
+    // },
+    async searchSuggest() {
+      let { keywords } = this;
+      let { result } = await this.$http(`/search/suggest?keywords=${keywords}`);
+      return  result
+    },
+    // 猜你想搜
+    async searchGuess() {
+      let { keywords } = this;
+      let  { result:{songs}}= await this.$http(`/cloudsearch?keywords=${keywords}&type=1&limit=10`);
+      return songs 
+    },
+    async searchDone(){
+     let songsGuess = await this.searchGuess()
+     let   { albums ,artists,playlists,songs }= await this.searchSuggest()
+     this.searchTypes[0].list = songsGuess;
+     this.searchTypes[1].list = songs;
+     this.searchTypes[2].list = artists;
+     this.searchTypes[3].list = albums;
+     this.searchTypes[4].list = playlists;
     },
     isEmpty(kindObj){
       return kindObj?.list?.length > 0
     },
     //高亮搜索关键词
     highlight(name) {
-      console.log('name: ', name);
+      
       let { keywords } = this;
       //不区分大小写
       let reg = new RegExp(keywords, "gi");
-      console.log('reg: ', reg);
+      
       //去除xxs攻击
       let naemStr = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       let hlhtml =  naemStr.replace(reg, `<span class="highlight">${keywords}</span>`);
