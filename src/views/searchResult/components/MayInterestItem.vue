@@ -76,6 +76,8 @@ export default {
   width: calc(25% - 8px);
   margin-right:10px;
   margin-bottom:10px;
+  overflow: hidden;
+  cursor: pointer;
   .item-cover {
     width: 50px;
     height: 50px;
@@ -105,6 +107,7 @@ export default {
       font-size: 14px;
       color: #333;
       display: flex;
+      width: calc(100% - 20px);
       align-items: center;
       .alias{
         font-size: 14px;

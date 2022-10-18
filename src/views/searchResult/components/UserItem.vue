@@ -2,7 +2,7 @@
   <div class="user-item"> 
     <div class="user-avatar-box">
       <img  class="user-avatar":src="user.avatarUrl" :alt="user.nickname" />
-      <img class="identify-icon" :src="user.avatarDetail.identityIconUrl"></img>
+      <img class="identify-icon" :src="iconUrl" v-if="iconUrl"></img>
     </div>
     <div class="user-info">
       <div class="info-name">
@@ -36,7 +36,9 @@ export default {
     }
   },
   computed: { 
-
+    iconUrl(){
+      return this.user?.avatarDetail?.identityIconUrl || '';
+    }
   },
   watch: { 
 

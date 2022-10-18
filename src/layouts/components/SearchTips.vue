@@ -103,6 +103,7 @@ export default {
     highlight(name) {
       let { keywords } = this;
       //不区分大小写
+      keywords = keywords.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
       let reg = new RegExp(keywords, "gi");
       //去除xxs攻击
       let naemStr = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");

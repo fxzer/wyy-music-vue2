@@ -46,19 +46,16 @@ export default {
           limit:20,
         },
       },
-      // typeToLimit: {
-      //   songs: 10,
-      //   artists: 30,
-      //   playlists: 12,
-      //   lyrics:10,//歌词(返回结构/字段名和歌曲一样)
-      //   albums: 12,
-      //   videos: 10,
-      //   djradios: 10,//电台
-      //   sounds:10,//声音
-      //   mvs:10,
-      //   userprofiles: 20,
-      // },
     };
+  },
+  watch:{
+    '$route':{
+      deep:true,
+      handler(){
+        this.kw = this.$route.query.kw;
+        this.search();
+      }
+    }
   },
   methods: {
     //当前页变化
@@ -74,8 +71,11 @@ export default {
         $options: { name },
       } = this;
       let { kw } = this.$route.query;
+      this.$parent.kw = kw;
       //用组价名字作为key,获取对应的type值,和对应的数据
       let lname = name.toLowerCase();
+      let flag = Object.keys(compMap).filter((key) => key===lname).length;
+      if(!flag) return;
       let type = compMap[lname].type;
       if (kw && type) {
         this.kw = kw
@@ -97,8 +97,6 @@ export default {
             this.pageOption.total = result[lname.slice(0,-1) + "Count"];
           }
         }
-        
-      
       }
       this.loading = false;
     },

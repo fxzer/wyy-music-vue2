@@ -126,7 +126,6 @@ export default {
       this.showSearchPanel = false;
       this.showHotSearchBoard = false;
       console.log('item: ', item);
-      console.log('item.type: ', item.type);
       let pathMap = {
         1: "/songs",
         10: "/albums",
@@ -155,7 +154,7 @@ export default {
     }
   },
   created() {
-    
+    console.log('this.$route:Header ', this.$route);
     this.getDefaultKeywoard();
   },
   mounted() {

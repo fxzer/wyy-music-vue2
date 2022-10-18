@@ -74,6 +74,8 @@ export default {
     width:calc(100% - 16px);
     .mv-title{
       font-size: 14px;
+      display: flex;
+      align-items: center;
       color: #555;
       &:hover{
         color: #222;

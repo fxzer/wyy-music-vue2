@@ -15,7 +15,7 @@
       text-color="#373737"
     >
       <el-menu-item
-        default-active="/searchResult/songs"
+        default-active="/searchResult"
         v-for="(item, index) in searchTypes"
         :index="'/searchResult' + item.path+ '?kw=' + kw"
         :class="{'is-active':isActive(item)}"
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'SearchResult',
   props: {
@@ -116,16 +115,9 @@ export default {
     },
   },
   created () { 
-    //TODO:刷新回显输入框
-    let {  query:{kw=''} } = this.$route 
     
-    this.kw = kw
-    if(kw){
-      this.getMayInterest(kw)
-    }
   },
   mounted () { 
-
   },
 }
 </script>
