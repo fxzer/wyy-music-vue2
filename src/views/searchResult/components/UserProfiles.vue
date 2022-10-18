@@ -14,9 +14,6 @@
 <script>
 import page from '@/mixins/page'
 import search from '@/mixins/search'
-// import up from '@/mock/kw-userprofiles'
-// console.log('up: ', up);
-
 export default {
   name: 'Userprofiles',//第二个字母小写方便mixins取返回值
   props: {
@@ -24,7 +21,6 @@ export default {
   mixins:[page,search],
   data () {
     return {
-      // filterList:up.result.userprofiles
     }
   },
   computed: { 

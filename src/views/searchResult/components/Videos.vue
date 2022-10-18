@@ -13,9 +13,6 @@
 </template>
 
 <script>
-// import videosRes from '@/mock/kw-videos'
-// let videos = videosRes.result.videos
-// console.log('videos: ', videos);
 import page from "@/mixins/page";
 import search from "@/mixins/search";
 export default {
@@ -24,7 +21,6 @@ export default {
   mixins: [page, search],
   data() {
     return {
-      // videos
     };
   },
 

@@ -14,8 +14,6 @@
 </template>
 
 <script>
-// import DjRadios from '@/mock/kw-radio'
-// let djRadios = DjRadios.result.djRadios
 import page from '@/mixins/page'
 import search from '@/mixins/search'
 export default {
@@ -25,7 +23,6 @@ export default {
   mixins:[page,search],
   data () {
     return {
-      // filterList:djRadios
     }
   },
   computed: { 

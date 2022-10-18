@@ -29,9 +29,7 @@ export default {
       type: String,
       default: "artist",
       validate: function (value) {
-        console.log('this.typeMap: ', this.typeMap);
         return Object.keys(this.typeMap).indexOf(value) !== -1;
-        // return ["artist", "playlist", "album",'video'].indexOf(value) !== -1;
       },
     }
   },

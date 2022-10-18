@@ -3,6 +3,7 @@
   v-loading="loading"
   element-loading-spinner="el-icon-loading"
   element-loading-text="载入中..."
+  style="padding:10px 0 100px;"
   >
     <el-table
       :data="soundList"
@@ -50,15 +51,12 @@
 <script>
 import page from "@/mixins/page";
 import search from "@/mixins/search";
-// import soundsData from "@/mock/kw-sounds";
-// let sounds = soundsData.data.resources.map((item) => item.baseInfo);
 export default {
   name: "Sounds",
   props: {},
   mixins: [page, search],
   data() {
     return {
-      // filterList: sounds,
     };
   },
   computed: {
@@ -115,7 +113,6 @@ export default {
 </script>
 <style scoped lang='scss'>
 .sounds-result {
-  padding-bottom: 100px;
   .sound-box{
     display: flex;
     align-items: center;

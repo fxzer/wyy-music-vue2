@@ -3,7 +3,7 @@
     v-loading="loading" 
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..." 
-    style="padding-bottom: 100px;"
+    style="padding:10px 0 100px;"
   >
     <div class="artist-result">
       <SingerCover v-for="singer in artistList"  :key="singer.id" :singer="singer" showAlias/>

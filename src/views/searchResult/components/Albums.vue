@@ -3,7 +3,7 @@
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
-    class="albums-wrap"
+    style="padding:10px 0 100px;"
   >
     <div class="albums-result">
       <SongListBox
@@ -49,9 +49,6 @@ export default {
 </script>
 <style scoped lang='scss'>
 //歌单列表
-.albums-wrap{
-  padding-bottom: 100px;
-}
 .albums-result {
   display: grid;
   grid-template-columns: repeat(6, 1fr);

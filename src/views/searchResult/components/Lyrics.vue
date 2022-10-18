@@ -3,7 +3,7 @@
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
-     style="padding-bottom: 100px;"
+    style="padding:10px 0 100px;"
   >
   <div class="lyrics-result">
       <el-table :data="songList"
@@ -79,27 +79,7 @@
 </template>
 
 <script>
-// import kwLyrics from "@/mock/kw-lyrics";
-// let songs = kwLyrics.result.songs;
 import { mapMutations } from "vuex"
-//  songs = songs.map(song => {
-//    song.height = '90px';
-//    if(song.lyrics){
-//       //把歌词数组分为10个一组
-//       song.lyGroup = song.lyrics.reduce((pre,cur,index) => {
-//         if(index % 10 == 0){
-//           pre.push([cur])
-//         }else{
-//           pre[pre.length-1].push(cur)
-//         }
-//         return pre
-//       },[])
-          
-//    }
-//    return song
-// })
-   
-// let total = kwLyrics.result.songCount;
 import page from "@/mixins/page";
 import songTable from "@/mixins/songTable";
 import search from "@/mixins/search";

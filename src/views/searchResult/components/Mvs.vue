@@ -15,8 +15,6 @@
 <script>
 import page from '@/mixins/page'
 import search from '@/mixins/search'
-// import mvres from '@/mock/kw-mvs'
-// let mvs = mvres.result.mvs
 export default {
   name: 'Mvs',
   props: {
@@ -24,7 +22,6 @@ export default {
   mixins: [page,search],
   data () {
     return {
-      // filterList:mvs
     }
   },
   computed: { 
