@@ -60,7 +60,28 @@
         color: #999 !important;
       }
   }
+  //TODO:可优化
   //高亮搜索项的关键词
   .tip-list .tip-name .highlight {
     color: #409EFF ;
   }
+  .lyrics{//高亮歌词关键字匹配
+    display: flex;
+    align-items: center;
+    b{
+      font-weight: 400;
+     color:#409EFF !important;
+   }
+ }
+ .ly-col b,.ly-highlignt,.highlight{
+  position: relative;
+  top:-1px;
+  font-weight: 400;
+  color:#409EFF !important;
+}
+.kw-highlight{
+  position: relative;
+  top:-2px;
+  font-weight: 400;
+  color:#409EFF !important;
+}

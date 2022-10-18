@@ -54,6 +54,11 @@ export default {
           type: 1000,
         },
         {
+          title: "歌词",
+          path: "/lyrics",
+          type: 1006,
+        },
+        {
           title: "专辑",
           path: "/albums",
           type: 10,
@@ -63,20 +68,25 @@ export default {
           path: "/videos",
           type: 1014,
         },
+        {
+          title: "MV",
+          path: "/mvs",
+          type: 1004,
+        },
         
         {
-          title: "播客",
-          path: "/podcasts",
+          title: "电台",
+          path: "/djradios",
           type: 1009,
         },
         {
           title: "声音",
           path: "/sounds",
-          type: 1006,
+          type: 2000,
         },
         {
           title: "用户",
-          path: "/users",
+          path: "/userProfiles",
           type: 1002,
         },
       ],
@@ -127,7 +137,7 @@ export default {
     color:#1d1d1f;
     font-size:18px;
     font-weight: 600;
-    margin-top:10px;
+    margin-top:4px;
     margin-bottom:10px;
     display: flex;
     align-items: center;
@@ -137,7 +147,6 @@ export default {
     }
   }
   .may-interest{
-     margin-bottom:20px;
     .interest-title{
       font-size:14px;
       color:#999;
@@ -146,7 +155,6 @@ export default {
     .interest-list{
       display:flex;
       flex-wrap:wrap;
-      margin-bottom:10px;
       ::v-deep .may-interest-item:nth-of-type(4n){
         margin-right:0;
       }

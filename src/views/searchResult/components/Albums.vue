@@ -1,38 +1,60 @@
 <template>
-  <div class="albums-result">
-      
+  <div
+    v-loading="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-text="载入中..."
+    class="albums-wrap"
+  >
+    <div class="albums-result">
+      <SongListBox
+        v-for="item in albumList"
+        :key="item.id"
+        :algInfo="item"
+        size="large"
+        showCreator
+      />
+    </div>
+    <Pagination v-bind="pageOption" @current-change="handleCurrentChange" />
   </div>
 </template>
 
 <script>
+import page from "@/mixins/page";
+import search from "@/mixins/search";
 export default {
-  name: 'Albums',
-  props: {
+  name: "Albums",
+  props: {},
+  mixins: [page, search],
+  data() {
+    return {};
   },
-  data () {
-    return {
-
+  computed: {
+    albumList() {
+      let reg = new RegExp(this.kw, "gi");
+      return this.filterList.map(item => {
+        item.name = item.name.replace(reg, `<span class="kw-highlight">${this.kw}</span>`);
+        return item;
+      });
     }
   },
-  computed: { 
-
+  watch: {},
+  components: {
+    SongListBox: () =>
+      import("@/views/personalized/components/SongListBox.vue"),
   },
-  watch: { 
-
-  },
-  components: { 
-
-  },
-  methods: {
-
-  },
-  created () { 
-
-  },
-  mounted () { 
-
-  },
-}
+  methods: {},
+  created() {},
+  mounted() {},
+};
 </script>
 <style scoped lang='scss'>
+//歌单列表
+.albums-wrap{
+  padding-bottom: 100px;
+}
+.albums-result {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 20px;
+}
 </style>

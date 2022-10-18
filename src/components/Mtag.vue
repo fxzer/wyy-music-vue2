@@ -21,16 +21,17 @@ export default {
 <style scoped lang='scss'>
 .m-tag{
   display: inline-block;
-  vertical-align:middle;
+  vertical-align:top;
   text-align: center;
   height: 16px;
-  line-height: 16px;
+  line-height: 14px;
   font-size: 10px;
   border:1px solid #EC4141;
   color: #EC4141;
   border-radius: 3px;
-  transform: scale(.9);
+  transform: scale(.88);
   margin-right:4px;
+  padding: 0 1px;
 }
  
 </style>

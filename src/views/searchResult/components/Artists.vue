@@ -3,9 +3,10 @@
     v-loading="loading" 
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..." 
+    style="padding-bottom: 100px;"
   >
     <div class="artist-result">
-      <SingerCover v-for="singer in filterList"  :key="singer.id" :singer="singer" showAlias/>
+      <SingerCover v-for="singer in artistList"  :key="singer.id" :singer="singer" showAlias/>
     </div>
     <Pagination v-bind="pageOption" @current-change="handleCurrentChange"/>
   </div>
@@ -24,7 +25,13 @@ export default {
     }
   },
   computed: { 
-
+    artistList(){
+      let reg = new RegExp(this.kw,'gi')
+      return this.filterList.map(singer => {
+        singer.name = singer.name.replace(reg,`<span class="kw-highlight">${this.kw}</span>`)
+        return singer
+      })
+    }
   },
   watch: { 
 

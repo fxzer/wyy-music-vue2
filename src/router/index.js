@@ -102,9 +102,9 @@ const routes = [
                 component: () => import('@/views/searchResult/components/Videos'),
             },
             {
-                path: 'podcasts',
-                name: 'Podcasts',
-                component: () => import('@/views/searchResult/components/Podcasts'),
+                path: 'djRadios',
+                name: 'DjRadios',
+                component: () => import('@/views/searchResult/components/DjRadios'),
             },
             {
                 path: 'sounds',
@@ -112,9 +112,19 @@ const routes = [
                 component: () => import('@/views/searchResult/components/Sounds'),
             },
             {
-                path: 'users',
-                name: 'Users',
-                component: () => import('@/views/searchResult/components/Users'),
+                path: 'userProfiles',
+                name: 'UserProfiles',
+                component: () => import('@/views/searchResult/components/UserProfiles'),
+            },
+            {
+                path: 'lyrics',
+                name: 'Lyrics',
+                component: () => import('@/views/searchResult/components/Lyrics'),
+            },
+            {
+                path: 'mvs',
+                name: 'Mvs',
+                component: () => import('@/views/searchResult/components/Mvs'),
             },
 
         ]

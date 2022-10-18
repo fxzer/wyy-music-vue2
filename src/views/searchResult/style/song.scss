@@ -1,0 +1,31 @@
+.el-slider {
+  width: 100px;
+}
+.song-opts {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  .icon-heart {
+    color: #999;
+    cursor: pointer;
+    &:hover {
+      color: #ec4141;
+    }
+  }
+  .icon-xiazai {
+    color: #999;
+    cursor: pointer;
+    &:hover {
+      color: #48B348;
+    }
+  }
+}
+.el-slider ::v-deep .el-slider__runway.disabled {
+  .el-slider__bar {
+    border-radius: 3px;
+  }
+  .el-slider__button-wrapper {
+    display: none !important;
+  }
+}

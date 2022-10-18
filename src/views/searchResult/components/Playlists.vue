@@ -3,9 +3,10 @@
       <div  
         v-loading="loading" 
         element-loading-spinner="el-icon-loading"
-        element-loading-text="载入中...">
+        element-loading-text="载入中..."
+        style="padding-bottom: 100px;">
         <div class="playlists-result">
-        <SongListBox v-for="item in filterList" :key="item.id" 
+        <SongListBox v-for="item in palyList" :key="item.id" 
         :algInfo="{...item,picUrl:item.coverImgUrl}" size="large"  showCreator/>
         </div>
         <Pagination v-bind="pageOption" @current-change="handleCurrentChange"/>
@@ -19,13 +20,19 @@ export default {
   name: 'Playlists',
   props: {
   },
-    mixins: [page,search],
+  mixins: [page,search],
   data () {
     return {
     }
   },
   computed: { 
-
+    palyList(){
+      let reg = new RegExp(this.kw,'gi')
+      return this.filterList.map(item => {
+        item.name = item.name.replace(reg,`<span class="kw-highlight">${this.kw}</span>`)
+        return item
+      })
+    }
   },
   watch: { 
 

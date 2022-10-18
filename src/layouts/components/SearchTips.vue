@@ -101,11 +101,9 @@ export default {
     },
     //高亮搜索关键词
     highlight(name) {
-      
       let { keywords } = this;
       //不区分大小写
       let reg = new RegExp(keywords, "gi");
-      
       //去除xxs攻击
       let naemStr = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       let hlhtml =  naemStr.replace(reg, `<span class="highlight">${keywords}</span>`);

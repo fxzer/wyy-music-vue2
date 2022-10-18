@@ -10,7 +10,7 @@
         <img :src="singer.img1v1Url" :alt="singer.name" class="singer-cover" />
     </div>
     <p class="singer-info">
-      <span class="singer-name text-of-single">{{singer.name}}</span>
+      <span class="singer-name text-of-single" v-html="singer.name"> </span>
       <!-- <span class="singer-alias" :title="singer.alias[0]" 
        v-if="showAlias && singer.alias[0]">({{singer.alias[0]}})</span> -->
       <i class="iconfont icon-user" @click="toSingerInfo(singer.id)"></i>

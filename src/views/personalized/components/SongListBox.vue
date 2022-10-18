@@ -9,11 +9,13 @@
   <div class="song-list-box">
     <div class="img-box"  :class="ishover ? 'active':''"
     @mouseenter="ishover=true"  @mouseleave="ishover=false" >
-    <img :src="algInfo.picUrl" :alt="algInfo.name" /> 
+      <img :src="algInfo.picUrl"   /> 
       <span class="play-number">
         <i class="iconfont icon-play"></i>
-        <span class="number" v-if="algInfo.playCount">{{algInfo.playCount | playCountFilter}}</span>
+        <span class="number" v-if="algInfo.playCount">
+          {{algInfo.playCount | playCountFilter}}</span>
       </span> 
+      <span class="pg-count" v-if="algInfo.programCount">声音{{algInfo.programCount}}</span>
       <PlayBtn  :position="position"  :size="size" :bgFilter="true"/>
       <!-- 歌单创建者 -->
       <p class="creator" v-if="cname">
@@ -22,7 +24,7 @@
          <i class="iconfont icon-dengji1"></i>
       </p>
     </div>
-    <p class="album-des text-of-multi">{{algInfo.name}}</p>
+    <p class="album-des text-of-multi" v-html="algInfo.name"></p>
     <p class="album-artist text-of-single" v-if="algInfo.artist">
        {{algInfo.artist.name}}</p>
   </div>
@@ -103,6 +105,13 @@ export default {
         font-size: 10px;
       }
     }
+    .pg-count{
+      font-size: 12px;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      color: #fff;
+    }
     //播放按钮
      .play-btn{
       opacity: 0;
@@ -157,7 +166,7 @@ export default {
     cursor: pointer;
   }
   .album-artist{
-    margin-top:4px;
+    margin-top:0px;
     text-align: left;
     font-size: 14px;
     color:#888;

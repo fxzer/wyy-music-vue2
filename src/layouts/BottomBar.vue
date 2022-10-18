@@ -109,6 +109,7 @@ export default {
    display: flex;
    background-color: #fff;
    justify-content: space-between;
+   z-index: 999;
    .song-box{
       padding:10px;
       width: 364px;
