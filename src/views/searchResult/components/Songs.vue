@@ -1,10 +1,10 @@
 <template>
   <div class="result-songs"
-      v-loading="loading" 
+    v-loading="loading" 
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..." 
   >
-    <el-table :data="songs"
+    <el-table :data="filterList"
       :row-style="rowStyle"
       :cell-style="cellStyle"
       :header-cell-style="headerRowStyle"
@@ -54,8 +54,6 @@ export default {
   mixins: [page,search],
   data() {
     return {
-      loading: false,
-      songs: [],
       headerRowStyle: {
         color: "#666",
         fontSize: "14px",

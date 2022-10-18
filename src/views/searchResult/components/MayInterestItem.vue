@@ -41,7 +41,7 @@ export default {
         artist: "歌手",
         playlist: "歌单",
         album: "专辑",
-        vedio: "视频",
+        'new_mlog': "视频",
       },
     };
   },
@@ -56,7 +56,7 @@ export default {
         return this.dataObj?.coverImgUrl;
       }else if(this.type ==='album'){
         return this.dataObj?.picUrl;
-      }else if(this.type ==='vedio'){
+      }else if(this.type ==='new_mlog'){
         return this.dataObj?.baseInfo.resource?.mlogBaseData?.coverUrl || this.dataObj?.baseInfo.resource?.userProfile?.avatarUrl;
       }
     },
@@ -92,7 +92,7 @@ export default {
     }
   }
 
-  &.is-video {
+  &.is-new_mlog {
     .item-cover {
       width: 80px;
       height: 50px;

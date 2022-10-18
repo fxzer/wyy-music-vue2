@@ -1,6 +1,6 @@
 <template>
-  <div >
-    Albums works !
+  <div class="albums-result">
+      
   </div>
 </template>
 

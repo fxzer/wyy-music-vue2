@@ -2,6 +2,7 @@ export default {
   data() {
     return {
       loading: false,
+      filterList: [],
       compToType: {
         songs: 1,
         artists: 100,
@@ -29,7 +30,7 @@ export default {
       let type = compToType[lname];
       if (kw) {
         let {  result ={} } = await this.$http(`/cloudsearch?keywords=${kw}&type=${type}&limit=10&offset=${offset}`);
-        this[lname] = result[lname];
+        this.filterList = result[lname];
         this.pageOption.total = result[lname.slice(0,-1) + "Count"];
       }
       this.loading = false;

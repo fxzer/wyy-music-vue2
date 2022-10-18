@@ -25,7 +25,5 @@ export default {
     },
   },
   created(){
-    //输出组件名
-    console.log(this.$options.name)
   }
 }
