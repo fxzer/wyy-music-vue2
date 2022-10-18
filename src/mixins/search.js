@@ -3,10 +3,10 @@ export default {
     return {
       loading: false,
       compToType: {
-        Songs: 1,
-        Artists: 100,
-        Albums: 10,
-        Playlists: 1000,
+        songs: 1,
+        artists: 100,
+        albums: 10,
+        playlists: 1000,
       },
     };
   },
@@ -24,15 +24,13 @@ export default {
         $options: { name },
       } = this;
       let { kw } = this.$route.query;
-      let type = compToType[name];
+      //用组价名字作为key,获取对应的type值,和对应的数据
+      let lname = name.toLowerCase();
+      let type = compToType[lname];
       if (kw) {
-        let {
-          result: { songs = [], songCount = 0 ,artists = [], artistCount = 0,playlists = [], playlistCount = 0},
-        } = await this.$http(
-          `/cloudsearch?keywords=${kw}&type=${type}&limit=10&offset=${offset}`
-        );
-        this[name.toLowerCase()] = name === 'Songs' ? songs : name === 'Artists' ? artists : playlists;
-        this.pageOption.total = songCount;
+        let {  result ={} } = await this.$http(`/cloudsearch?keywords=${kw}&type=${type}&limit=10&offset=${offset}`);
+        this[lname] = result[lname];
+        this.pageOption.total = result[lname.slice(0,-1) + "Count"];
       }
       this.loading = false;
     },

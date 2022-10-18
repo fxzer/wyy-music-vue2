@@ -124,7 +124,7 @@ export default {
   },
   created () { 
     //TODO:刷新回显输入框
-    let {  query:{kw} } = this.$route 
+    let {  query:{kw=''} } = this.$route 
     
     this.kw = kw
     // let type = this.searchTypes.filter(item =>  path.includes(item.path))[0].type 
