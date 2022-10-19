@@ -80,10 +80,10 @@ export default {
     }
   },
   mounted () { 
-        this.audio.addEventListener('ended', () =>{
-           //监听到播放结束后，在此处可调用自己的接口
-           this.setPalyState(false)
-      }, false);
+      //   this.audio.addEventListener('ended', () =>{
+      //      //监听到播放结束后，在此处可调用自己的接口
+      //      this.setPalyState(false)
+      // }, false);
   },
   watch: { 
     isPlaying(val){

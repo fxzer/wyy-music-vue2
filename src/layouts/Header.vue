@@ -1,12 +1,11 @@
 <template>
-  <div class="header">
+  <div class="header-wrap" id="header-wrap">
     <a href="#" class="home-link">
       <img src="@/assets/images/header-logo.png" alt="首页" />
     </a>
-    <!-- placeholder="请输入歌名、歌手、专辑" -->
     <div class="search-box">
       <el-input
-        v-model.trim="kw"
+        :value="kw"
         size="small"
         clearable
         ref="searchInputRef"
@@ -18,14 +17,13 @@
         @input="handleInput"
       ></el-input>
       <!-- 搜索提示面板 -->
-      <Panel :visible.sync="showSearchPanel" :styleObj="panelStyle">
+      <Panel :visible.sync="searchPanelVisible" :styleObj="panelStyle" class="search-panel">
         <template #content>
         <vuescroll  v-if="showHotSearchBoard">
-          <SearchHistory  :list="historyList"  @select="handleSelect" 
-          @deleteOne="handleDeleteOne" @deleteAll="handleDeleteAll" />
+          <SearchHistory   @select="handleSelect"   />
           <HotSearchBoard   @select="handleSelect" />
         </vuescroll>
-          <SearchTips v-if="!showHotSearchBoard" :keywords="kw" @select="handleSelect" />
+          <SearchTips v-if="!showHotSearchBoard"   @select="handleSelect" />
         </template>
       </Panel>
     </div>
@@ -50,8 +48,7 @@ export default {
   data() {
     return {
       searchType: 1,
-      placeholder: "",
-      showSearchPanel: false,
+      placeholder: "请输入歌名、歌手、专辑",
       showHotSearchBoard: false,
       panelStyle: {
         width: "440px",
@@ -61,13 +58,13 @@ export default {
         padding: "10px 0",
       },
       prefixIcon: null,
-      historyList: [], // 搜索历史
+      isCloseBtn:false,
       kwSearchResult: [], //关键字搜索结果
       hotSearchBoard: [], //热搜榜
     };
   },
   computed: {
-    ...mapState('search',["kw"]),
+    ...mapState('search',["kw" ,"searchPanelVisible"]),
   },
   components: {
     SearchTips: () => import("./components/SearchTips.vue"),
@@ -75,7 +72,7 @@ export default {
     HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
   },
   methods: {
-    ...mapMutations('search',["setKw"]),
+    ...mapMutations('search',["setKw","addOne",'setSearchPanel']),
     //获取默认搜索关键字
     async getDefaultKeywoard() {
       let { data: { showKeyword, searchType },} = await this.$http("/search/default");
@@ -88,7 +85,7 @@ export default {
       let {
         result: { songs } 
       } = await this.$http(`/cloudsearch?keywords=${kw}&limit=100`);
-      this.historyList.push(kw);
+      this.addOne(kw);
       this.kwSearchResult = songs;
     },
 
@@ -101,8 +98,7 @@ export default {
     },
     //监听搜索框前置图标点击事件
     initPreIconEvent() {
-      this.prefixIcon =
-        this.$refs.searchInputRef.$el.querySelector(".el-input__prefix");
+      this.prefixIcon = this.$refs.searchInputRef.$el.querySelector(".el-input__prefix");
       this.prefixIcon.addEventListener("click", this.handlePreIconClick);
     },
     handlePreIconClick() {
@@ -111,25 +107,28 @@ export default {
       //TODO:防抖或节流
     },
     handleFocus() {
-      this.showSearchPanel = true;
+      this.setSearchPanel(true)
       if (!this.kw) {
         this.showHotSearchBoard = true;
       }
     },
     handleBlur() {
-      setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
-        this.showSearchPanel = false;
-        this.showHotSearchBoard = false;
-      }, 200);
+      if(!this.isCloseBtn){
+        setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
+          // this.setSearchPanel(false)
+          // this.showHotSearchBoard = false;
+        }, 200);
+      }
+   
     },
     //点击热搜榜或搜索提示项
     handleSelect(item) { 
-      let { searchWord ,name} = item;
-       let kw = searchWord || name;
-       this.setKw(kw)
-      this.showSearchPanel = false;
+      let { searchWord ,name,type=1} = item;
+      let kw = searchWord || name;
+      this.setKw(kw)
+      this.addOne(kw);
+      this.setSearchPanel(false)
       this.showHotSearchBoard = false;
-      console.log('item: ', item);
       let pathMap = {
         1: "/songs",
         10: "/albums",
@@ -137,33 +136,35 @@ export default {
         1000: "/playlists",
       };
       this.$router.push({
-        path:'/searchResult' + pathMap[item.type],
+        path:'/searchResult' + pathMap[type],
         query: {
           kw: this.kw,
-          type: item.type,
+          type: type,
         },
       });
     },
     //监听搜索框输入事件
     handleInput(val) {
+      this.setKw(val)
       if (val) {
         this.showHotSearchBoard = false;
       }
     },
-    handleDeleteOne(index){
-      this.historyList.splice(-index-1,1)
-    },
-    handleDeleteAll(){
-      this.historyList = []
-    }
+    // headerClick(e){
+    //   if(e.target.className.includes('el-icon-close')){
+    //     this.isCloseBtn = true
+    //   }else{
+    //     this.isCloseBtn = false
+    //   }
+    // }
   },
   created() {
-    console.log('this.$route:Header ', this.$route);
     this.getDefaultKeywoard();
   },
   mounted() {
-    console.log('this.kw',this.kw);
     this.initPreIconEvent();
+    // let headerWrap = document.querySelector('.header-wrap')
+    // headerWrap.addEventListener('click',this.headerClick)
   },
   beforeDestroy() {
     this.prefixIcon.removeEventListener("click", this.handlePreIconClick);
@@ -174,23 +175,11 @@ export default {
         this.showHotSearchBoard = true;
       }
     },
-    historyList: {
-      handler(newVal) {
-        localStorage.setItem("historyList", JSON.stringify(newVal));
-      },
-      deep: true,
-    },
-    showHotSearchBoard(val){
-      if(val){
-        //获取历史记录
-        this.historyList = JSON.parse(localStorage.getItem("historyList"));
-      }
-    }
   },
 };
 </script>
 <style scoped lang='scss'>
-.header {
+.header-wrap {
   position: fixed;
   left: 0;
   top: 0;
@@ -256,6 +245,12 @@ export default {
   //搜索提示面板
   .search-tips-wrap {
     color: #333;
+  }
+}
+.el-input{
+   ::v-deep .el-input__suffix, 
+   ::v-deep .el-input__prefix{
+      top: -2px;
   }
 }
 </style>

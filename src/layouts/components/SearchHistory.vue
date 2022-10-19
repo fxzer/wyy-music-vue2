@@ -8,25 +8,22 @@
   <div class="history-wrap" >
     <div class="history-title">
       <span style="user-select:none">搜索历史</span> 
-      <span class="el-icon-delete" @click="$emit('deleteAll')"></span>
+      <span class="el-icon-delete" @click="deleteAll"></span>
     </div>
     <div class="history-list">
-      <div class="history-item" v-for="(item,index) in reverseList" :key="index">
+      <div class="history-item" v-for="(item,index) in historyList" :key="index">
         <span class="history-name" @click="$emit('select',{searchWord:item})">{{item}}</span>
-        <span class="el-icon-close" @click="$emit('deleteOne',index)"></span>
+        <span class="el-icon-close" @click="handleDeleteOne(index)"></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'SearchHistory',
   props: {
-    list: {
-      type: Array,
-      default: () => [],
-    },
   },
   data () {
     return {
@@ -34,10 +31,7 @@ export default {
     }
   },
   computed: { 
-    //翻转历史
-    reverseList () {
-      return this.list?.slice().reverse()
-    }
+    ...mapState('search', ['historyList']),
   },
   watch: { 
 
@@ -46,7 +40,13 @@ export default {
 
   },
   methods: {
-
+    ...mapMutations('search', ['deleteOne','deleteAll']),
+    handleDeleteOne(index){//聚焦在搜索历史
+      this.deleteOne(index)
+    },
+    handleDeleteAll(){
+      this.deleteAll()
+    }
   },
   created () { 
 

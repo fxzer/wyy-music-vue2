@@ -2,7 +2,7 @@
  * @Author: FXJ
  * @LastEditTime: 2022-10-16 23:20:58
  * @FilePath: \vue-wyy-music\src\components\layout\components\SearchTips.vue
- * @Description: 
+ * @Description: 猜你想搜和搜索提示
 -->
 <template>
   <div class="search-tips"
@@ -32,13 +32,10 @@
 
 <script>
 // import kwsearch from '@/mock/kwsearch'
+import { mapState } from 'vuex'
 export default {
   name: "SearchTips",
   props: {
-    keywords: {
-      type: String,
-      default: "",
-    },
   },
   data() {
     return {
@@ -52,9 +49,11 @@ export default {
       ],
     };
   },
-  computed: {},
+  computed: {
+    ...mapState('search',["kw" ]),
+  },
   watch: {
-    keywords: {
+    kw: {
       immediate: true,
       handler(val) {
         if (val) this.searchDone()
@@ -75,14 +74,12 @@ export default {
       this.loading = false
     }, */
     async searchSuggest() {
-      let { keywords } = this;
-      let { result } = await this.$http(`/search/suggest?keywords=${keywords}`);
+      let { result } = await this.$http(`/search/suggest?keywords=${this.kw}`);
       return  result
     },
     // 猜你想搜
     async searchGuess() {
-      let { keywords } = this;
-      let  { result:{songs}}= await this.$http(`/cloudsearch?keywords=${keywords}&type=1&limit=10`);
+      let  { result:{songs}}= await this.$http(`/cloudsearch?keywords=${this.kw}&type=1&limit=10`);
       return songs 
     },
     async searchDone(){
@@ -101,13 +98,12 @@ export default {
     },
     //高亮搜索关键词
     highlight(name) {
-      let { keywords } = this;
       //不区分大小写
-      keywords = keywords.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-      let reg = new RegExp(keywords, "gi");
+      let nkw = this.kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      let reg = new RegExp(nkw, "gi");
       //去除xxs攻击
       let naemStr = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      let hlhtml =  naemStr.replace(reg, `<span class="highlight">${keywords}</span>`);
+      let hlhtml =  naemStr.replace(reg, `<span class="highlight">${nkw}</span>`);
       return hlhtml
     },
   },

@@ -17,7 +17,7 @@
         <div class="hot-detail">
           <p class="word-detail">
             <span class="search-word">{{ item.searchWord }}</span>
-            <span class="hot-tag" v-if="index < 3">HOT</span>
+            <img class="hot-tag" :src="item.iconUrl" v-if="item.iconUrl">
             <span class="word-score">{{ item.score }}</span>
           </p>
           <p class="hot-content">{{ item.content }}</p>
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-// import hotSearch from '@/mock/hotSearch'
 export default {
   name: "HotSearchBoard",
   props: { },
@@ -53,7 +52,6 @@ export default {
     this.getHotSearchBoard()
   },
   mounted() {
-  //  this.hotList = hotSearch.data
   },
 };
 </script>
@@ -126,14 +124,9 @@ export default {
         }
 
         .hot-tag {
-          margin-left: 5px;
-          padding: 0 5px;
-          font-size: 12px;
-          color: #f00;
-          //斜体
-          font-style: italic;
-          font-weight: 600;
-          transform: scale(0.85);
+          width: 30px;
+          height: 12px;
+          margin-left: 3px;
         }
         .word-score {
           margin-left: 5px;

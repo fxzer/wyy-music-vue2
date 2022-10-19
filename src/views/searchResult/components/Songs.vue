@@ -34,7 +34,9 @@
       </el-table-column>
       <el-table-column label="专辑" show-overflow-tooltip>
         <template slot-scope="{ row }">
-          {{ alStr(row) }}
+          <div class="album" style="color:#888;">
+             {{ alStr(row) }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="dt" label="时长" width="100px">

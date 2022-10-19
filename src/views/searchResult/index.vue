@@ -29,13 +29,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'SearchResult',
   props: {
   },
   data () {
     return {
-      kw: '',
       searchTypes: [
         {
           title: "单曲",
@@ -93,6 +93,7 @@ export default {
     }
   },
   computed: { 
+    ...mapState('search', ['kw']),
     showMayIns(){
       return Object.keys(this.mayIns).length > 0
     },
