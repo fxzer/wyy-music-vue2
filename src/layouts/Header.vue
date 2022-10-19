@@ -6,7 +6,7 @@
     <!-- placeholder="请输入歌名、歌手、专辑" -->
     <div class="search-box">
       <el-input
-        v-model.trim="keywords"
+        v-model.trim="kw"
         size="small"
         clearable
         ref="searchInputRef"
@@ -25,7 +25,7 @@
           @deleteOne="handleDeleteOne" @deleteAll="handleDeleteAll" />
           <HotSearchBoard   @select="handleSelect" />
         </vuescroll>
-          <SearchTips v-if="!showHotSearchBoard" :keywords="keywords" @select="handleSelect" />
+          <SearchTips v-if="!showHotSearchBoard" :keywords="kw" @select="handleSelect" />
         </template>
       </Panel>
     </div>
@@ -43,12 +43,12 @@
 </template>
 
 <script>
+import { mapState,mapMutations } from 'vuex'
 export default {
   name: "Header",
   props: {},
   data() {
     return {
-      keywords: "",
       searchType: 1,
       placeholder: "",
       showSearchPanel: false,
@@ -66,13 +66,16 @@ export default {
       hotSearchBoard: [], //热搜榜
     };
   },
-  computed: {},
+  computed: {
+    ...mapState('search',["kw"]),
+  },
   components: {
     SearchTips: () => import("./components/SearchTips.vue"),
     SearchHistory: () => import("./components/SearchHistory.vue"),
     HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
   },
   methods: {
+    ...mapMutations('search',["setKw"]),
     //获取默认搜索关键字
     async getDefaultKeywoard() {
       let { data: { showKeyword, searchType },} = await this.$http("/search/default");
@@ -81,16 +84,16 @@ export default {
     },
     //搜索
     async defaultSearch() {
-      let { keywords } = this;
+      let { kw } = this;
       let {
         result: { songs } 
-      } = await this.$http(`/cloudsearch?keywords=${keywords}&limit=100`);
-      this.historyList.push(keywords);
+      } = await this.$http(`/cloudsearch?keywords=${kw}&limit=100`);
+      this.historyList.push(kw);
       this.kwSearchResult = songs;
     },
 
     handleSearch() {
-      if (this.keywords) {
+      if (this.kw) {
         this.defaultSearch();
       } else {
         this.handlePreIconClick();
@@ -103,13 +106,13 @@ export default {
       this.prefixIcon.addEventListener("click", this.handlePreIconClick);
     },
     handlePreIconClick() {
-      this.keywords = this.placeholder;
+      this.setKw(this.placeholder)
       this.defaultSearch();
       //TODO:防抖或节流
     },
     handleFocus() {
       this.showSearchPanel = true;
-      if (!this.keywords) {
+      if (!this.kw) {
         this.showHotSearchBoard = true;
       }
     },
@@ -122,7 +125,8 @@ export default {
     //点击热搜榜或搜索提示项
     handleSelect(item) { 
       let { searchWord ,name} = item;
-      this.keywords = searchWord || name;
+       let kw = searchWord || name;
+       this.setKw(kw)
       this.showSearchPanel = false;
       this.showHotSearchBoard = false;
       console.log('item: ', item);
@@ -135,7 +139,7 @@ export default {
       this.$router.push({
         path:'/searchResult' + pathMap[item.type],
         query: {
-          kw: this.keywords,
+          kw: this.kw,
           type: item.type,
         },
       });
@@ -158,16 +162,14 @@ export default {
     this.getDefaultKeywoard();
   },
   mounted() {
+    console.log('this.kw',this.kw);
     this.initPreIconEvent();
-    this.$bus.$on("search", (keywords) => {
-      if(!keywords) this.keywords = keywords;
-    });
   },
   beforeDestroy() {
     this.prefixIcon.removeEventListener("click", this.handlePreIconClick);
   },
   watch: {
-    keywords(val) {
+    kw(val) {
       if (!val) {
         this.showHotSearchBoard = true;
       }

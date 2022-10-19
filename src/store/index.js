@@ -7,8 +7,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import player from './player'
+import search from './search'
 import { Notification } from 'element-ui';
-
+import createPersistedState  from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -33,6 +34,13 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    player
-  }
+    player,
+    search
+  },
+  plugins: [createPersistedState({
+      // 本地存储的key
+      key: 'v-store',
+      // 指定需要存储的模块
+      paths: ['player', 'search']
+  })]
 })
