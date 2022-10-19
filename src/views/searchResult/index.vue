@@ -109,14 +109,14 @@ export default {
       return this.$route.path === '/searchResult' + menuItem.path
     },
     //可能感兴趣
-   async getMayInterest(kw){
-      let { result  }= await this.$http(`/search/multimatch?keywords=${kw}`) 
+   async getMayInterest(){
+      let { result  }= await this.$http(`/search/multimatch?keywords=${this.kw}`) 
       delete result.orders
       this.mayIns = result
     },
   },
   created () { 
-    
+      this.getMayInterest()
   },
   mounted () { 
   },
