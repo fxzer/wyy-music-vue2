@@ -7,7 +7,7 @@
 
 <template>
   <div id='DiscoverVideo'  class='DiscoverVideo'>
-     DiscoverVideo works !
+     <router-view  class="videos-wrap"/>
   </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
- .DiscoverVideo{
-
- }
+.videos-wrap{
+  display: flex;
+  justify-content: center;
+}
 </style>

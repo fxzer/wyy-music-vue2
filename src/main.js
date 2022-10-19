@@ -15,6 +15,11 @@ import http from './network/request'
 import vuescroll from 'vuescroll'
 import { registerFilters } from './utils/filters'
 import  registerComponents  from './utils/components'
+//视频播放
+import VueCoreVideoPlayer from 'vue-core-video-player'
+Vue.use(VueCoreVideoPlayer,{
+        lang: 'zh-CN'
+})
 //关闭开发提示
 Vue.config.productionTip = false
 Vue.use(ElementUI);

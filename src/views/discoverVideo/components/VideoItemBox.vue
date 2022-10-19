@@ -1,5 +1,5 @@
 <template>
-  <div  class="video-item-box">
+  <div  class="video-item-box" @click="toVideoDetail(video)">
     <div class="cover-box">
       <img :src="video.coverUrl" :alt="video.title" class="cover-img">
       <span class="play-number">
@@ -44,6 +44,11 @@ export default {
     cname(video){
       return video?.creator.map(item => item.userName).join('/') || ''
     },
+    toVideoDetail(video){
+      this.$router.push({
+        path:'/discoverVideo/mvDetail/'+video.vid,
+      })
+    }
   },
   created () { 
 

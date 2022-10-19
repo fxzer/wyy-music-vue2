@@ -68,8 +68,20 @@ const routes = [
     {
         path: '/discoverVideo',
         name: 'DiscoverVideo',
-        component: () =>
-            import ('@/views/discoverVideo')
+        component: () => import ('@/views/discoverVideo'),
+        children: [
+            { path: '/', redirect: { name: 'VideoRecommend' } },
+            {
+                path: 'videoRecommend',
+                name: 'VideoRecommend',
+                component: () => import ('@/views/discoverVideo/components/VideoRecommend'),
+            },
+            {
+                path:'mvDetail/:id',
+                name:'MvDetail',
+                component:()=>import('@/views/discoverVideo/components/MvDetail')
+            }
+        ]
     },
     {
         path:'/searchResult',

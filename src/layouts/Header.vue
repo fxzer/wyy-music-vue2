@@ -115,8 +115,8 @@ export default {
     handleBlur() {
       if(!this.isCloseBtn){
         setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
-          // this.setSearchPanel(false)
-          // this.showHotSearchBoard = false;
+          this.showHotSearchBoard = false;
+          this.setSearchPanel(false)
         }, 200);
       }
    
