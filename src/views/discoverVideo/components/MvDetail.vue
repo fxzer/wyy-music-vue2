@@ -1,22 +1,21 @@
 <template>
   <div class="mv-detail">
     <div class="left-wrap">
-      <h2 class="detail-header">
+      <h2 class="detail-header" @click="$router.go(-1)">
         <span class="el-icon-arrow-left"></span>MV详情
       </h2>
-      <!-- <vue-core-video-player
-        class="video-player"
-        controls="auto"
-        autoplay
+      <PlayerVideo
         v-if="urlData.url"
         :src="urlData.url"
-      ></vue-core-video-player> -->
-      <d-player ref="player   class="video-player  id="player" :options="options"></d-player>
-
+        :volume="volume"
+        width="800"
+        height="450"
+        ref="playerVideoRef"
+      />
       <div class="artist-info">
         <div class="art-name-box">
           <img :src="mvDetail.cover" class="art-avatar" />
-          <p class="art-name">{{artStr(mvDetail)}}</p>
+          <p class="art-name">{{ artStr(mvDetail) }}</p>
         </div>
         <div class="follow-btn">
           <i class="el-icon-plus"></i><span>关注</span>
@@ -30,10 +29,15 @@
           mvDetail.playCount | playCountFilter
         }}</span>
       </p>
+      <div class="tags-mv">
+        <span class="tag-item" v-for="tag in mvDetail.videoGroup" :key="tag.id">{{ tag.name }}</span>
+      </div>
     </div>
     <div class="right-wrap">
       <h2 class="detail-header">相关推荐</h2>
-      <div class="recomend-list"></div>
+      <div class="recomend-list">
+        <MvRcmdItem v-for="mv in recdMvs" :key="mv.id" :mv="mv"/>
+      </div>
     </div>
   </div>
 </template>
@@ -43,86 +47,53 @@ export default {
   name: "VedioDetail",
   data() {
     return {
+      volume: 0.5,
       urlData: {},
       mvDetail: {},
-      options: {
-        container: document.getElementById("dplayer"), //播放器容器
-        mutex: false, //  防止同时播放多个用户，在该用户开始播放时暂停其他用户
-        theme: "#FF4E4E", // 风格颜色，例如播放条，音量条的颜色
-        loop: false, // 是否自动循环
-        lang: "zh-cn", // 语言，'en', 'zh-cn', 'zh-tw'
-        screenshot: true, // 是否允许截图（按钮），点击可以自动将截图下载到本地
-        hotkey: true, // 是否支持热键，调节音量，播放，暂停等
-        preload: "auto", // 自动预加载
-        volume: 0.7, // 初始化音量
-        playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2, 3], //可选的播放速度，可自定义
-        logo: "https://qczh-1252727916.cos.ap-nanjing.myqcloud.com/pic/273658f508d04d488414fd2b84c9f923.png", // 在视频左上角上打一个logo
-        video: {
-          url: "", // 播放视频的路径
-          pic: "", // 视频封面图片
-          // thumbnails:  "", // 进度条上的缩略图,需要通过dplayer-thumbnails来生成
-        },
-        contextmenu: [
-          //  自定义上下文菜单
-          // 右键菜单
-          {
-            text: "b站",
-            link: "https://www.bilibili.com",
-          },
-          {
-            text: "选项二",
-            click: (player) => {
-              console.log('player: ', player);
-            },
-          },
-        ],
-        highlight: [
-          // 进度条时间点高亮
-          {
-            text: "10M",
-            time: 6,
-          },
-          {
-            text: "20M",
-            time: 12,
-          },
-        ],
-      },
+      recdMvs: [],
     };
   },
+  components: {
+    MvRcmdItem: () => import("./MvRcmdItem.vue"),
+  },
   methods: {
-    artStr(mvDetail){
-      console.log('this.mvDetail: ',  mvDetail);
-      if(!this.mvDetail?.artists) return ''
-      return this.mvDetail?.artists.map(item=>item.name).join('/') || ''
+    artStr(mvDetail) {
+      if (!mvDetail?.artists) return "";
+      return mvDetail?.artists.map((item) => item.name).join("/") || "";
     },
     async getMvUrl(id) {
       let { data = {} } = await this.$http(`/mv/url?id=${id}`);
-      return  data;
+      return data;
     },
     async getMvDetail(id) {
       let { data = {} } = await this.$http(`/mv/detail?mvid=${id}`);
       return data;
     },
+    // 获取推荐mv
+    async getRecdMvs() {
+      let { result = {} } = await this.$http(`/personalized/mv`);
+      return result;
+    },
+
   },
   created() {
+    this.volume = parseFloat(window.localStorage.volume);
     let id = this.$route.params.id;
-    let promistList = [this.getMvUrl(id), this.getMvDetail(id)];
+    let promistList = [this.getMvUrl(id), this.getMvDetail(id),this.getRecdMvs()];
     Promise.all(promistList).then((res) => {
       this.urlData = res[0];
       this.mvDetail = res[1];
-      this.options.video.url = this.urlData.url;
-      this.options.video.pic = this.mvDetail.cover;
+      this.recdMvs = res[2];
     });
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 <style scoped lang='scss'>
 .mv-detail {
   display: flex;
   flex-direction: row;
+  padding-bottom:100px;
   .left-wrap {
     width: 800px;
     .video-player {
@@ -179,6 +150,23 @@ export default {
         margin-left: 20px;
       }
     }
+    .tags-mv{
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      .tag-item{
+        margin-right:10px;
+        margin-bottom:10px;
+        height: 20px;
+        padding:0 6px;
+        line-height: 20px;
+        text-align: center;
+        border-radius:10px;
+        background-color:#f5f5f5;
+        color:#666;
+        font-size:12px;
+      }
+    }
   }
   .right-wrap {
     width: 400px;
@@ -200,5 +188,10 @@ export default {
       font-weight: 800;
     }
   }
+}
+.video-player {
+  background-color: black;
+  height: 400px;
+  width: 800px;
 }
 </style>

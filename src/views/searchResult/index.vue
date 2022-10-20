@@ -1,6 +1,6 @@
 <template>
   <div class="search-result">
-    <div class="search-title"><span>搜索</span> <p class="keywords text-of-single">{{kw}}</p></div>
+    <div class="search-title"><span>搜索</span> <p class="keywords text-of-single">{{getKw}}</p></div>
       <!--你可能感兴趣  -->
     <div class="may-interest" v-if="showMayIns">
       <p class="interest-title">你可能感兴趣</p>
@@ -17,7 +17,7 @@
       <el-menu-item
         default-active="/searchResult"
         v-for="(item, index) in searchTypes"
-        :index="'/searchResult' + item.path+ '?kw=' + kw"
+        :index="'/searchResult' + item.path+ '?kw=' + getKw"
         :class="{'is-active':isActive(item)}"
         :key="item.path"
         active-text-color="#303133"
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'SearchResult',
   props: {
@@ -93,7 +93,7 @@ export default {
     }
   },
   computed: { 
-    ...mapState('search', ['kw']),
+    ...mapGetters('search', ['getKw']),
     showMayIns(){
       return Object.keys(this.mayIns).length > 0
     },
@@ -110,7 +110,7 @@ export default {
     },
     //可能感兴趣
    async getMayInterest(){
-      let { result  }= await this.$http(`/search/multimatch?keywords=${this.kw}`) 
+      let { result  }= await this.$http(`/search/multimatch?keywords=${this.getKw}`) 
       delete result.orders
       this.mayIns = result
     },

@@ -16,16 +16,15 @@ import vuescroll from 'vuescroll'
 import { registerFilters } from './utils/filters'
 import  registerComponents  from './utils/components'
 //视频播放
-// import VueCoreVideoPlayer from 'vue-core-video-player'
-// Vue.use(VueCoreVideoPlayer,{
-//         lang: 'zh-CN'
-// })
-import VueDPlayer from 'vue-dplayer'
-import "vue-dplayer/dist/vue-dplayer.css";
+// import VueVideoPlayer from 'vue-video-player';
+// import 'video.js/dist/video-js.css';
+// Vue.use(VueVideoPlayer);
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+Vue.prototype.$video = videojs;
 //关闭开发提示
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-Vue.use(VueDPlayer);
 Vue.use(vuescroll, {
     ops: {
         bar: {

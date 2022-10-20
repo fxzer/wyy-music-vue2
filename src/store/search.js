@@ -6,6 +6,9 @@ export default {
     searchPanelVisible: false, //是否显示搜索面板
   },
   getters:{
+    getKw(state){
+      return state.kw
+    }
   },
   mutations: {
     setKw(state,kw){

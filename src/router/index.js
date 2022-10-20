@@ -12,8 +12,8 @@ Vue.use(VueRouter)
 
 
 const routes = [
-    // { path: '/', redirect: '/discoverMusic/personalized' },
-    { path: '/', redirect: '/searchResult/songs' },
+    { path: '/', redirect: '/discoverMusic/personalized' },
+    // { path: '/', redirect: '/videoTest' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -150,6 +150,11 @@ const routes = [
             },
 
         ]
+    },
+    {
+        path: '/videoTest',
+        name: 'VideoTest',
+        component: () => import('@/views/videoTest'),
     }
 
 ]
