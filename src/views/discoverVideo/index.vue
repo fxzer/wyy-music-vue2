@@ -6,44 +6,43 @@
 -->
 
 <template>
-  <div id='DiscoverVideo'  class='DiscoverVideo'>
-     <router-view  class="videos-wrap"/>
+  <div class="discover-video">
+    <router-view class="videos-wrap" />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DiscoverVideo',
-  props: {
-  },
-  data () {
+  name: "DiscoverVideo",
+  props: {},
+  data() {
     return {
-
-    }
+      secondaryMenuList: [
+        {
+          title: "视频",
+          path: "/videoList",
+        },
+        {
+          title: "MV",
+          path: "/mvList",
+        },
+      ],
+    };
   },
-  created () { 
-
-  },
-  computed: { 
-
-  },
-  components: { 
-
-  },
+  created() {},
+  computed: {},
+  components: {},
   methods: {
-
   },
-  mounted () { 
-
-  },
-  watch: { 
-
-  }
-}
+  mounted() {},
+  watch: {},
+};
 </script>
 <style scoped lang='scss'>
-.videos-wrap{
-  display: flex;
-  justify-content: center;
+.discover-video {
+  .videos-wrap {
+    overflow: auto;
+    height: 100%;
+  }
 }
 </style>

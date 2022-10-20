@@ -21,7 +21,7 @@
         >{{ item.title }}
       </el-menu-item>
     </el-menu>
-      <router-view  class="music-list-box"/>
+      <router-view  class="music-wrap"/>
   </div>
 </template>
 
@@ -64,7 +64,7 @@ export default {
   components: {},
   methods: {
     isActive(menuItem){
-      return this.$route.path === '/discoverMusic' + menuItem.path
+      return this.$route.path.includes('/discoverMusic' + menuItem.path)
     }
   },
   mounted() {
@@ -90,7 +90,7 @@ export default {
       border: none !important;
     }
   }
-  .music-list-box{
+  .music-wrap{
     flex:1;
     overflow: auto;
   }

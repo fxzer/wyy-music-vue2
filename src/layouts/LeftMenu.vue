@@ -6,9 +6,10 @@
 -->
 <template>
   <div id='LeftMenu'  class='LeftMenu'>
-  <el-menu  :default-active="menuList[0].path" router  >
+  <el-menu   router  >
       <el-menu-item v-for="(item, index) in menuList"
         :index="item.path"
+         :class="{'is-active':isActive(item)}"
         :key="item.path">
           {{item.title}}
       </el-menu-item>
@@ -24,13 +25,14 @@ export default {
   },
   data () {
     return {
+      defaultActive:"",
       menuList:[
         {
           title:'发现音乐',
           path:'/discoverMusic',
         },
         {
-          title:'视频',
+          title:'发现MV',
           path:'/discoverVideo',
         },
 
@@ -39,7 +41,7 @@ export default {
     }
   },
   created () { 
-
+    this.defaultActive = '/'+this.$route.path.split("/")[1];
   },
   computed: { 
 
@@ -48,7 +50,9 @@ export default {
 
   },
   methods: {
-
+     isActive(menuItem){
+      return this.$route.path.includes(menuItem.path) 
+    }
   },
   mounted () { 
 

@@ -70,16 +70,26 @@ const routes = [
         name: 'DiscoverVideo',
         component: () => import ('@/views/discoverVideo'),
         children: [
-            { path: '/', redirect: { name: 'VideoRecommend' } },
+            { path: '/', redirect: { name: 'MvList' } },
             {
-                path: 'videoRecommend',
-                name: 'VideoRecommend',
-                component: () => import ('@/views/discoverVideo/components/VideoRecommend'),
+                path: 'mvList',
+                name: 'MvList',
+                component: () => import ('@/views/discoverVideo/components/MvList'),
             },
             {
                 path:'mvDetail/:id',
                 name:'MvDetail',
                 component:()=>import('@/views/discoverVideo/components/MvDetail')
+            },
+            {
+                path:'allMvList',
+                name:'AllMvList',
+                component:()=>import('@/views/discoverVideo/components/AllMvList')
+            },
+            {
+                path:'mvRankList',
+                name:'MvRankList',
+                component:()=>import('@/views/discoverVideo/components/MvRankList')
             }
         ]
     },
