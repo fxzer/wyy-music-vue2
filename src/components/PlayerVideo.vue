@@ -25,7 +25,7 @@ export default {
     },
     muted: {
       type: Boolean,
-      default: true,//静音且自动播放,没有此属性会报错
+      default: true, //静音且自动播放,没有此属性会报错
     },
     volume: {
       type: [String, Number],
@@ -47,7 +47,11 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    src(val) {
+      if (val) this.play();
+    },
+  },
   components: {},
   methods: {
     play() {
@@ -55,21 +59,23 @@ export default {
       this.player.load(this.src);
       this.player.play(this.volumeVideo);
     },
+    initPlayer() {
+      const _this = this;
+      this.player = this.$video(this.$refs.videoRef, this.options, function () {
+        this.on("volumechange", () => {
+          // 存储音量
+          _this.volumeVideo = this.volume();
+          window.localStorage.volume = this.volume();
+        });
+        this.on("play", () => {
+          this.volume(_this.volumeVideo);
+        });
+      });
+    },
   },
   created() {},
   mounted() {
-    // this.player = this.$video(this.$refs.video);
-    const _this = this;
-    this.player = this.$video(this.$refs.videoRef, this.options, function () {
-      this.on("volumechange", () => {
-        // 存储音量
-        _this.volumeVideo = this.volume();
-        window.localStorage.volume = this.volume();
-      });
-      this.on("play", () => {
-        this.volume(_this.volumeVideo);
-      });
-    });
+    this.initPlayer();
   },
 };
 </script>

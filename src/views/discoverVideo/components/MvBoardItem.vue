@@ -1,5 +1,5 @@
 <template>
-  <div class="mv-board-item">
+  <div class="mv-board-item" @click="toMvDetail(mv.id)">
      <div class="left-index">{{ index+1 }} <i class="iconfont" :class="indexIcon"></i></div>
      <div class="cover-box">
        <img :src="mv.cover"  >
@@ -43,7 +43,9 @@ export default {
 
   },
   methods: {
-
+    toMvDetail(id){
+      this.$router.push({path:`/discoverVideo/mvDetail/${id}`})
+    }
   },
   created () { 
 
@@ -59,6 +61,7 @@ export default {
     align-items: center;
     padding: 10px;
     height: 120px;
+    cursor: pointer;
   .left-index{
     height: 100%;
     width: 40px;

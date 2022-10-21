@@ -1,5 +1,10 @@
 <template>
-  <div class="mv-detail">
+  <div
+    class="mv-detail"
+    v-loading="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-text="载入中..."
+  >
     <div class="left-wrap">
       <h2 class="detail-header" @click="$router.go(-1)">
         <span class="el-icon-arrow-left"></span>MV详情
@@ -30,13 +35,18 @@
         }}</span>
       </p>
       <div class="tags-mv">
-        <span class="tag-item" v-for="tag in mvDetail.videoGroup" :key="tag.id">{{ tag.name }}</span>
+        <span
+          class="tag-item"
+          v-for="tag in mvDetail.videoGroup"
+          :key="tag.id"
+          >{{ tag.name }}</span
+        >
       </div>
     </div>
     <div class="right-wrap">
       <h2 class="detail-header">相关推荐</h2>
       <div class="recomend-list">
-        <MvRcmdItem v-for="mv in recdMvs" :key="mv.id" :mv="mv"/>
+        <MvRcmdItem v-for="mv in recdMvs" :key="mv.id" :mv="mv" />
       </div>
     </div>
   </div>
@@ -48,6 +58,7 @@ export default {
   data() {
     return {
       volume: 0.5,
+      loading: false,
       urlData: {},
       mvDetail: {},
       recdMvs: [],
@@ -71,29 +82,66 @@ export default {
     },
     // 获取推荐mv
     async getRecdMvs() {
-      let { result = {} } = await this.$http(`/personalized/mv`);
-      return result;
+      //随机获取推荐mv
+      let queryStr = this.getRandomQuery()
+      let offset = Math.floor(Math.random() * 100)
+      let { data  } = await this.$http(`/mv/all?offset=${offset}&limit=4&${queryStr}`);
+      return data;
     },
-
+    getRandomQuery(){
+      let querys = []
+      let types = ['area','type','order']
+      let data =  [["内地", "港台", "欧美", "日本", "韩国"],["全部", "官方版", "原声", "现场版", "网易出品"],["上升最快", "最新", "最热"]]
+      function allToStr(str){
+          return str === '全部' ? '' : str
+        }
+      data.forEach((item,index)=>{
+        let random = Math.floor(Math.random()*item.length)
+        querys[index] = allToStr(item[random])
+      })
+      return querys.map((item,index) => {
+        return `${types[index]}=${item}`
+      }).join('&')
+    },
+    initData() {
+      this.loading = true;
+      let id = this.$route.params.id;
+      this.volume = parseFloat(window.localStorage.volume);
+      let promistList = [
+        this.getMvUrl(id),
+        this.getMvDetail(id),
+        this.getRecdMvs(),
+      ];
+      Promise.all(promistList).then((res) => {
+        this.urlData = res[0];
+        this.mvDetail = res[1];
+        this.recdMvs = res[2];
+      });
+      this.loading = false;
+    },
   },
   created() {
-    this.volume = parseFloat(window.localStorage.volume);
-    let id = this.$route.params.id;
-    let promistList = [this.getMvUrl(id), this.getMvDetail(id),this.getRecdMvs()];
-    Promise.all(promistList).then((res) => {
-      this.urlData = res[0];
-      this.mvDetail = res[1];
-      this.recdMvs = res[2];
-    });
+    this.initData();
   },
   mounted() {},
+  watch: {
+    $route: {
+      deep: true,
+      handler(val) {
+        // 还是mv详情页
+        if (val.name === "MvDetail") {
+          this.initData();
+        }
+      },
+    },
+  },
 };
 </script>
 <style scoped lang='scss'>
 .mv-detail {
   display: flex;
   flex-direction: row;
-  padding-bottom:100px;
+  padding-bottom: 100px;
   .left-wrap {
     width: 800px;
     .video-player {
@@ -150,21 +198,21 @@ export default {
         margin-left: 20px;
       }
     }
-    .tags-mv{
+    .tags-mv {
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
-      .tag-item{
-        margin-right:10px;
-        margin-bottom:10px;
+      .tag-item {
+        margin-right: 10px;
+        margin-bottom: 10px;
         height: 20px;
-        padding:0 6px;
+        padding: 0 6px;
         line-height: 20px;
         text-align: center;
-        border-radius:10px;
-        background-color:#f5f5f5;
-        color:#666;
-        font-size:12px;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+        color: #666;
+        font-size: 12px;
       }
     }
   }

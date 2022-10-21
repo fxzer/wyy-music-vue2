@@ -1,7 +1,7 @@
 <template>
-  <div class="recomend-item">
+  <div class="recomend-item" @click="toMvDetail(mv.id)">
     <div class="recomend-cover-box">
-      <img :src="mv.picUrl" alt="" />
+      <img :src="mv.cover"  />
       <div class="paly-info">
         <span class="iconfont icon-paly"></span>
           <span class="play-count">{{mv.playCount |playCountFilter}}</span>
@@ -34,13 +34,17 @@ export default {
 
   },
   watch: { 
-
+  
   },
   components: { 
 
   },
   methods: {
-
+    toMvDetail(id){
+      let vid = this.$route.params.id
+      if(id == vid) return
+      this.$router.replace({name:'MvDetail',params:{id}})
+    }
   },
   created () { 
 

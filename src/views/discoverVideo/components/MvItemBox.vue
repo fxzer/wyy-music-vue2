@@ -1,5 +1,5 @@
 <template>
-  <div  class="mv-item-box">
+  <div  class="mv-item-box" @click="toMvDetail(mv.id)">
     <div class="cover-box">
       <img :src="mv.cover" :alt="mv.name" class="cover-img">
       <span class="play-number">
@@ -26,6 +26,11 @@ export default {
       type:Object
     }
   },
+  methods:{
+    toMvDetail(id){
+      this.$router.push({path:`/discoverVideo/mvDetail/${id}`})
+    }
+  }
 }
 </script>
 <style scoped lang='scss'>

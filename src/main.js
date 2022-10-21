@@ -16,9 +16,6 @@ import vuescroll from 'vuescroll'
 import { registerFilters } from './utils/filters'
 import  registerComponents  from './utils/components'
 //视频播放
-// import VueVideoPlayer from 'vue-video-player';
-// import 'video.js/dist/video-js.css';
-// Vue.use(VueVideoPlayer);
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 Vue.prototype.$video = videojs;
