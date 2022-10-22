@@ -7,9 +7,9 @@
       :width="width"
       :height="height"
       controls
-      :muted="muted"
-      autoplay="autoplay"
     >
+      <!-- :muted="muted"
+      autoplay="autoplay" -->
       <source :src="src" />
     </video>
   </div>
@@ -116,6 +116,9 @@ export default {
   }
   ::v-deep .video-js .vjs-duration.vjs-time-control.vjs-control {
     padding-left: 0 !important;
+  }
+  ::v-deep .video-js  *:not(.vjs-visible-text) > .vjs-control-text {
+    display: none !important;
   }
 }
 </style>

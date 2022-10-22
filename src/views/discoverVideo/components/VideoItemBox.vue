@@ -45,9 +45,15 @@ export default {
       return video?.creator.map(item => item.userName).join('/') || ''
     },
     toVideoDetail(video){
+      if(video.type){
       this.$router.push({
-        path:'/discoverVideo/mvDetail/'+video.vid,
+        path:'/discoverVideo/videoDetail/'+video.vid,
       })
+      }else{
+        this.$router.push({
+          path:'/discoverVideo/mvDetail/'+video.vid,
+        })
+      }
     }
   },
   created () { 

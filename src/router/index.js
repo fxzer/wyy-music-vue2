@@ -20,7 +20,7 @@ const routes = [
         component: DiscoverMusic,
         children: [
             // 二级路由重定向
-            { path: '/', redirect: { name: 'PersonalRecommend' } },
+            { path: '/discoverMusic/personalized', redirect: { name: 'PersonalRecommend' } },
             {
                 path: 'personalized',
                 name: 'PersonalRecommend',
@@ -80,6 +80,11 @@ const routes = [
                 path:'mvDetail/:id',
                 name:'MvDetail',
                 component:()=>import('@/views/discoverVideo/components/MvDetail')
+            },
+            {
+                path:'videoDetail/:id',
+                name:'VideoDetail',
+                component:()=>import('@/views/discoverVideo/components/VideoDetail')
             },
             {
                 path:'allMvList',

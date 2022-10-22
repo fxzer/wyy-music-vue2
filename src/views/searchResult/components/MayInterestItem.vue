@@ -103,6 +103,7 @@ export default {
   }
   .item-info {
     margin-left: 10px;
+    flex:1;
     .item-name {
       font-size: 14px;
       color: #333;

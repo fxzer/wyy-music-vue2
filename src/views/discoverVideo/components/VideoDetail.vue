@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mv-detail"
+    class="video-detail"
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
@@ -19,35 +19,44 @@
       />
       <div class="artist-info">
         <div class="art-name-box">
-          <img :src="mvDetail.cover" class="art-avatar" />
-          <p class="art-name">{{ artStr(mvDetail) }}</p>
+          <img :src="videoDetail.avatarUrl" class="art-avatar" />
+          <p class="art-name">{{ cname }}</p>
         </div>
         <div class="follow-btn">
           <i class="el-icon-plus"></i><span>关注</span>
         </div>
       </div>
 
-      <h2 class="mv-title">{{ mvDetail.name }}</h2>
-      <p class="mv-info">
-        发布: <span class="mv-publish"></span>{{ mvDetail.publishTime }}
+      <h2 class="video-title">{{ videoDetail.title }}</h2>
+      <p class="video-info">
+        发布: <span class="video-publish"></span>{{ videoDetail.publishTime }}
         <span class="paly-count">{{
-          mvDetail.playCount | playCountFilter
+          videoDetail.playTime | playCountFilter
         }}</span>
       </p>
       <div class="tags-mv">
         <span
           class="tag-item"
-          v-for="tag in mvDetail.videoGroup"
+          v-for="tag in videoDetail.videoGroup"
           :key="tag.id"
           >{{ tag.name }}</span
         >
       </div>
-      <CountInfo :countInfo="countInfo"  />
+      <CountInfo :countInfo="countInfo" />
+      <div class="comments-wrap"  >
+        <Comments  :comments="hotComments" />
+        <Comments  :comments="topComments"  title="精彩评论" />
+        <Comments  :comments="comments"   title="最新评论"/>
+      </div>
     </div>
-    <div class="right-wrap"  >
+    <div class="right-wrap">
       <h2 class="detail-header">相关推荐</h2>
       <div class="recomend-list">
-        <MvRcmdItem v-for="mv in recdMvs" :key="mv.id" :mv="mv" />
+        <VideoRcmdItem
+          v-for="video in recdVideos"
+          :key="video.vid"
+          :video="video"
+        />
       </div>
     </div>
   </div>
@@ -55,63 +64,54 @@
 
 <script>
 export default {
-  name: "mvDetail",
+  name: "VedioDetail",
   data() {
     return {
       volume: 0.5,
       loading: false,
       urlData: {},
-      mvDetail: {},
-      recdMvs: [],
+      videoDetail: {},
+      recdVideos: [],
       countInfo: {},
+      topComments: [],
+      hotComments: [],
+      comments: [],
     };
   },
   computed: {
-     
+    cname() {
+      return this.videoDetail?.creator?.nickname || "";
+    },
   },
   components: {
-    MvRcmdItem: () => import("./MvRcmdItem.vue"),
+    VideoRcmdItem: () => import("./VideoRcmdItem.vue"),
     CountInfo: () => import("./CountInfo.vue"),
+    Comments: () => import("./Comments.vue"),
   },
   methods: {
-    artStr(mvDetail) {
-      if (!mvDetail?.artists) return "";
-      return mvDetail?.artists.map((item) => item.name).join("/") || "";
-    },
     async getMvUrl(id) {
-      let { data = {} } = await this.$http(`/mv/url?id=${id}`);
-      return data;
+      let { urls = [] } = await this.$http(`/video/url?id=${id}`);
+      return urls[0];
     },
-    async getMvDetail(id) {
-      let { data = {} } = await this.$http(`/mv/detail?mvid=${id}`);
+    async getVideoDetail(id) {
+      let { data = {} } = await this.$http(`video/detail?id=${id}`);
       return data;
     },
     // 获取推荐mv
-    async getRecdMvs() {
+    async getRecdVideos(id) {
       //随机获取推荐mv
-      let queryStr = this.getRandomQuery()
-      let offset = Math.floor(Math.random() * 10)
-      let { data  } = await this.$http(`/mv/all?offset=${offset}&limit=4&${queryStr}`);
+      let { data } = await this.$http(`/related/allvideo?id=${id}`);
       return data;
     },
     async getInfoCount(id) {
-      let res = await this.$http(`/mv/detail/info?mvid=${id}`);
-      this.countInfo = res
+      return this.$http(`/video/detail/info?vid=${id}`);
     },
-    getRandomQuery(){
-      let querys = []
-      let types = ['area','type','order']
-      let data =  [["内地", "港台", "欧美", "日本", "韩国"],["全部", "官方版", "原声", "现场版", "网易出品"],["上升最快", "最新", "最热"]]
-      function allToStr(str){
-          return str === '全部' ? '' : str
-        }
-      data.forEach((item,index)=>{
-        let random = Math.floor(Math.random()*item.length)
-        querys[index] = allToStr(item[random])
-      })
-      return querys.map((item,index) => {
-        return `${types[index]}=${item}`
-      }).join('&')
+    //获取视频评论
+    async getVideoComment(id) {
+      return  this.$http(
+        `/comment/video?id=${id}`
+      );
+      
     },
     initData() {
       this.loading = true;
@@ -119,14 +119,20 @@ export default {
       this.volume = parseFloat(window.localStorage.volume);
       let promistList = [
         this.getMvUrl(id),
-        this.getMvDetail(id),
-        this.getRecdMvs(),
-        this.getInfoCount(id)
+        this.getVideoDetail(id),
+        this.getRecdVideos(id),
+        this.getInfoCount(id),
+        this.getVideoComment(id),
       ];
       Promise.all(promistList).then((res) => {
         this.urlData = res[0];
-        this.mvDetail = res[1];
-        this.recdMvs = res[2];
+        this.videoDetail = res[1];
+        this.recdVideos = res[2];
+        this.countInfo = res[3];
+        console.log('  res[3]: ',   res );
+        this.topComments =   res[4].topComments;
+        this.hotComments =   res[4].hotComments;
+        this.comments =   res[4].comments;
       });
       this.loading = false;
     },
@@ -140,7 +146,7 @@ export default {
       deep: true,
       handler(val) {
         // 还是mv详情页
-        if (val.name === "MvDetail") {
+        if (val.name === "VideoDetail") {
           this.initData();
         }
       },
@@ -149,7 +155,7 @@ export default {
 };
 </script>
 <style scoped lang='scss'>
-.mv-detail {
+.video-detail {
   display: flex;
   flex-direction: row;
   padding-bottom: 100px;
@@ -192,17 +198,17 @@ export default {
         }
       }
     }
-    .mv-title {
+    .video-title {
       font-size: 20px;
       font-weight: 700;
       margin: 10px 0;
     }
-    .mv-info {
+    .video-info {
       display: flex;
       align-items: center;
       font-size: 12px;
       color: #bbb;
-      .mv-publish {
+      .video-publish {
         margin-left: 20px;
       }
       .paly-count {
@@ -226,7 +232,6 @@ export default {
         font-size: 12px;
       }
     }
-   
   }
   .right-wrap {
     width: 400px;
@@ -247,6 +252,9 @@ export default {
       font-size: 18px;
       font-weight: 800;
     }
+  }
+  .comments-wrap{
+    margin-top: 20px;
   }
 }
 .video-player {
