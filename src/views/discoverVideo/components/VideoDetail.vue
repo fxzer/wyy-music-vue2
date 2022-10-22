@@ -158,7 +158,6 @@ export default {
 .video-detail {
   display: flex;
   flex-direction: row;
-  padding-bottom: 100px;
   .left-wrap {
     width: 800px;
     .video-player {

@@ -51,11 +51,13 @@ export default {
   display: flex;
   align-items: center;
   padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
   img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     align-self:flex-start;
+    border:1px solid #f5f5f5;
   }
   .info {
     flex: 1;

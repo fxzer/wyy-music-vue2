@@ -4,8 +4,7 @@
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
-    style="padding-bottom:100px"
-  >
+  > 
     <h2 class="rank-title">MV排行榜</h2>
     <div class="mv-header-wrap">
       <div class="mv-header-left">最近更新:今天</div>

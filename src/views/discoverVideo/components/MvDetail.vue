@@ -43,6 +43,11 @@
         >
       </div>
       <CountInfo :countInfo="countInfo"  />
+      <div class="comments-wrap"  >
+        <Comments  :comments="hotComments" title="精彩评论"/>
+        <Comments  :comments="comments" title="最新评论"/>
+        <Pagination v-bind="pageOption" @current-change="handleCurrentChange" />
+      </div>
     </div>
     <div class="right-wrap"  >
       <h2 class="detail-header">相关推荐</h2>
@@ -54,6 +59,7 @@
 </template>
 
 <script>
+import page from '@/mixins/page'
 export default {
   name: "mvDetail",
   data() {
@@ -64,14 +70,18 @@ export default {
       mvDetail: {},
       recdMvs: [],
       countInfo: {},
+      comments:[],
+      hotComments:[],
     };
   },
+  mixins: [ page],
   computed: {
      
   },
   components: {
     MvRcmdItem: () => import("./MvRcmdItem.vue"),
     CountInfo: () => import("./CountInfo.vue"),
+    Comments: () => import("./Comments.vue"),
   },
   methods: {
     artStr(mvDetail) {
@@ -95,8 +105,18 @@ export default {
       return data;
     },
     async getInfoCount(id) {
-      let res = await this.$http(`/mv/detail/info?mvid=${id}`);
-      this.countInfo = res
+      return this.$http(`/mv/detail/info?mvid=${id}`);
+    },
+    //热门评论
+    async gethotComments(id){
+      let res =  await this.$http(`/comment/hot?type=1&id=${id}`)
+      this.hotComments = res.hotComments;
+    },
+    //获取评论
+    async getComments(id,pageNo=1){
+      let { data } =  await this.$http(`/comment/new?type=1&sortType=3&id=${id}&pageNo=${pageNo}`)
+      this.comments = data.comments;
+      this.pageOption.total = data.totalCount;
     },
     getRandomQuery(){
       let querys = []
@@ -121,14 +141,21 @@ export default {
         this.getMvUrl(id),
         this.getMvDetail(id),
         this.getRecdMvs(),
-        this.getInfoCount(id)
+        this.getInfoCount(id),
+        this.gethotComments(id),
+        this.getComments(id)
       ];
       Promise.all(promistList).then((res) => {
         this.urlData = res[0];
         this.mvDetail = res[1];
         this.recdMvs = res[2];
+        this.countInfo = res[3];
       });
       this.loading = false;
+    },
+   handleCurrentChange(current) {
+      this.currentChange(current);
+      this.getComments(this.$route.params.id,current);
     },
   },
   created() {
@@ -152,7 +179,6 @@ export default {
 .mv-detail {
   display: flex;
   flex-direction: row;
-  padding-bottom: 100px;
   .left-wrap {
     width: 800px;
     .video-player {

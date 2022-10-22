@@ -35,7 +35,7 @@ export default {
 </script>
 <style scoped lang='scss'>
 .wyy-pagination {
-  margin: 20px 0;
+  padding: 20px 0;
   font-weight: 400;
   ::v-deep .el-pagination {
     text-align: center;

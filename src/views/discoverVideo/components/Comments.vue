@@ -11,7 +11,7 @@ export default {
   props: {
     title:{
       type:String,
-      default:'最热评论'
+      default:'热门评论'
     },
     comments:{
       type:Array,
@@ -39,7 +39,7 @@ export default {
 
   },
   mounted () { 
-      console.log('comments: ', this.comments);
+      
   },
 }
 </script>
@@ -47,8 +47,8 @@ export default {
 .comment-type{
   margin:30px 0;
   .comment-title{
-  font-size: 15px;
-  color: #333;
+  font-size: 16px;  
+  color: #000;
   font-weight: 700;
   margin-bottom: 10px;
 }

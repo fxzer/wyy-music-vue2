@@ -3,7 +3,7 @@
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
-    style="padding:10px 0 100px;"
+    style="padding:10px 0 0px;"
   >
   <div class="lyrics-result">
       <el-table :data="songList"

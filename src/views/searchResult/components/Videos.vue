@@ -3,7 +3,7 @@
     v-loading="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-text="载入中..."
-    style="padding-bottom: 100px;"
+    style="padding:10px 0 0px;"
   >
   <div  class="videos-result video-wrap">
     <VideoItemBox v-for="video in videoList" :key="video.vid" :video="video" class="video-item" />
