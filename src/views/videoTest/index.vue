@@ -28,7 +28,7 @@ export default {
   methods: {
   },  
   created () { 
-    this.volume = parseFloat(window.localStorage.volume);
+    this.volume = parseFloat(window.localStorage.videoVolume) || 0.5;
   },
   mounted () { 
   },

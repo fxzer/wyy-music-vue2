@@ -10,7 +10,6 @@
       :data="songList"
       :row-style="rowStyle"
       :cell-style="cellStyle"
-      :header-cell-style="headerRowStyle"
       highlight-current-row
     >
       <el-table-column type="index"></el-table-column>

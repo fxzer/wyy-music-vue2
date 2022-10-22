@@ -12,7 +12,7 @@ Vue.use(VueRouter)
 
 
 const routes = [
-    { path: '/', redirect: '/discoverMusic/LatestMusic' },
+    { path: '/', redirect: '/discoverMusic/latestMusic' },
     // { path: '/', redirect: '/videoTest' },
     {
         path: '/discoverMusic',

@@ -20,6 +20,12 @@
           {{ areaName }}
         </div>
       </div>
+      <div class="opts-wrap">
+        <div class="play-all" @click="palyAll">
+          <i class="iconfont icon-playfill"></i>
+          <span>播放全部</span>
+        </div>
+      </div>
     </div>
     <!-- 新歌速递 -->
     <el-table
@@ -32,6 +38,7 @@
       :row-style="rowStyle"
       :cell-style="cellStyle"
       @row-dblclick="playSong"
+      @row-contextmenu="showSongMenu"
     >
       <el-table-column >
         <template slot-scope='{row,$index:index}'>
@@ -66,11 +73,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <ContextMenu :visible.sync="contextMenuVisible"  :left="left" :top="top"/>
   </div>
 </template>
 
 <script>
-import { mapState,mapActions } from 'vuex';
+import { mapState,mapActions, mapMutations } from 'vuex';
 export default {
   name: "NewSongList",
   props: {},
@@ -85,7 +93,11 @@ export default {
         日本: 8,
         韩国: 16,
       },
+      top: 0,
+      left: 0,
       newSongList: [],
+      contextMenuVisible:false,
+
     };
   },
   computed: {
@@ -96,10 +108,34 @@ export default {
     SongCover: () => import("./SongCover.vue"),
   },
   methods: {
+    ...mapMutations('player', ['addSong']),
     ...mapActions('player', ['getSongUrl']),
     playSong(row){
-      console.log('row: ', row);
-      this.getSongUrl(row.id)
+      this.debounce(this.getSongUrl(row.id))
+    },
+   debounce(fn, delay) {
+      const delays = delay || 300;
+      let timer;
+      return function() {
+        const th = this;
+        const args = arguments;
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+          timer = null;
+          fn.apply(th, args);
+        }, delays);
+      };
+    },
+    showSongMenu(row, column, event) {
+      //阻止浏览器默认右键事件
+      //获取鼠标点击的位置
+      this.left = event.clientX;
+      this.top = event.clientY;
+      event.preventDefault();
+      this.contextMenuVisible = true;
+      console.log("row, column, event", row, column, event);
     },
     changeArea(type) {
       let { query } = this.$route;
@@ -171,6 +207,12 @@ export default {
         return baseStyle;
       }
     },
+    palyAll(){
+      this.addSong(this.newSongList)
+      this.getSongUrl(this.newSongList[0].id,this.newSongList[0])
+    }
+    
+
   },
   created() {
     let { type = 0 } = this.$route.query;
@@ -203,6 +245,23 @@ export default {
         &.active {
           color: #333;
           font-weight: 700;
+        }
+      }
+    }
+    .opts-wrap{
+      .play-all{
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 26px;
+        padding:0 10px;
+        border-radius: 13px;
+        background: #EC4141;
+        color: #fff;
+        cursor: pointer;
+        &:hover{
+          background: #da3d3d;
         }
       }
     }

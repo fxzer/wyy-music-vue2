@@ -86,3 +86,9 @@
   .tip-list .tip-name .highlight {
     color: #409EFF ;
   }
+  // 播放列表
+  .el-drawer__wrapper{
+    position: fixed !important;
+    top: 60px !important;
+    bottom: 80px !important;
+  }

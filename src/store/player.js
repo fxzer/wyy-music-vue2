@@ -8,7 +8,7 @@
  * 3.播放器组件根据音乐信息,播放音乐
  */
 import http from '../network/request'
-let initVolume = parseInt(localStorage.getItem('volume')) || 60
+let initVolume = parseInt(localStorage.getItem('audioVolume')) || 60
 export default {
   namespaced: true,
   state: {
@@ -51,14 +51,27 @@ export default {
     init(state,audioDom){
       state.audio = audioDom
       state.audio.volume = state.volume / 100;
-      console.log(' state.audio: ',  state.audio);
+      state.playing = false
+      state.audio.loop = state.loopType === 1 ? true : false;
+    },
+    setVolume(state, volume) {
+      state.volume = volume;
+      state.audio.volume = volume / 100;
+      localStorage.setItem('audioVolume', volume);
     },
     setAudioTime(state,currentTime){
       state.audio.currentTime =  currentTime ;
     },
-    setPalyState(state,playing){
-      state.playing = playing
-      state.audio.pause()
+    setPalyState(state,playState){
+      state.playing = playState
+      if(playState){
+        if(!state.audio.src){
+          state.audio.src = state.url
+        }
+        state.audio.play()
+      }else{
+        state.audio.pause()
+      }
     },
     setLoopType(state,type){
       state.loopType = type
@@ -93,17 +106,41 @@ export default {
       if(!state.playing){
         state.playing = true
         state.audio.play()
-    }
-  }
+      }
+    },
+    // 添加歌曲到播放列表
+    addSong(state,songs) {
+      if(Array.isArray(songs)){
+        state.playList.unshift(...songs)
+      }else{
+        let isExist = state.playList.some(item=>item.id === songs.id) 
+        if(!isExist){//不存在
+          state.playList.unshift(songs)
+        }
+      }
+      let first = state.playList[0]
+      if(state.id === first.id){
+        state.playing = true
+        state.audio.play()
+      } 
   },
+  clearPlayList(state){
+    state.playList = []
+    state.audio.pause()
+    state.playing = false
+  }
+},
   actions: {
     //根据id获取音乐Url
-    async getSongUrl({commit,dispatch},id){
+    async getSongUrl({commit,dispatch},id,songDetail= {}){
       const { data } = await http(`/song/url?id=${id}`)
-      const songDetail = await  http(`/song/detail?ids=${id}`)
+      if(!Object.keys(songDetail).length){
+        songDetail = await  http(`/song/detail?ids=${id}`)
+      }
       commit('setSongData',data)
       commit('setSongDetail',songDetail)
       commit('startPlay')
+      commit('addSong',songDetail.songs[0])
     },
   },
 }

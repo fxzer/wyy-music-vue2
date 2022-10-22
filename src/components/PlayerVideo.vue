@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: "PlayerVideo",
   props: {
@@ -54,6 +55,7 @@ export default {
   },
   components: {},
   methods: {
+     ...mapMutations('player',['setPalyState']),
     play() {
       this.player.src({ src: this.src });
       this.player.load(this.src);
@@ -65,10 +67,12 @@ export default {
         this.on("volumechange", () => {
           // 存储音量
           _this.volumeVideo = this.volume();
-          window.localStorage.volume = this.volume();
+          window.localStorage.videoVolume = this.volume();
         });
         this.on("play", () => {
+          console.log('play: ',  );
           this.volume(_this.volumeVideo);
+          _this.setPalyState(false)
         });
       });
     },

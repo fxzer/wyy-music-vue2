@@ -9,10 +9,12 @@ import Panel from '@/components/Panel.vue'
 import PlayBtn from '@/components/PlayBtn.vue'
 import Pagination from '@/components/Pagination.vue'
 import PlayerVideo from '@/components/PlayerVideo.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 export default (Vue) => {
   Vue.component(Mtag.name, Mtag)
   Vue.component(Panel.name, Panel)
   Vue.component(PlayBtn.name, PlayBtn)
   Vue.component(Pagination.name, Pagination)
   Vue.component(PlayerVideo.name, PlayerVideo)
+  Vue.component(ContextMenu.name, ContextMenu)
 }

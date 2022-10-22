@@ -116,7 +116,7 @@ export default {
     initData() {
       this.loading = true;
       let id = this.$route.params.id;
-      this.volume = parseFloat(window.localStorage.volume);
+      this.volume = parseFloat(window.localStorage.videoVolume) || 0.5;
       let promistList = [
         this.getMvUrl(id),
         this.getVideoDetail(id),
