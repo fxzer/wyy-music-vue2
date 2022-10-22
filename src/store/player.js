@@ -12,14 +12,17 @@ let initVolume = parseInt(localStorage.getItem('volume')) || 60
 export default {
   namespaced: true,
   state: {
-    audio:new Audio(),//创建一个audio对象
+    audio:null,// audio对象
+    volume:  initVolume, //音量
+    id: 0, //当前播放音乐的id
+    url: '', //当前播放歌曲url
+    duration: 0, //总时长
+
     loopType:0,//0:列表循环 1:单曲循环 2:随机播放
     playing: false, //是否正在播放
     playList: [], //播放列表
-    volume:  initVolume, //音量
     // currentTime: 0, //当前播放时间
-    duration: 0, //总时长
-    id: 0, //当前播放音乐的id
+
     song:{
       id:'',
       name:'',
@@ -29,7 +32,7 @@ export default {
     },//当前播放的歌曲
     songUrlData:{},//当前播放的歌曲的数据
     songDetail:{},//当前播放的歌曲的详情
-    url: '', //当前播放歌曲url
+   
   },
   getters:{
     currentTime(state){ //当前播放时间
@@ -41,11 +44,14 @@ export default {
     totalDt(state){
       if(state.songDetail.songs) return state.songDetail.songs[0].dt
       return 0
-    }
+    },
+    
   },
   mutations: {
-    init(state){
+    init(state,audioDom){
+      state.audio = audioDom
       state.audio.volume = state.volume / 100;
+      console.log(' state.audio: ',  state.audio);
     },
     setAudioTime(state,currentTime){
       state.audio.currentTime =  currentTime ;
@@ -53,6 +59,14 @@ export default {
     setPalyState(state,playing){
       state.playing = playing
       state.audio.pause()
+    },
+    setLoopType(state,type){
+      state.loopType = type
+      if(type === 1){
+        state.audio.loop = true
+      }else{
+        state.audio.loop = false
+      }
     },
     play(state){
       
@@ -75,11 +89,12 @@ export default {
       let {id, name, ar, al:{picUrl} ,dt,alia} = data.songs[0]
       state.song = {id,name,picUrl,ar,dt ,alia}
     },
-    initPaly(state){
-      // if(!state.playing){
+    startPlay(state){
+      if(!state.playing){
         state.playing = true
         state.audio.play()
     }
+  }
   },
   actions: {
     //根据id获取音乐Url
@@ -88,7 +103,7 @@ export default {
       const songDetail = await  http(`/song/detail?ids=${id}`)
       commit('setSongData',data)
       commit('setSongDetail',songDetail)
-      commit('initPaly')
+      commit('startPlay')
     },
   },
 }

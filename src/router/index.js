@@ -12,7 +12,7 @@ Vue.use(VueRouter)
 
 
 const routes = [
-    { path: '/', redirect: '/discoverMusic/personalized' },
+    { path: '/', redirect: '/discoverMusic/LatestMusic' },
     // { path: '/', redirect: '/videoTest' },
     {
         path: '/discoverMusic',
@@ -20,7 +20,7 @@ const routes = [
         component: DiscoverMusic,
         children: [
             // 二级路由重定向
-            { path: '/discoverMusic/personalized', redirect: { name: 'PersonalRecommend' } },
+            { path: '/', redirect: { name: 'PersonalRecommend' } },
             {
                 path: 'personalized',
                 name: 'PersonalRecommend',

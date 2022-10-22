@@ -80,21 +80,27 @@ export default {
       this.searchType = searchType;
     },
     //搜索
-    async defaultSearch() {
-      let { kw } = this;
-      let {
-        result: { songs } 
-      } = await this.$http(`/cloudsearch?keywords=${kw}&limit=100`);
-      this.addOne(kw);
-      this.kwSearchResult = songs;
-    },
+    // async defaultSearch() {
+    //   let { kw } = this;
+    //   let {
+    //     result: { songs } 
+    //   } = await this.$http(`/cloudsearch?keywords=${kw}&limit=100`);
+    //   this.addOne(kw);
+    //   this.kwSearchResult = songs;
+    // },
 
     handleSearch() {
-      if (this.kw) {
-        this.defaultSearch();
-      } else {
-        this.handlePreIconClick();
+      this.setSearchPanel(false)
+      if (!this.kw) {
+        this.setKw(this.placeholder)
       }
+       this.$router.push({
+        path:'/searchResult/songs' ,
+        query: {
+          kw: this.kw,
+          type: 1,
+        },
+      });
     },
     //监听搜索框前置图标点击事件
     initPreIconEvent() {
@@ -103,8 +109,8 @@ export default {
     },
     handlePreIconClick() {
       this.setKw(this.placeholder)
-      this.defaultSearch();
       //TODO:防抖或节流
+      this.handleSearch()
     },
     handleFocus() {
       this.setSearchPanel(true)

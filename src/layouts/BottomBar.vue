@@ -6,6 +6,7 @@
 -->
 <template>
   <div class='bottom-bar'>
+    <audio ref='audioRef'  preload='auto' @timeupdate='timeUpdate' @ended='ended'  style="position:absolute;bottom:10px;right:10px;" controls></audio>
     <div class="song-box">
       <img :src="picSrc" :alt="song.name" class="song-img"  >
       <div class="song-info">
@@ -22,9 +23,9 @@
     </div>
     <div class="play-actions">
       <div class="top-control">
-        <span class="iconfont icon-shunxubofang"></span>
-        <!-- <span class="iconfont icon-danquxunhuan"></span>
-        <span class="iconfont icon-suiji"></span> -->
+        <span class="iconfont icon-shunxubofang" v-if="loopType===0" @click="changeLoopType(1)"></span>
+        <span class="iconfont icon-danquxunhuan" v-else-if="loopType ===1" @click="changeLoopType(2)"></span>
+        <span class="iconfont icon-suiji" v-else @click="changeLoopType(0)"></span>
         <span class="iconfont icon-shangyi"></span>
         <span class="iconfont icon-pause" v-if="playing" @click.stop="setPalyState(false)"></span>
         <span class="iconfont icon-playfill" v-else @click.stop="setPalyState(true)"></span>
@@ -58,15 +59,25 @@ export default {
 
   },
   methods: {
-    ...mapMutations('player',['setAudioTime','setPalyState']),
+    ...mapMutations('player',['init','setAudioTime','setPalyState','setLoopType']),
     // 拖动进度条
     handleDrag(val) {
       this.setAudioTime(val)
       this.currentTime = val
     },
+    ended(a){
+      console.log('ended-a: ', a);
+      this.setPalyState(false)
+    },
+    timeUpdate(c){
+
+    },
+    changeLoopType(type){
+      this.setLoopType(type)
+    }
   },
     computed: {
-    ...mapState('player',['audio','playing','song']),
+    ...mapState('player',['audio','playing','song','loopType']),
     ...mapGetters('player',['totalDt','isPlaying']),
     //时长
     duration() {
@@ -80,10 +91,9 @@ export default {
     }
   },
   mounted () { 
-      //   this.audio.addEventListener('ended', () =>{
-      //      //监听到播放结束后，在此处可调用自己的接口
-      //      this.setPalyState(false)
-      // }, false);
+    this.init(this.$refs.audioRef)//初始化audio
+  },
+  created(){
   },
   watch: { 
     isPlaying(val){

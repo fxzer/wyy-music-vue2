@@ -31,11 +31,19 @@
       element-loading-text="载入中..."
       :row-style="rowStyle"
       :cell-style="cellStyle"
+      @row-dblclick="playSong"
     >
-      <el-table-column type="index"></el-table-column>
+      <el-table-column >
+        <template slot-scope='{row,$index:index}'>
+          <p class="index-box">
+            <span v-if="row.id == id" class="iconfont" :class="playing ? 'icon-laba':'icon-zero-volume'"></span>
+            <span v-else > {{index  < 10 ? '0'+parseInt(1+index) :parseInt(1+index)}} </span>
+          </p>
+        </template>
+      </el-table-column>
       <el-table-column min-width="340px">
         <template slot-scope="{ row }">
-          <SongCover :song="row" />
+          <SongCover :song="row"  @click.native="playSong(row)"/>
         </template>
       </el-table-column>
       <el-table-column min-width="200px">
@@ -62,6 +70,7 @@
 </template>
 
 <script>
+import { mapState,mapActions } from 'vuex';
 export default {
   name: "NewSongList",
   props: {},
@@ -79,12 +88,19 @@ export default {
       newSongList: [],
     };
   },
-  computed: {},
+  computed: {
+    ...mapState('player', ['id','playing']),
+  },
   watch: {},
   components: {
     SongCover: () => import("./SongCover.vue"),
   },
   methods: {
+    ...mapActions('player', ['getSongUrl']),
+    playSong(row){
+      console.log('row: ', row);
+      this.getSongUrl(row.id)
+    },
     changeArea(type) {
       let { query } = this.$route;
       this.$router.push({ query: Object.assign({}, query, { type }) });
@@ -95,7 +111,7 @@ export default {
       this.loading = true;
       let { activeArea } = this
       let { data } = await this.$http("/top/song?type=" + activeArea);
-      this.newSongList = data;
+      this.newSongList = data.slice(0, 10);
       this.loading = false;
     },
     // 行样式
@@ -131,15 +147,13 @@ export default {
         } else if (rowIndex == 1) {
           return {
             ...bs,
-            color: "#EC4141",
-            opacity: ".9",
+            color: "#F76560",
           };
         } else if (rowIndex == 2) {
           return {
             ...bs,
-            color: "#EC4141",
-            opacity: ".7",
-          };
+            color: "#F98981",
+           };
         } else {
           return {
             ...bs,
@@ -195,6 +209,10 @@ export default {
   }
   .el-table .song-name {
     color: #888;
+  }
+  .index-box .iconfont{
+    color: #EC4141;
+    font-size: 18px;
   }
 }
 </style>

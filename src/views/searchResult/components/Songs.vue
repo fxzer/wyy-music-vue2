@@ -100,14 +100,12 @@ export default {
         } else if (rowIndex == 1) {
           return {
             ...bs,
-            color: "#EC4141",
-            opacity: ".9",
+            color: "#F76560",
           };
         } else if (rowIndex == 2) {
           return {
             ...bs,
-            color: "#EC4141",
-            opacity: ".7",
+            color: "#F98981",
           };
         } else {
           return {

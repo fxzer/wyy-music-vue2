@@ -55,6 +55,7 @@ export default {
   display: flex;
   align-items:center;
   height:72px;
+  cursor: pointer;
   .song-cover{
     width: 72px;
     height: 72px;
