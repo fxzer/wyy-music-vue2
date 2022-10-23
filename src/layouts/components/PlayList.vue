@@ -7,11 +7,12 @@
     :before-close="handleClose"
     :modal="false"
     size="540px"
+    class="playlist-drawer" 
     :with-header="false">
     <h2 class="title">当前播放</h2>
     <div class="play-list-des">
-       <span class="list-count">总99首</span>
-       <el-button type="text"   @click="clearPlayList">清空列表</el-button>
+       <span class="list-count">总{{playList.length}}首</span>
+       <el-button type="text" :disabled="!playList.length"  @click="clearPlayList">清空列表</el-button>
     </div>
     <el-table
       :data="playList"
@@ -166,7 +167,7 @@ export default {
   }
   .play-state{
     display: inline-block;
-    width: 16px;
+    min-width: 16px;
     height: 20px;
     border-radius: 50%;
     margin: 0 2px;

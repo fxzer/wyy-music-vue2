@@ -148,7 +148,7 @@ export default {
   },
   mounted() {
     this.getBannerData();
-    // this.getAlgList() 
+    this.getAlgList() 
     // this.getPersonalizedMv() 
     // this.getPrivateContent()
     // this.getNewSong()

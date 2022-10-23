@@ -78,15 +78,23 @@
       </div>
     </div>
     <div class="tools-box">
-      <!-- <el-popover
-        width="80"
-        trigger="click"
-        placement="top" > -->
-      <p class="iconfont icon-laba" slot="reference" @click="volumeClick"></p>
-      <div class="volume-box">
-        <el-slider v-model="currentVolume" vertical height="100px"> </el-slider>
+      <div
+        class="volume-wrap"
+        :class="showVolume ? 'show-volume-box' : ''"
+        @mouseenter="showVolume = true"
+        @mouseleave="showVolume = false"
+      >
+        <p class="iconfont" :class="muted ? 'icon-jingyin':'icon-laba'" slot="reference" @click="volumeClick"></p>
+        <div class="volume-box">
+          <el-slider
+            v-model="currentVolume"
+            vertical
+            height="100px"
+            :show-tooltip="false"
+          >
+          </el-slider>
+        </div>
       </div>
-      <!-- </el-popover> -->
       <p class="iconfont icon-unorderedlist" @click="openPlayList"></p>
     </div>
     <PlayList :visible="playListVisible" />
@@ -104,6 +112,7 @@ export default {
       currentTime: 0,
       interval: null,
       currentVolume: volume,
+      showVolume: false,
       playListVisible: false,
       defaultPicUrl: require("../assets/images/default_music_pic.png"),
     };
@@ -111,44 +120,8 @@ export default {
   components: {
     PlayList: () => import("./components/PlayList.vue"),
   },
-  methods: {
-    ...mapMutations("player", [
-      "init",
-      "setAudioTime",
-      "setPalyState",
-      "setLoopType",
-      "setVolume",
-    ]),
-    // 拖动进度条
-    handleDrag(val) {
-      this.setAudioTime(val);
-      this.currentTime = val;
-    },
-    ended(a) {
-      console.log("ended-a: ", a);
-      this.setPalyState(false);
-    },
-    timeUpdate(c) {},
-    changeLoopType(type) {
-      this.setLoopType(type);
-    },
-    openPlayList() {
-      this.playListVisible = !this.playListVisible;
-    },
-    //
-    volumeClick() {
-      if (this.volume === 0) {
-        //取消静音
-        let volume = parseInt(localStorage.getItem("audioVolume"));
-        this.setVolume(volume);
-      } else {
-        //静音
-        this.setVolume(0);
-      }
-    },
-  },
   computed: {
-    ...mapState("player", ["audio", "playing", "song", "loopType", "volume"]),
+    ...mapState("player", ["id","audio", "playing", "song","muted", "loopType", "volume","playList"]),
     ...mapGetters("player", ["totalDt", "isPlaying"]),
     //时长
     duration() {
@@ -161,8 +134,58 @@ export default {
       return this.song.ar || [{ id: 999999, name: "FXJ" }];
     },
   },
+  methods: {
+    ...mapMutations("player", [
+      "init",
+      "setAudioTime",
+      "setPalyState",
+      "setLoopType",
+      "setVolume",
+      "setMuted",
+      "setSongData",
+      "setSongDetail"
+    ]),
+    // 拖动进度条
+    handleDrag(val) {
+      this.setAudioTime(val);
+      this.currentTime = val;
+    },
+    ended(a) {
+      this.setPalyState(false);
+    },
+    timeUpdate(c) {},
+    changeLoopType(type) {
+      this.setLoopType(type);
+    },
+    openPlayList() {
+      this.playListVisible = !this.playListVisible;
+    },
+    //
+    volumeClick() {//静音
+      if (this.muted) {
+         this.setMuted(false)
+      } else {//取消静音
+        this.setMuted(true)
+      }
+    },
+   async getSongUrl(id){
+      let { data } = await this.$http(`/song/url?id=${id}`)
+      return data
+    }
+  },
+ 
   mounted() {
     this.init(this.$refs.audioRef); //初始化audio
+    let bottomBar = document.querySelector(".bottom-bar");
+    document.addEventListener("click", ($event) => {
+      let isbottomBar = bottomBar?.contains($event.target);
+      
+      let playListWrap = document.querySelector(".playlist-drawer .el-drawer.rtl");
+      let isListWrap = playListWrap?.contains($event.target);
+      if (!isListWrap && !isbottomBar && this.playListVisible) {
+        this.playListVisible = false;
+      }
+    });
   },
   created() {},
   watch: {
@@ -178,6 +201,26 @@ export default {
     currentVolume(val) {
       this.setVolume(val);
     },
+    playList:{
+      handler(list){
+        console.log('list: ', list);
+        if(!list.length){
+          this.setPalyState(false)  
+          return 
+        }
+       let firstSong = list[0]
+       if (this.id === firstSong.id) {//第一首歌为上一次暂停播放的歌曲
+          this.setPalyState(true)
+        }else{
+          this.setSongDetail(firstSong)
+          this.getSongUrl(firstSong.id).then(data=>{
+            this.setSongData(data)
+
+          })
+        }
+      },
+      deep:true,
+    }
   },
 };
 </script>
@@ -192,7 +235,7 @@ export default {
   display: flex;
   background-color: #fff;
   justify-content: space-between;
-  z-index: 999;
+  z-index: 99999;
   .song-box {
     padding: 10px;
     width: 364px;
@@ -322,12 +365,12 @@ export default {
       height: 120px;
       padding-top: 10px;
       position: absolute;
-      box-shadow: 0 0 6px #ddd;
+      display: none;
+      filter: drop-shadow(0 0 6px #ddd);
       border-radius: 6px;
       right: 80px;
       bottom: 60px;
       background-color: #fff;
-      z-index: 9999;
       ::v-deep .el-slider.is-vertical .el-slider__runway {
         margin: 0 12px !important;
       }
@@ -343,38 +386,22 @@ export default {
     }
     //倒三角
     .volume-box::after {
-      content: '';
+      content: "";
       position: absolute;
       border-width: 10px;
-      right: 50%;
-      bottom: 0px;
+      right: 5px;
+      bottom: -17px;
       width: 0;
       height: 0;
-      transform: translateX(-50%);
       border-bottom: 10px solid transparent;
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
       border-top: 10px solid #fff;
-      /* .bottom-bar .tools-box .volume-box[data-v-e14cbb8e]::after {
-    content: "";
-    position: absolute;
-    /* border-width: 8px; */
-    width: 14px;
-    height: 14px;
-    right: 7px;
-    bottom: -6px;
-    transform: rotate(45deg);
-    /* width: 0; */
-    z-index: -5;
-    box-shadow: 0 0 3px #ccc;
-    /* height: 0; */
-    /* transform: translateX(-50%); */
-    /* border-bottom: 10px solid transparent; */
-    /* border-left: 10px solid transparent; */
-    /* border-right: 10px solid transparent; */
-    /* border-top: 10px solid #fff; */
-} */
     }
+  }
+  .show-volume-box .volume-box {
+    display: block;
+    cursor: pointer;
   }
 }
 </style>

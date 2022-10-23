@@ -229,11 +229,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+      margin-bottom: 10px;
     //国家地区
     .area-type-wrap {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
       .area-type-item {
         color: #666;
         font-size: 14px;

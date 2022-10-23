@@ -6,7 +6,7 @@
 -->
 
 <template>
-  <div class="song-list-box">
+  <div class="song-list-box"  @click="toSongListDetail(algInfo.id)">
     <div class="img-box"  :class="ishover ? 'active':''"
     @mouseenter="ishover=true"  @mouseleave="ishover=false" >
       <img :src="algInfo.picUrl"   /> 
@@ -16,7 +16,7 @@
           {{algInfo.playCount | playCountFilter}}</span>
       </span> 
       <span class="pg-count" v-if="algInfo.programCount">声音{{algInfo.programCount}}</span>
-      <PlayBtn  :position="position"  :size="size" :bgFilter="true"/>
+      <PlayBtn  :position="position"  @click.native.stop="addSongToList(algInfo.id)" :size="size" :bgFilter="true"/>
       <!-- 歌单创建者 -->
       <p class="creator" v-if="cname">
          <i class="iconfont icon-user"></i>
@@ -30,6 +30,8 @@
   </div>
 </template>
 <script>
+import page from '@/mixins/page'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: "SongListBox",
   props: {
@@ -50,6 +52,7 @@ export default {
       default: false,
     },
   },
+  mixins: [page],
   data() {
     return {
       ishover: false,
@@ -57,13 +60,33 @@ export default {
   },
   created() {},
   computed: {
+    ...mapState('player',['songList']),
     cname(){
       return this.algInfo?.creator?.nickname || ''
     }
   },
   components: {},
-  methods: {},
-  mounted() {},
+  methods: {
+    ...mapMutations('player',['addSong','setCurSLId','setCurSL','setCurSlDetail']),
+    addSongToList(id) {
+      this.getSongListDetail(id).then((songs) => {
+        this.setCurSLId(id)
+        this.setCurSL(songs)
+        this.addSong(songs)
+      });
+    },
+    //获取歌单所有歌曲
+    async getSongListDetail(id) {
+      const { songs } = await this.$http(`/playlist/track/all?id=${id}&limit=15&offset=${this.offset}`);
+      return songs 
+    },
+    toSongListDetail(id){
+      this.$router.push({path: `/discoverMusic/songListDetail/${id}` })
+      this.setCurSlDetail(this.algInfo)
+    }
+  },
+  mounted() {
+  },
   watch: {},
 };
 </script>

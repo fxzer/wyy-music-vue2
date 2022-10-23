@@ -62,6 +62,12 @@ const routes = [
                 component: () =>
                     import ('@/views/songList/components/HighQuality'),
             },
+            {
+                path: 'songListDetail/:id',
+                name: 'SongListDetail',
+                component: () =>
+                    import ('@/views/personalized/components/SongListDetail'),
+            },
 
         ]
     },
