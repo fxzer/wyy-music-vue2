@@ -65,15 +65,7 @@
 </template>
 
 <script>
-// import  topList from '@/mock/toplist'
-// import  top5 from '@/mock/top5'
-// let { list ,artistToplist } = topList
-// test
-// let officialBoards = list.slice(0,4).map(item =>{
-//   item.songsTop5 = top5.songs
-//   return item
-// } )
-import { mapActions } from 'vuex'
+import playSong from '@/mixins/playSong'
 export default {
   name: "LeaderBoard",
   props: {},
@@ -87,33 +79,13 @@ export default {
       songsTop5List: [], //前五歌曲
     };
   },
-
+  mixins: [ playSong],
   computed: {},
   components: {
     SongListBox: () =>
       import("@/views/personalized/components/SongListBox.vue"),
   },
   methods: {
-    ...mapActions("player", ["getSongUrl"]),
-      playSong(row) {
-      this.debounce(this.getSongUrl(row.id));
-    },
-    debounce(fn, delay) {
-      const delays = delay || 300;
-      let timer;
-      return function () {
-        const th = this;
-        const args = arguments;
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(function () {
-          timer = null;
-          fn.apply(th, args);
-        }, delays);
-      };
-    },
-    
     rowStyle({ row, rowIndex }) {
       if (rowIndex % 2 == 0) {
         return {

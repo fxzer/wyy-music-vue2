@@ -31,10 +31,6 @@ export default {
     };
   },
   computed: {
-    // filterQuery(){
-    //   this.$emit('filterChange','?area='+this.area+'&type='+this.type+'&initial='+this.initial)
-    //   return '?area='+this.area+'&type='+this.type+'&initial='+this.initial
-    // }
   },
   watch: {},
   components: {},

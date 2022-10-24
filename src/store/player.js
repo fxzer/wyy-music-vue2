@@ -18,43 +18,29 @@ export default {
     muted: audioMuted, //是否静音
     id: 0, //当前播放音乐的id
     url: "", //当前播放歌曲url
-    duration: 0, //总时长
-
     loopType: 0, //0:列表循环 1:单曲循环 2:随机播放
     playing: false, //是否正在播放
     playList: [], //播放列表
-    // currentTime: 0, //当前播放时间
     songList: [], //当前歌单列表
-    song: {
-      id: "",
-      name: "",
-      picUrl: "",
-      singer: "",
-      url: "",
-    }, //当前播放的歌曲
-    songUrlData: {}, //当前播放的歌曲的数据
     songDetail: {}, //当前播放的歌曲的详情
     curSongListId: "", //当前歌单id
-    curSongList:[], //当前歌单
+    curSongList: [], //当前歌单
   },
   getters: {
-    currentTime(state) {
-      //当前播放时间
-      return state.audio.currentTime;
-    },
-    isPlaying(state) {
-      return state.playing;
-    },
+    // currentTime(state) {
+    //   //当前播放时间
+    //   return state.audio && state.audio.currentTime;
+    // },
     totalDt(state) {
-       return state.songDetail.dt || state.songDetail?.songs[0]?.dt || 0;
+      return state.songDetail.dt || state.songDetail?.songs[0]?.dt || 0;
     },
   },
   mutations: {
     init(state, audioDom) {
-      state.audio = audioDom;
-      state.audio.volume = audioMuted ? 0 : state.volume / 100;
-      state.playing = false;
-      state.audio.loop = state.loopType === 1 ? true : false;
+      state.audio = audioDom; //dom
+      state.audio.volume = audioMuted ? 0 : state.volume / 100; //音量
+      state.playing = false; //状态
+      state.audio.loop = state.loopType === 1 ? true : false; //模式
     },
     setVolume(state, volume) {
       state.volume = volume;
@@ -71,7 +57,7 @@ export default {
       state.audio.currentTime = currentTime;
     },
     setPalyState(state, playState) {
-      state.playing = playState;
+      state.playing = playState; //true:播放 false:暂停
       if (playState) {
         if (!state.audio.src) {
           state.audio.src = state.url;
@@ -89,46 +75,24 @@ export default {
         state.audio.loop = false;
       }
     },
-    play(state) {},
-    pause(state) {
-      state.audio.pause();
-    },
     //保存歌曲url数据
-    setSongData(state, data) {
-      state.songUrlData = data[0];
+    setSongUrl(state,  data) {
       state.id = data[0].id;
       state.url = state.audio.src = data[0].url;
-      state.audio.play().then(() => {
-        state.playing = true;
-        console.log(' state.playing: ',  state.playing);
-      });
     },
     //保存歌曲详情
     setSongDetail(state, data) {
       state.songDetail = data;
-      let {
-        id,
-        name,
-        ar,
-        al: { picUrl },
-        dt,
-        alia,
-      } = data ;
-      state.song = { id, name, picUrl, ar, dt, alia };
-    },
-    startPlay(state) {
-      if (!state.playing) {
-        state.playing = true;
-        state.audio.play();
-      }
     },
     // 添加歌曲到播放列表
-    addSong(state,songs ) {
+    addSong(state, songs) {
       if (Array.isArray(songs)) {
         //去重
-        let playListIds = state.playList.map(item => item.id);
-        let songList  =  songs.filter(item => !playListIds.inculdes(item.id))
-        state.playList.unshift(...songList);
+        let plids = state.playList.map((item) => item.id);
+        
+        songs =  songs.filter(song => plids.indexOf(song.id) === -1) 
+        
+        state.playList.unshift(...songs);
       } else {
         let isExist = state.playList.some((item) => item.id === songs.id);
         if (!isExist) {
@@ -148,19 +112,17 @@ export default {
     setCurSL(state, list) {
       state.curSongList = list;
     },
-
   },
   actions: {
     //根据id获取音乐Url
     async getSongUrl({ commit, dispatch }, id, songDetail = {}) {
       const { data } = await http(`/song/url?id=${id}`);
+      
       if (!Object.keys(songDetail).length) {
         songDetail = await http(`/song/detail?ids=${id}`);
-        console.log('songDetail: ', songDetail);
       }
-      commit("setSongData", data);
+      commit("setSongUrl", data);
       commit("setSongDetail", songDetail.songs[0]);
-      commit("startPlay");
       commit("addSong", songDetail.songs[0]);
     },
   },

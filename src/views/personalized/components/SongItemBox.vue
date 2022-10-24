@@ -5,7 +5,7 @@
  * @Description: 
 -->
 <template>
-  <div class="song-box" :class="'song-box--'+size" @dblclick="playSong(songInfo.id)">
+  <div class="song-box" :class="'song-box--'+size" @dblclick="playSong(songInfo)">
     <div class="img-box" @click="getSongUrl(songInfo.id)">
       <img :src="songInfo.picUrl" :alt="name" /> 
       <PlayBtn  :size="size"  />
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import playSong from '@/mixins/playSong'
 export default {
   name: 'SongItemBox',
   props: {
@@ -44,6 +44,7 @@ export default {
       default:()=>{}
     }
   },
+  mixins:[playSong],
   data () {
     return {
       isFocus:false,
@@ -73,26 +74,6 @@ export default {
 
   },
   methods: {
-    ...mapActions('player',['getSongUrl']),
-    ...mapActions('player',['getSongUrl']),
-    playSong(id){
-      this.debounce(this.getSongUrl(id))
-    },
-    debounce(fn, delay) {
-        const delays = delay || 300;
-        let timer;
-        return function() {
-          const th = this;
-          const args = arguments;
-          if (timer) {
-            clearTimeout(timer);
-          }
-          timer = setTimeout(function() {
-            timer = null;
-            fn.apply(th, args);
-          }, delays);
-        };
-    },
   },
   mounted () { 
 

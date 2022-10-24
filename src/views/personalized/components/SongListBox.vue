@@ -31,6 +31,7 @@
 </template>
 <script>
 import page from '@/mixins/page'
+import songList from '@/mixins/songList'
 import { mapState, mapMutations } from 'vuex'
 export default {
   name: "SongListBox",
@@ -52,7 +53,7 @@ export default {
       default: false,
     },
   },
-  mixins: [page],
+  mixins: [page,songList],
   data() {
     return {
       ishover: false,
@@ -67,22 +68,7 @@ export default {
   },
   components: {},
   methods: {
-    ...mapMutations('player',['addSong','setCurSLId','setCurSL' ]),
-    addSongToList(id) {
-      this.getSongListDetail(id).then((songs) => {
-        this.setCurSLId(id)
-        this.setCurSL(songs)
-        this.addSong(songs)
-      });
-    },
-    //获取歌单所有歌曲
-    async getSongListDetail(id) {
-      const { songs } = await this.$http(`/playlist/track/all?id=${id}&limit=15&offset=${this.offset}`);
-      return songs 
-    },
-    toSongListDetail(id){
-      this.$router.push({path: `/discoverMusic/songListDetail/${id}` })
-    }
+    
   },
   mounted() {
   },

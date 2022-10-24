@@ -87,8 +87,6 @@ export default {
    .info-name{
     font-size: 13px;
     color:#333;
-    //  display: flex;
-    //  justify-content: space-around;
      .user-gender{
       margin-left: 3px;
       font-size: 12px;

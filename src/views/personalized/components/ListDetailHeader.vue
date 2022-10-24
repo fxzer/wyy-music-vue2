@@ -14,7 +14,7 @@
         <p class="creator-time">{{ detailObj.createTime | formatTime }}</p>
       </div>
       <div class="opts-wrap">
-         <div class="play-all btn-item" @click="palyAll">
+        <div class="play-all btn-item" @click="palyAll">
           <i class="iconfont icon-playfill"></i>
           <span>播放全部</span>
         </div>
@@ -27,55 +27,55 @@
             type="primary"
             v-for="tag in detailObj.tags"
             :key="tag"
-            >{{ tag }}</el-link >
+            >{{ tag }}</el-link
+          >
         </p>
         <p>
           <span class="label">歌曲 :</span> {{ detailObj.trackCount }}
           <span class="label play">播放 :</span>
-          {{ detailObj.playCount  | playCountFilter}}
+          {{ detailObj.playCount | playCountFilter }}
         </p>
-        <p > <span class="label ">简介 :</span> <span class="desc-text text-of-single"> {{ detailObj.description || '...' }}</span></p>
+        <p>
+          <span class="label">简介 :</span>
+          <span class="desc-text text-of-single">
+            {{ detailObj.description || "..." }}</span
+          >
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import playSong from "@/mixins/playSong";
 export default {
   name: "detailObjHeader",
-  props: {
-  },
+  props: {},
+  mixins: [playSong],
   data() {
     return {
-      detailObj:{},
+      detailObj: {},
     };
   },
   computed: {
-    ...mapState('player',['curSongList']),
     src() {
       return this.detailObj?.creator?.avatarUrl || "";
     },
     hasTag() {
-      return  this.detailObj?.tags?.length > 0;
+      return this.detailObj?.tags?.length > 0;
     },
   },
   watch: {},
   components: {},
   methods: {
-    ...mapMutations('player',['addSong']),
-      palyAll(){
-        this.addSong(this.curSongList)
-    },
-     async getDetailObj(id){
+    async getDetailObj(id) {
       const { playlist } = await this.$http(`/playlist/detail?id=${id}`);
-      console.log('playlist: ', playlist);
-       this.detailObj = playlist;
+      this.detailObj = playlist;
     },
   },
   created() {
     let id = this.$route.params.id;
-    this.getDetailObj(id)
+    this.getDetailObj(id);
   },
   mounted() {},
 };
@@ -93,15 +93,15 @@ export default {
   .info-wrap {
     flex: 1;
     //标题
-    .song-list-tag{
+    .song-list-tag {
       font-weight: 400;
-      color: #EC4141;
+      color: #ec4141;
       padding: 1px 5px;
       border-radius: 3px;
       font-size: 12px;
       margin-right: 8px;
       background-color: #fff;
-      border:1px solid #EC4141;
+      border: 1px solid #ec4141;
     }
     .title-wrap {
       h2 {
@@ -109,7 +109,7 @@ export default {
         color: #1d1d1d;
         font-weight: 800;
         display: flex;
-        align-items:center;
+        align-items: center;
       }
     }
     //作者
@@ -126,13 +126,13 @@ export default {
         margin: 0 8px 0 4px;
         font-size: 12px;
         color: #427bbd;
-        &:hover{
+        &:hover {
           color: #223ee0;
         }
       }
       .creator-time {
         font-size: 12px;
-         color: #999;
+        color: #999;
       }
     }
     .desc-wrap {
@@ -141,61 +141,62 @@ export default {
         font-size: 13px;
         color: #999;
         display: flex;
-        align-items:center;
+        align-items: center;
         margin: 8px 0;
         .label {
           color: #333;
           margin-right: 4px;
-          &.play{
+          &.play {
             margin-left: 10px;
           }
         }
         .el-link {
           margin-right: 4px;
-           font-size: 13px;
+          font-size: 13px;
           color: #427bbd;
-          &:hover{
+          &:hover {
             color: #223ee0;
           }
-          &::after{
-            content:'/';
+          &::after {
+            content: "/";
             margin: 0 2px;
             display: inline-block;
-            color:#666;
+            color: #666;
           }
-          &:last-child::after{
-            content:'';
+          &:last-child::after {
+            content: "";
           }
         }
-         .desc-text{
+        .desc-text {
           display: inline-block;
           max-width: 400px;
         }
       }
     }
   }
-  .opts-wrap{
-    margin:20px 0;
+  .opts-wrap {
+    margin: 20px 0;
     display: flex;
-    .btn-item{
-      margin-right:20px;
+    .btn-item {
+      margin-right: 20px;
+      cursor: pointer;
     }
-    .play-all{
-        width: 100px;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 30px;
-        padding:0 10px;
-        border-radius: 15px;
-        background: #EC4141;
-        color: #fff;
-        cursor: pointer;
-        &:hover{
-          background: #da3d3d;
-        }
+    .play-all {
+      width: 100px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 15px;
+      background: #ec4141;
+      color: #fff;
+      cursor: pointer;
+      &:hover {
+        background: #da3d3d;
       }
+    }
   }
 }
 </style>

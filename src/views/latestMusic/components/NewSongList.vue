@@ -75,7 +75,8 @@
 </template>
 
 <script>
-import { mapState,mapActions, mapMutations } from 'vuex';
+import {  mapMutations } from 'vuex';
+import playSong from '@/mixins/playSong'
 export default {
   name: "NewSongList",
   props: {},
@@ -94,37 +95,17 @@ export default {
       left: 0,
       newSongList: [],
       contextMenuVisible:false,
-
     };
   },
   computed: {
-    ...mapState('player', ['id','playing']),
   },
+  mixins: [playSong],
   watch: {},
   components: {
     SongCover: () => import("./SongCover.vue"),
   },
   methods: {
     ...mapMutations('player', ['addSong']),
-    ...mapActions('player', ['getSongUrl']),
-    playSong(row){
-      this.debounce(this.getSongUrl(row.id))
-    },
-   debounce(fn, delay) {
-      const delays = delay || 300;
-      let timer;
-      return function() {
-        const th = this;
-        const args = arguments;
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-          timer = null;
-          fn.apply(th, args);
-        }, delays);
-      };
-    },
     showSongMenu(row, column, event) {
       //阻止浏览器默认右键事件
       //获取鼠标点击的位置
@@ -132,7 +113,6 @@ export default {
       this.top = event.clientY;
       event.preventDefault();
       this.contextMenuVisible = true;
-      console.log("row, column, event", row, column, event);
     },
     changeArea(type) {
       let { query } = this.$route;
@@ -207,8 +187,6 @@ export default {
     palyAll(){
       this.addSong(this.newSongList)
     }
-    
-
   },
   created() {
     let { type = 0 } = this.$route.query;

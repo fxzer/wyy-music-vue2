@@ -14,12 +14,12 @@
       style="displa: none; z-index: -999"
     ></audio>
     <div class="song-box">
-      <img :src="picSrc" :alt="song.name" class="song-img" />
+      <img :src="picSrc" class="song-img" />
       <div class="song-info">
         <div class="song-info-top">
           <div class="song-name text-overflow">
-            {{ song.name || "开源云音乐" }}
-            <span class="alia" v-for="aliaItem in song.alia">{{
+            {{ songDetail.name || "开源云音乐" }}
+            <span class="alia" v-for="aliaItem in songDetail.alia">{{
               aliaItem
             }}</span>
           </div>
@@ -72,11 +72,13 @@
           v-model="currentTime"
           :show-tooltip="false"
           :max="duration"
-          @change="handleDrag"
+          @change="setAudioTime"
         ></el-slider>
         <span class="end-time">{{ totalDt | formatDuration }}</span>
       </div>
     </div>
+
+    <!-- 右侧操作按钮 -->
     <div class="tools-box">
       <div
         class="volume-wrap"
@@ -84,7 +86,12 @@
         @mouseenter="showVolume = true"
         @mouseleave="showVolume = false"
       >
-        <p class="iconfont" :class="muted ? 'icon-jingyin':'icon-laba'" slot="reference" @click="volumeClick"></p>
+        <p
+          class="iconfont"
+          :class="muted ? 'icon-jingyin' : 'icon-laba'"
+          slot="reference"
+          @click="volumeClick"
+        ></p>
         <div class="volume-box">
           <el-slider
             v-model="currentVolume"
@@ -95,7 +102,9 @@
           </el-slider>
         </div>
       </div>
-      <p class="iconfont icon-unorderedlist" @click="openPlayList"></p>
+      <el-badge :value="playList.length" :is-dot="false" :hidden="false">
+        <p class="iconfont icon-unorderedlist" @click="openPlayList"></p>
+      </el-badge>
     </div>
     <PlayList :visible="playListVisible" />
   </div>
@@ -109,8 +118,8 @@ export default {
   props: {},
   data() {
     return {
-      currentTime: 0,
       interval: null,
+      currentTime: 0,
       currentVolume: volume,
       showVolume: false,
       playListVisible: false,
@@ -121,17 +130,26 @@ export default {
     PlayList: () => import("./components/PlayList.vue"),
   },
   computed: {
-    ...mapState("player", ["id","audio", "playing", "song","muted", "loopType", "volume","playList","audio",]),
-    ...mapGetters("player", ["totalDt", "isPlaying"]),
+    ...mapState("player", [
+      "id",
+      "audio",
+      "playing",
+      "songDetail",
+      "muted",
+      "loopType",
+      "volume",
+      "playList",
+    ]),
+    ...mapGetters("player", ["totalDt"]),
     //时长
     duration() {
       return parseInt(this.totalDt / 1000);
     },
     picSrc() {
-      return this.song.picUrl || this.defaultPicUrl;
+      return this.songDetail.al.picUrl || this.defaultPicUrl;
     },
     ars() {
-      return this.song.ar || [{ id: 999999, name: "FXJ" }];
+      return this.songDetail.ar || [{ id: 999999, name: "FXJ" }];
     },
   },
   methods: {
@@ -142,18 +160,13 @@ export default {
       "setLoopType",
       "setVolume",
       "setMuted",
-      "setSongData",
-      "setSongDetail"
+      "setSongUrl",
+      "setSongDetail",
     ]),
-    // 拖动进度条
-    handleDrag(val) {
-      this.setAudioTime(val);
-      this.currentTime = val;
+    ended(a) {},
+    timeUpdate() {
+      this.currentTime = this.$refs.audioRef.currentTime;
     },
-    ended(a) {
-      this.setPalyState(false);
-    },
-    timeUpdate(c) {},
     changeLoopType(type) {
       this.setLoopType(type);
     },
@@ -161,68 +174,67 @@ export default {
       this.playListVisible = !this.playListVisible;
     },
     //
-    volumeClick() {//静音
+    volumeClick() {
+      //静音
       if (this.muted) {
-         this.setMuted(false)
-      } else {//取消静音
-        this.setMuted(true)
+        this.setMuted(false);
+      } else {
+        //取消静音
+        this.setMuted(true);
       }
     },
-   async getSongUrl(id){
-      let { data } = await this.$http(`/song/url?id=${id}`)
-      return data
-    }
+    async getSongUrl(id) {
+      let { data } = await this.$http(`/song/url?id=${id}`);
+      return data;
+    },
   },
- 
+
   mounted() {
     this.init(this.$refs.audioRef); //初始化audio
     let bottomBar = document.querySelector(".bottom-bar");
     document.addEventListener("click", ($event) => {
       let isbottomBar = bottomBar?.contains($event.target);
-      
-      let playListWrap = document.querySelector(".playlist-drawer .el-drawer.rtl");
+
+      let playListWrap = document.querySelector(
+        ".playlist-drawer .el-drawer.rtl"
+      );
       let isListWrap = playListWrap?.contains($event.target);
       if (!isListWrap && !isbottomBar && this.playListVisible) {
         this.playListVisible = false;
       }
     });
+    4;
+
+    //监听audio
+    this.$refs.audioRef.addEventListener("canplay", () => {
+      this.setPalyState(true);
+    });
   },
   created() {},
   watch: {
-    isPlaying(val) {
-      if (val) {
-        this.interval = setInterval(() => {
-          this.currentTime = parseInt(this.audio.currentTime);
-        }, 1000);
-      } else {
-        clearInterval(this.interval);
-      }
-    },
     currentVolume(val) {
       this.setVolume(val);
     },
-    playList:{
-      handler(list){
-        console.log('list: ', list);
-        if(!list.length){
-          this.setPalyState(false)  
-          return 
+    playList: {
+      handler(list) {
+        if (!list.length) {
+          this.setPalyState(false);
+          return;
         }
-       let firstSong = list[0]
-       if (this.id === firstSong.id) {//第一首歌为上一次暂停播放的歌曲
-            this.audio.currentTime = 0
-            this.currentTime = 0
-          this.setPalyState(true)
-        }else{
-          this.setSongDetail(firstSong)
-          this.getSongUrl(firstSong.id).then(data=>{
-            this.setSongData(data)
-
-          })
+        let firstSong = list[0];
+        if (this.id === firstSong.id) {
+          //第一首歌为上一次暂停播放的歌曲,则继续播放
+          this.setPalyState(true);
+        } else {
+          this.setAudioTime(0);
+          this.setSongDetail(firstSong);
+          this.getSongUrl(firstSong.id).then((data) => {
+            this.setSongUrl(data);
+          });
         }
       },
-      deep:true,
-    }
+      deep: true,
+    },
   },
 };
 </script>
@@ -248,9 +260,6 @@ export default {
       height: 52px;
       border-radius: 5px;
       margin-right: 12px;
-      // &.rotate{
-      //   animation: rotate 10s linear infinite;
-      // }
     }
     .song-info {
       color: #373737;
@@ -399,6 +408,14 @@ export default {
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
       border-top: 10px solid #fff;
+    }
+    //歌单数量标记
+    ::v-deep .el-badge .el-badge__content {
+      line-height: 16px !important;
+      &.is-fixed {
+        top: 0;
+        right: 17px;
+      }
     }
   }
   .show-volume-box .volume-box {

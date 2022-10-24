@@ -17,5 +17,6 @@ export default (Vue) => {
   Vue.component(PlayBtn.name, PlayBtn)
   Vue.component(Pagination.name, Pagination)
   Vue.component(PlayerVideo.name, PlayerVideo)
+  Vue.component(ContextMenu.name, ContextMenu)
   Vue.component(FirstColState.name, FirstColState)
 }

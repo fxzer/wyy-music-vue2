@@ -123,7 +123,6 @@ export default {
       this.loading4 = true
       const {result=[]} = await this.$http("/personalized/mv");
       this.mvList = result 
-      console.log('this.mvList: ', this.mvList);
       this.loading4 = false
     },
     //点击banner
@@ -134,17 +133,16 @@ export default {
           this.getSongUrl(banner.song.id)
         }
       } else{
-       console.log('跳转到歌单详情页');
+       
       }
     },
    async getSongDetail(id){
      let songDetail = await  this.$http(`/song/detail?ids=${id}`) 
-     console.log('songDetail: ', songDetail);
+     
     },
     //点击背景
     handleBgClick(id){
       this.newSongId = id
-      console.log('点击背景');
     }
   },
   mounted() {

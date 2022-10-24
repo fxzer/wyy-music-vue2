@@ -11,6 +11,7 @@
       :row-style="rowStyle"
       :cell-style="cellStyle"
       highlight-current-row
+       @row-dblclick="playSong"
     >
       <el-table-column type="index"></el-table-column>
       <el-table-column width="80px">
@@ -57,10 +58,11 @@
 import page from "@/mixins/page";
 import search from "@/mixins/search";
 import songTable from "@/mixins/songTable";
+import playSong from '@/mixins/playSong'
 export default {
   name: "Songs",
   props: {},
-  mixins: [songTable, page, search],
+  mixins: [songTable, page, search,playSong],
   data() {
     return {};
   },

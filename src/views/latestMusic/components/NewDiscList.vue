@@ -89,13 +89,11 @@ export default {
     },
     async getNewDiscs() {
       this.loading = true;
-      console.log(' this.loading: ',  this.loading);
       let { activeMode, activeArea } = this;
       let { albums } = await this.$http(`/album/new?offset=0&limit=10&area=${activeArea}&type=${activeMode}`);
-      console.log('data: ', albums);
       this.newDiscList = albums;
       this.loading = false;
-      console.log('this.loading: ', this.loading);
+      
     },
   },
   created() {

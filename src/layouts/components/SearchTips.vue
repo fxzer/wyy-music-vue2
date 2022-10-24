@@ -62,17 +62,6 @@ export default {
   },
   components: {},
   methods: {
-    //搜索全部类别
-/*     async searchAll() {
-      this.loading = true
-      let { searchTypes } = this;
-      let promises = searchTypes.map((item) => this.search(item));
-      let res = await Promise.all(promises);
-      searchTypes.forEach((item, index) => {
-        item.list = res[index];
-      });
-      this.loading = false
-    }, */
     async searchSuggest() {
       let { result } = await this.$http(`/search/suggest?keywords=${this.kw}`);
       return  result

@@ -71,7 +71,6 @@ export default {
           window.localStorage.videoVolume = this.volume();
         });
         this.on("play", () => {
-          console.log('play: ',  );
           this.volume(_this.volumeVideo);
           _this.setPalyState(false)
         });

@@ -26,10 +26,6 @@ export default {
       type:Object,
       default:()=>{}
     },
-    // showAlias:{
-    //   type:Boolean,
-    //   default:false
-    // }
   },
   data () {
     return {

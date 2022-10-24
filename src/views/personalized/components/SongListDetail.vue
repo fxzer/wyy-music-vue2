@@ -60,13 +60,13 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState,   mapMutations } from "vuex";
 import songTable from "@/mixins/songTable";
-
+import playSong from '@/mixins/playSong'
 export default {
   name: "SongListDetail",
   props: {},
-  mixins: [songTable],
+  mixins: [songTable,playSong],
   data() {
     return {
       loading: false,
@@ -88,7 +88,6 @@ export default {
   },
   methods: {
     ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL"]),
-    ...mapActions("player", ["getSongUrl"]),
     //获取歌单所有歌曲
     async getSongListDetail(id) {
       this.loading = true;
@@ -132,24 +131,6 @@ export default {
       } else {
         return baseStyle;
       }
-    },
-    playSong(row) {
-      this.debounce(this.getSongUrl(row.id));
-    },
-    debounce(fn, delay) {
-      const delays = delay || 300;
-      let timer;
-      return function () {
-        const th = this;
-        const args = arguments;
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(function () {
-          timer = null;
-          fn.apply(th, args);
-        }, delays);
-      };
     },
   },
   created() {},

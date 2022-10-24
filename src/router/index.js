@@ -13,7 +13,6 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', redirect: '/discoverMusic/latestMusic' },
-    // { path: '/', redirect: '/videoTest' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -162,11 +161,6 @@ const routes = [
 
         ]
     },
-    {
-        path: '/videoTest',
-        name: 'VideoTest',
-        component: () => import('@/views/videoTest'),
-    }
 
 ]
 

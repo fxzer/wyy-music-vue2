@@ -17,13 +17,17 @@
         @input="handleInput"
       ></el-input>
       <!-- 搜索提示面板 -->
-      <Panel :visible.sync="searchPanelVisible" :styleObj="panelStyle" class="search-panel">
+      <Panel
+        :visible.sync="searchPanelVisible"
+        :styleObj="panelStyle"
+        class="search-panel"
+      >
         <template #content>
-        <vuescroll  v-if="showHotSearchBoard">
-          <SearchHistory   @select="handleSelect"   />
-          <HotSearchBoard   @select="handleSelect" />
-        </vuescroll>
-          <SearchTips v-if="!showHotSearchBoard"   @select="handleSelect" />
+          <vuescroll v-if="showHotSearchBoard">
+            <SearchHistory @select="handleSelect" />
+            <HotSearchBoard @select="handleSelect" />
+          </vuescroll>
+          <SearchTips v-if="!showHotSearchBoard" @select="handleSelect" />
         </template>
       </Panel>
     </div>
@@ -41,7 +45,7 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from 'vuex'
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "Header",
   props: {},
@@ -58,13 +62,13 @@ export default {
         padding: "10px 0",
       },
       prefixIcon: null,
-      isCloseBtn:false,
+      isCloseBtn: false,
       kwSearchResult: [], //关键字搜索结果
       hotSearchBoard: [], //热搜榜
     };
   },
   computed: {
-    ...mapState('search',["kw" ,"searchPanelVisible"]),
+    ...mapState("search", ["kw", "searchPanelVisible"]),
   },
   components: {
     SearchTips: () => import("./components/SearchTips.vue"),
@@ -72,30 +76,23 @@ export default {
     HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
   },
   methods: {
-    ...mapMutations('search',["setKw","addOne",'setSearchPanel']),
+    ...mapMutations("search", ["setKw", "addOne", "setSearchPanel"]),
     //获取默认搜索关键字
     async getDefaultKeywoard() {
-      let { data: { showKeyword, searchType },} = await this.$http("/search/default");
+      let {
+        data: { showKeyword, searchType },
+      } = await this.$http("/search/default");
       this.placeholder = showKeyword;
       this.searchType = searchType;
     },
-    //搜索
-    // async defaultSearch() {
-    //   let { kw } = this;
-    //   let {
-    //     result: { songs } 
-    //   } = await this.$http(`/cloudsearch?keywords=${kw}&limit=100`);
-    //   this.addOne(kw);
-    //   this.kwSearchResult = songs;
-    // },
 
     handleSearch() {
-      this.setSearchPanel(false)
+      this.setSearchPanel(false);
       if (!this.kw) {
-        this.setKw(this.placeholder)
+        this.setKw(this.placeholder);
       }
-       this.$router.push({
-        path:'/searchResult/songs' ,
+      this.$router.push({
+        path: "/searchResult/songs",
         query: {
           kw: this.kw,
           type: 1,
@@ -104,36 +101,37 @@ export default {
     },
     //监听搜索框前置图标点击事件
     initPreIconEvent() {
-      this.prefixIcon = this.$refs.searchInputRef.$el.querySelector(".el-input__prefix");
+      this.prefixIcon =
+        this.$refs.searchInputRef.$el.querySelector(".el-input__prefix");
       this.prefixIcon.addEventListener("click", this.handlePreIconClick);
     },
     handlePreIconClick() {
-      this.setKw(this.placeholder)
+      this.setKw(this.placeholder);
       //TODO:防抖或节流
-      this.handleSearch()
+      this.handleSearch();
     },
     handleFocus() {
-      this.setSearchPanel(true)
+      this.setSearchPanel(true);
       if (!this.kw) {
         this.showHotSearchBoard = true;
       }
     },
     handleBlur() {
-      if(!this.isCloseBtn){
-        setTimeout(() => {//延迟隐藏，防止点击搜索项收集不到数据
+      if (!this.isCloseBtn) {
+        setTimeout(() => {
+          //延迟隐藏，防止点击搜索项收集不到数据
           this.showHotSearchBoard = false;
-          this.setSearchPanel(false)
+          this.setSearchPanel(false);
         }, 200);
       }
-   
     },
     //点击热搜榜或搜索提示项
-    handleSelect(item) { 
-      let { searchWord ,name,type=1} = item;
+    handleSelect(item) {
+      let { searchWord, name, type = 1 } = item;
       let kw = searchWord || name;
-      this.setKw(kw)
+      this.setKw(kw);
       this.addOne(kw);
-      this.setSearchPanel(false)
+      this.setSearchPanel(false);
       this.showHotSearchBoard = false;
       let pathMap = {
         1: "/songs",
@@ -142,7 +140,7 @@ export default {
         1000: "/playlists",
       };
       this.$router.push({
-        path:'/searchResult' + pathMap[type],
+        path: "/searchResult" + pathMap[type],
         query: {
           kw: this.kw,
           type: type,
@@ -151,26 +149,17 @@ export default {
     },
     //监听搜索框输入事件
     handleInput(val) {
-      this.setKw(val)
+      this.setKw(val);
       if (val) {
         this.showHotSearchBoard = false;
       }
     },
-    // headerClick(e){
-    //   if(e.target.className.includes('el-icon-close')){
-    //     this.isCloseBtn = true
-    //   }else{
-    //     this.isCloseBtn = false
-    //   }
-    // }
   },
   created() {
     this.getDefaultKeywoard();
   },
   mounted() {
     this.initPreIconEvent();
-    // let headerWrap = document.querySelector('.header-wrap')
-    // headerWrap.addEventListener('click',this.headerClick)
   },
   beforeDestroy() {
     this.prefixIcon.removeEventListener("click", this.handlePreIconClick);
@@ -253,10 +242,10 @@ export default {
     color: #333;
   }
 }
-.el-input{
-   ::v-deep .el-input__suffix, 
-   ::v-deep .el-input__prefix{
-      top: -2px;
+.el-input {
+  ::v-deep .el-input__suffix,
+  ::v-deep .el-input__prefix {
+    top: -2px;
   }
 }
 </style>

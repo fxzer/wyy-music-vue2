@@ -129,7 +129,6 @@ export default {
         this.videoDetail = res[1];
         this.recdVideos = res[2];
         this.countInfo = res[3];
-        console.log('  res[3]: ',   res );
         this.topComments =   res[4].topComments;
         this.hotComments =   res[4].hotComments;
         this.comments =   res[4].comments;

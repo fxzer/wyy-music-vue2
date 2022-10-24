@@ -22,7 +22,7 @@
       height="calc(100% - 80px)"
       empty-text="您还没添加任何歌曲!"
       highlight-current-row
-      @row-dblclick="playSong"
+    
     >
       <el-table-column prop="name" label="音乐标题" show-overflow-tooltip> 
         <template slot-scope='{row}'>
@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column prop="duration" label="时长" width="94px">
         <template slot-scope="{ row }">
-         <p style="color:#ccc;font-size:12px;"> {{ row.duration| formatDuration }}</p>
+         <p style="color:#ccc;font-size:12px;"> {{ ( row.duration || row.dt ) | formatDuration }}</p>
         </template>
       </el-table-column>
     </el-table>
@@ -54,7 +54,8 @@
 </template>
 
 <script>
-import { mapMutations, mapState ,mapActions} from "vuex";
+import {  mapState,mapMutations } from "vuex";
+import playSong from '@/mixins/playSong'
 export default {
   name: "PlayList",
   props: {
@@ -63,6 +64,7 @@ export default {
       default: false
     }
   },
+  mixins:[playSong],
   data() {
     return {};
   },
@@ -70,28 +72,8 @@ export default {
     ...mapState('player', ['id','playList']),
   },
   watch: {},
-  components: {},
   methods: {
     ...mapMutations('player', ['clearPlayList']),
-    ...mapActions('player', ['getSongUrl']),
-    playSong(row){
-      this.debounce(this.getSongUrl(row.id))
-    },
-   debounce(fn, delay) {
-      const delays = delay || 300;
-      let timer;
-      return function() {
-        const th = this;
-        const args = arguments;
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-          timer = null;
-          fn.apply(th, args);
-        }, delays);
-      };
-  },
     arStr(row){
       if(row?.artists){
         return row.artists.map(item=>item.name).join('/')
@@ -174,6 +156,7 @@ export default {
     text-align: center;
     color:#EC4141;
     font-size: 12px;
+    transform: translateY(-3px);
   }
   .el-table ::v-deep .cell.el-tooltip{
     padding: 0;
