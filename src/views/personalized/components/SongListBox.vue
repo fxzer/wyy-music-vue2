@@ -100,6 +100,7 @@ export default {
     overflow: hidden;
     position: relative;
     cursor:pointer;
+     border:1px solid #eee;
     &::after{
       content: "";
       display: block;

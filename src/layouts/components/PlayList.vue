@@ -91,7 +91,7 @@ export default {
           fn.apply(th, args);
         }, delays);
       };
-    },
+  },
     arStr(row){
       if(row?.artists){
         return row.artists.map(item=>item.name).join('/')

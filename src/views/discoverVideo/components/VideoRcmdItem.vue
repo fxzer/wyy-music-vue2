@@ -45,7 +45,7 @@ export default {
     toVideoDetail(vid){
       let id = this.$route.params.id
       if(id == vid) return
-      this.$router.replace('/discoverVideo/videoDetail/'+vid)
+      this.$router.push('/discoverVideo/videoDetail/'+vid)
     }
   },
   created () { 

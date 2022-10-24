@@ -34,7 +34,7 @@
    >
      <h2 class="area-title">独家放送<i class="iconfont icon-icon_left_arrow"></i></h2>
       <div class="mv-list private-content-list"  v-loading="loading2">
-        <MvRecommend v-for="item in privateContent" :key="item.id" :mvInfo="item" palyBtnShow :bannerShow="false"  />
+        <MvRecommend v-for="item in privateContent" :key="item.id" :mv="item" palyBtnShow :bannerShow="false"  />
       </div>
    </div>
    <div  
@@ -58,8 +58,8 @@
       element-loading-spinner="el-icon-loading"
       element-loading-text="载入中...">
        <h2 class="area-title">推荐MV<i class="iconfont icon-icon_left_arrow"></i></h2>
-      <div class="mv-list" >
-        <MvRecommend v-for="item in mvList" :key="item.id" :mvInfo="item"   />
+      <div class="mv-list"  v-if="mvList.length">
+        <MvRecommend v-for="item in mvList" :key="item.id" :mv="item"   />
       </div>
     </div>
    
@@ -123,6 +123,7 @@ export default {
       this.loading4 = true
       const {result=[]} = await this.$http("/personalized/mv");
       this.mvList = result 
+      console.log('this.mvList: ', this.mvList);
       this.loading4 = false
     },
     //点击banner
@@ -149,9 +150,9 @@ export default {
   mounted() {
     this.getBannerData();
     this.getAlgList() 
-    // this.getPersonalizedMv() 
-    // this.getPrivateContent()
-    // this.getNewSong()
+    this.getPersonalizedMv() 
+    this.getPrivateContent()
+    this.getNewSong()
   },
   watch: {},
 };

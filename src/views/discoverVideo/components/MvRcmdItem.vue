@@ -43,7 +43,7 @@ export default {
     toMvDetail(id){
       let vid = this.$route.params.id
       if(id == vid) return
-      this.$router.replace({name:'MvDetail',params:{id}})
+      this.$router.push({name:'MvDetail',params:{id}})
     }
   },
   created () { 

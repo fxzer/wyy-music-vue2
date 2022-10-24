@@ -5,19 +5,19 @@
  * @Description: 
 -->
 <template>
-  <div class="mv-box">
+  <div class="mv-box"  @click="toMvDetail(mv.id)">
     <div class="img-box">
-      <div class="banner-info" v-if="bannerShow">{{mvInfo.copywriter}}</div>
-      <img :src="mvInfo.picUrl" :alt="mvInfo.name" /> 
+      <div class="banner-info" v-if="bannerShow">{{mv && mv.copywriter}}</div>
+      <img :src="mv.picUrl"  /> 
       <span class="play-number"  v-if="bannerShow">
         <i class="iconfont icon-play"></i>
-        <span class="number">{{mvInfo.playCount | playCountFilter}}</span>
+        <span class="number">{{mv.playCount | playCountFilter}}</span>
       </span> 
       <span class="iconfont icon-playfill" v-if="palyBtnShow"></span> 
       </div>
       <div class="mv-des">
-        <p class="mv-name text-of-multi">{{mvInfo.name}}</p>
-        <p class="artist-name text-of-multi">{{mvInfo.artistName}}</p>
+        <p class="mv-name text-of-multi">{{mv.name}}</p>
+        <p class="artist-name text-of-multi">{{mv.artistName}}</p>
       </div>
   </div>
 </template>
@@ -34,7 +34,7 @@ export default {
       type:Boolean,
       default:true
     },
-    mvInfo:{
+    mv:{
       type:Object,
       default:()=>{}
     }
@@ -54,7 +54,11 @@ export default {
 
   },
   methods: {
-
+   toMvDetail(id){
+      let vid = this.$route.params.id
+      if(id == vid) return
+      this.$router.push({name:'MvDetail',params:{id}})
+    }
   },
   mounted () { 
 
@@ -69,6 +73,7 @@ export default {
   width: 100%;
   .img-box{
     width: 100%;
+    border:1px solid #eee;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -143,12 +148,16 @@ export default {
     width: 100%;
     margin-top: 4px;
     font-size: 16px;
-    color: #333;
+    color: #444;
     line-height: 1.5;
     text-align: left;
     cursor: pointer;
     .mv-name{
       width: 100%;
+      color: #444;
+      &:hover{
+        color: #1d1d1d;
+      }
     }
     .artist-name{
       font-size: 14px;

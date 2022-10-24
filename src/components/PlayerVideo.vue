@@ -6,6 +6,7 @@
       class="video-js vjs-default-skin vjs-big-play-centered"
       :width="width"
       :height="height"
+      :muted="muted"
       controls
     >
       <!-- :muted="muted"
