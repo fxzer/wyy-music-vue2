@@ -6,39 +6,20 @@
     element-loading-text="载入中..."
     style="padding: 10px 0 0px"
   >
-    <div class="detail-box">
-      <img :src="listDetail.coverImgUrl" class="list-cover" />
-
-      <div class="info-wrap">
-        <div class="title-wrap">
-          <h2>{{ listDetail.name }}</h2>
-        </div>
-        
-        <div class="creator-wrap">
-          <img :src="listDetail.creator.avatarUrl" class="creator-avatar" />
-          <el-link class="creator-name" :underline="false">{{
-            listDetail.name
-          }}</el-link>
-          <p class="creator-time">{{ createTime | formatTime }}</p>
-        </div>
-
-        <div class="desc-wrap">
-          <p>标签: <span v-for="tag in listDetail.tags" :key="tag"></span></p>
-          <p>
-            歌曲: {{ listDetail.trackCount }} 播放:
-            {{ listDetail.palyCount | playCountFilter }}
-          </p>
-          <p>简介: {{ listDetail.description }}</p>
-        </div>
-      </div>
-    </div>
+       <ListDetailHeader />
     <el-table
       :data="songList"
       :row-style="rowStyle"
       :cell-style="cellStyle"
+      :header-cell-style="headerRowStyle"
+       @row-dblclick="playSong"
       highlight-current-row
     >
-      <el-table-column type="index"></el-table-column>
+      <el-table-column type="index">
+         <template slot-scope='{row,$index:index}'>
+          <FirstColState :curId="row.id" :index="index" />
+         </template>
+      </el-table-column>
       <el-table-column width="80px">
         <template slot-scope="{ row }">
           <p class="song-opts">
@@ -79,7 +60,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState,mapActions, mapMutations } from "vuex";
 import songTable from "@/mixins/songTable";
 
 export default {
@@ -90,7 +71,6 @@ export default {
     return {
       loading: false,
       songList: [],
-      listDetail: {},
     };
   },
   computed: {
@@ -98,21 +78,24 @@ export default {
       "curSongListId",
       "curSongList",
       "curSongListDetail",
+      'id','playing'
     ]),
   },
   watch: {},
-  components: {},
+  components: {
+    ListDetailHeader:() => import('./ListDetailHeader.vue')
+  },
   methods: {
-    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL"]),
+    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL",]),
+    ...mapActions('player', ['getSongUrl']),
     //获取歌单所有歌曲
     async getSongListDetail(id) {
       this.loading = true;
       const { songs } = await this.$http(
         `/playlist/track/all?id=${id}&limit=15&offset=${this.offset}`
       );
-      const { playlist } = await this.$http(`/playlist/detail?id=${id}`);
+      
       this.songList = songs;
-      this.listDetail = playlist;
       this.setCurSLId(id);
       this.setCurSL(songs);
       this.loading = false;
@@ -123,8 +106,9 @@ export default {
     },
     cellStyle({ row, column, rowIndex, columnIndex }) {
       let baseStyle = {
-        padding: "2px 0",
+        padding: "1px 0",
         borderColor: "transparent",
+        'font-size': "12px",
       };
       if (columnIndex == 0) {
         //第一列排行字体颜色
@@ -133,27 +117,7 @@ export default {
           borderRadius: "5px 0 0 5px",
           textAlign: "center",
         };
-        if (rowIndex == 0) {
-          return {
-            ...bs,
-            color: "#EC4141",
-          };
-        } else if (rowIndex == 1) {
-          return {
-            ...bs,
-            color: "#F76560",
-          };
-        } else if (rowIndex == 2) {
-          return {
-            ...bs,
-            color: "#F98981",
-          };
-        } else {
-          return {
-            ...bs,
-            color: "#9C9C9C",
-          };
-        }
+        return bs
       } else if (columnIndex == 5) {
         return {
           ...baseStyle,
@@ -167,6 +131,24 @@ export default {
       } else {
         return baseStyle;
       }
+    },
+    playSong(row){
+      this.debounce(this.getSongUrl(row.id))
+    },
+   debounce(fn, delay) {
+      const delays = delay || 300;
+      let timer;
+      return function() {
+        const th = this;
+        const args = arguments;
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+          timer = null;
+          fn.apply(th, args);
+        }, delays);
+      };
     },
   },
   created() {},
@@ -184,42 +166,5 @@ export default {
 </script>
 <style scoped lang='scss'>
 @import "../../searchResult/style/song.scss";
-.detail-box {
-  display: flex;
-  .list-cover {
-    width: 220px;
-    height: 220px;
-    margin-right: 20px;
-    border-radius: 6px;
-  }
-  .info-wrap {
-    flex: 1;
-    .title-wrap {
-      h2 {
-        font-size: 18px;
-        color: #1d1d1d;
-        font-weight: 700;
-      }
-    }
-    .creator-wrap{
-      height: 30px;
-      .creator-wrap{
-        display: flex;
-        align-items: center;
-        .creator-avatar{
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-        }
-        .creator-name{
-          margin:0 10px;
-          color: rgb(69, 103, 212);
-        }
-        .creator-time{
-          color: #999;
-        }
-      }
-    }
-  }
-}
+
 </style>

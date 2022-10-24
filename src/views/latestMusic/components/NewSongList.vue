@@ -42,10 +42,7 @@
     >
       <el-table-column >
         <template slot-scope='{row,$index:index}'>
-          <p class="index-box">
-            <span v-if="row.id == id" class="iconfont" :class="playing ? 'icon-laba':'icon-zero-volume'"></span>
-            <span v-else > {{index  < 10 ? '0'+parseInt(1+index) :parseInt(1+index)}} </span>
-          </p>
+           <FirstColState :curId="row.id" :index="index" />
         </template>
       </el-table-column>
       <el-table-column min-width="340px">
@@ -209,7 +206,6 @@ export default {
     },
     palyAll(){
       this.addSong(this.newSongList)
-      this.getSongUrl(this.newSongList[0].id,this.newSongList[0])
     }
     
 
