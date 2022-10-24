@@ -1,8 +1,8 @@
 <template>
- <div class="hq-list-box" >
+ <div class="hq-list-box"   @click="toSongListDetail(hqInfo.id)" >
     <div class="cover-box">
       <img   :src="coverSrc"  /> 
-      <PlayBtn  position="br" />
+       <PlayBtn  position="br"  @click.native.stop="addSongToList(hqInfo.id)"  />
       <span class="rec-icon iconfont icon-xianxinghuangguan"></span>
     </div>
     <div class="list-des"  >
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'HqListBox',
   props: {
@@ -56,9 +57,44 @@ export default {
 
   },
   methods: {
+    ...mapMutations('player',['addSong','setCurSLId','setCurSL']),
+    addSongToList(id) {
+      this.getSongListDetail(id).then((songs) => {
+        this.setCurSLId(id)
+        this.setCurSL(songs)
+        this.addSong(songs)
+      });
+    },
+    //获取歌单所有歌曲
+    async getSongListDetail(id) {
+      const { songs } = await this.$http(`/playlist/track/all?id=${id}&limit=15&offset=${this.offset}`);
+      return songs 
+    },
     toHqList(){
       this.$router.push({path:'/hqList'})
-    }
+    },
+     toSongListDetail(id){
+      this.$router.push({path: `/discoverMusic/songListDetail/${id}` })
+    },
+    playSong(row){
+      console.log('row: ', row);
+      this.debounce(this.getSongUrl(row.id))
+    },
+   debounce(fn, delay) {
+      const delays = delay || 300;
+      let timer;
+      return function() {
+        const th = this;
+        const args = arguments;
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+          timer = null;
+          fn.apply(th, args);
+        }, delays);
+      };
+    },
   },
   created () { 
 

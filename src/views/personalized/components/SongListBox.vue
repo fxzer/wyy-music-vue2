@@ -67,7 +67,7 @@ export default {
   },
   components: {},
   methods: {
-    ...mapMutations('player',['addSong','setCurSLId','setCurSL','setCurSlDetail']),
+    ...mapMutations('player',['addSong','setCurSLId','setCurSL' ]),
     addSongToList(id) {
       this.getSongListDetail(id).then((songs) => {
         this.setCurSLId(id)
@@ -82,7 +82,6 @@ export default {
     },
     toSongListDetail(id){
       this.$router.push({path: `/discoverMusic/songListDetail/${id}` })
-      this.setCurSlDetail(this.algInfo)
     }
   },
   mounted() {

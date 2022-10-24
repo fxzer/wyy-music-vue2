@@ -6,19 +6,19 @@
     element-loading-text="载入中..."
     style="padding: 10px 0 0px"
   >
-       <ListDetailHeader />
+    <ListDetailHeader />
     <el-table
       :data="songList"
       :row-style="rowStyle"
       :cell-style="cellStyle"
       :header-cell-style="headerRowStyle"
-       @row-dblclick="playSong"
+      @row-dblclick="playSong"
       highlight-current-row
     >
       <el-table-column type="index">
-         <template slot-scope='{row,$index:index}'>
+        <template slot-scope="{ row, $index: index }">
           <FirstColState :curId="row.id" :index="index" />
-         </template>
+        </template>
       </el-table-column>
       <el-table-column width="80px">
         <template slot-scope="{ row }">
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { mapState,mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import songTable from "@/mixins/songTable";
 
 export default {
@@ -78,23 +78,24 @@ export default {
       "curSongListId",
       "curSongList",
       "curSongListDetail",
-      'id','playing'
+      "id",
+      "playing",
     ]),
   },
   watch: {},
   components: {
-    ListDetailHeader:() => import('./ListDetailHeader.vue')
+    ListDetailHeader: () => import("./ListDetailHeader.vue"),
   },
   methods: {
-    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL",]),
-    ...mapActions('player', ['getSongUrl']),
+    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL"]),
+    ...mapActions("player", ["getSongUrl"]),
     //获取歌单所有歌曲
     async getSongListDetail(id) {
       this.loading = true;
       const { songs } = await this.$http(
         `/playlist/track/all?id=${id}&limit=15&offset=${this.offset}`
       );
-      
+
       this.songList = songs;
       this.setCurSLId(id);
       this.setCurSL(songs);
@@ -108,7 +109,7 @@ export default {
       let baseStyle = {
         padding: "1px 0",
         borderColor: "transparent",
-        'font-size': "12px",
+        "font-size": "12px",
       };
       if (columnIndex == 0) {
         //第一列排行字体颜色
@@ -117,7 +118,7 @@ export default {
           borderRadius: "5px 0 0 5px",
           textAlign: "center",
         };
-        return bs
+        return bs;
       } else if (columnIndex == 5) {
         return {
           ...baseStyle,
@@ -132,19 +133,19 @@ export default {
         return baseStyle;
       }
     },
-    playSong(row){
-      this.debounce(this.getSongUrl(row.id))
+    playSong(row) {
+      this.debounce(this.getSongUrl(row.id));
     },
-   debounce(fn, delay) {
+    debounce(fn, delay) {
       const delays = delay || 300;
       let timer;
-      return function() {
+      return function () {
         const th = this;
         const args = arguments;
         if (timer) {
           clearTimeout(timer);
         }
-        timer = setTimeout(function() {
+        timer = setTimeout(function () {
           timer = null;
           fn.apply(th, args);
         }, delays);
@@ -166,5 +167,4 @@ export default {
 </script>
 <style scoped lang='scss'>
 @import "../../searchResult/style/song.scss";
-
 </style>

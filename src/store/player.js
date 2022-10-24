@@ -36,7 +36,6 @@ export default {
     songDetail: {}, //当前播放的歌曲的详情
     curSongListId: "", //当前歌单id
     curSongList:[], //当前歌单
-    curSongListDetail: {}, //当前歌单详情
   },
   getters: {
     currentTime(state) {
@@ -47,14 +46,12 @@ export default {
       return state.playing;
     },
     totalDt(state) {
-      if (state.songDetail.songs) return state.songDetail.songs[0].dt;
-      return 0;
+       return state.songDetail.dt || state.songDetail?.songs[0]?.dt || 0;
     },
   },
   mutations: {
     init(state, audioDom) {
       state.audio = audioDom;
-
       state.audio.volume = audioMuted ? 0 : state.volume / 100;
       state.playing = false;
       state.audio.loop = state.loopType === 1 ? true : false;
@@ -128,7 +125,10 @@ export default {
     // 添加歌曲到播放列表
     addSong(state,songs ) {
       if (Array.isArray(songs)) {
-        state.playList.unshift(...songs);
+        //去重
+        let playListIds = state.playList.map(item => item.id);
+        let songList  =  songs.filter(item => !playListIds.inculdes(item.id))
+        state.playList.unshift(...songList);
       } else {
         let isExist = state.playList.some((item) => item.id === songs.id);
         if (!isExist) {
@@ -148,9 +148,6 @@ export default {
     setCurSL(state, list) {
       state.curSongList = list;
     },
-    setCurSlDetail(state, detail) {
-      state.curSongListDetail = detail;
-    },
 
   },
   actions: {
@@ -159,6 +156,7 @@ export default {
       const { data } = await http(`/song/url?id=${id}`);
       if (!Object.keys(songDetail).length) {
         songDetail = await http(`/song/detail?ids=${id}`);
+        console.log('songDetail: ', songDetail);
       }
       commit("setSongData", data);
       commit("setSongDetail", songDetail.songs[0]);

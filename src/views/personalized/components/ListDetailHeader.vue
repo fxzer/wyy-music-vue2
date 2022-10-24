@@ -3,7 +3,7 @@
     <img :src="detailObj.coverImgUrl" class="list-cover" />
     <div class="info-wrap">
       <div class="title-wrap">
-        <h2>{{ detailObj.name }}</h2>
+        <h2><span class="song-list-tag">歌单</span>{{ detailObj.name }}</h2>
       </div>
 
       <div class="creator-wrap">
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="desc-wrap">
-        <p v-if="detailObj.tags.length">
+        <p v-if="hasTag">
           <span class="label">标签 :</span>
           <el-link
             :underline="false"
@@ -56,6 +56,9 @@ export default {
     src() {
       return this.detailObj?.creator?.avatarUrl || "";
     },
+    hasTag() {
+      return  this.detailObj?.tags?.length > 0;
+    },
   },
   watch: {},
   components: {},
@@ -90,11 +93,23 @@ export default {
   .info-wrap {
     flex: 1;
     //标题
+    .song-list-tag{
+      font-weight: 400;
+      color: #EC4141;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-right: 8px;
+      background-color: #fff;
+      border:1px solid #EC4141;
+    }
     .title-wrap {
       h2 {
         font-size: 20px;
         color: #1d1d1d;
         font-weight: 800;
+        display: flex;
+        align-items:center;
       }
     }
     //作者

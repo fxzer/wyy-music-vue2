@@ -121,7 +121,7 @@ export default {
     PlayList: () => import("./components/PlayList.vue"),
   },
   computed: {
-    ...mapState("player", ["id","audio", "playing", "song","muted", "loopType", "volume","playList"]),
+    ...mapState("player", ["id","audio", "playing", "song","muted", "loopType", "volume","playList","audio",]),
     ...mapGetters("player", ["totalDt", "isPlaying"]),
     //时长
     duration() {
@@ -210,6 +210,8 @@ export default {
         }
        let firstSong = list[0]
        if (this.id === firstSong.id) {//第一首歌为上一次暂停播放的歌曲
+            this.audio.currentTime = 0
+            this.currentTime = 0
           this.setPalyState(true)
         }else{
           this.setSongDetail(firstSong)
