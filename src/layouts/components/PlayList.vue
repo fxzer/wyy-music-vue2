@@ -22,12 +22,12 @@
       height="calc(100% - 80px)"
       empty-text="您还没添加任何歌曲!"
       highlight-current-row
-    
+      @row-dblclick="playSong"
     >
       <el-table-column prop="name" label="音乐标题" show-overflow-tooltip> 
         <template slot-scope='{row}'>
          <div class="name-box">
-           <span class="play-state iconfont" :class="row.id==id ? 'icon-laba':''"></span>
+           <span class="play-state iconfont" :class="handleIcon(row)"></span>
            <span style="font-size:12px;margin-right:3px;">{{row.name}}</span>
            <Mtag content="Hi-Res" v-if="isHr(row)"/>
            <Mtag content="SQ" v-if="isSq(row)"/>
@@ -69,11 +69,19 @@ export default {
     return {};
   },
   computed: {
-    ...mapState('player', ['id','playList']),
+    ...mapState('player', ['id','playList','playing']),
   },
   watch: {},
   methods: {
     ...mapMutations('player', ['clearPlayList']),
+    handleIcon(row){
+      //正在播放此歌曲
+      if(row.id == this.id) {
+        return this.playing ? 'icon-laba' : 'icon-zero-volume'
+      }else {
+        return ''
+      }
+    },
     arStr(row){
       if(row?.artists){
         return row.artists.map(item=>item.name).join('/')

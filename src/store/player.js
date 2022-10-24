@@ -27,10 +27,6 @@ export default {
     curSongList: [], //当前歌单
   },
   getters: {
-    // currentTime(state) {
-    //   //当前播放时间
-    //   return state.audio && state.audio.currentTime;
-    // },
     totalDt(state) {
       return state.songDetail.dt || state.songDetail?.songs[0]?.dt || 0;
     },
@@ -47,11 +43,12 @@ export default {
       state.audio.volume = volume / 100;
       localStorage.setItem("audioVolume", volume);
     },
-    setMuted(state, muted) {
-      state.muted = muted;
-      state.audio.muted = muted;
-      state.audio.volume = muted ? 0 : state.volume / 100;
-      localStorage.setItem("audioMuted", muted);
+    setMuted(state) {
+      let maybeMuted = !state.muted;
+      state.muted = maybeMuted;
+      state.audio.muted =maybeMuted;
+      state.audio.volume = maybeMuted ? 0 : state.volume / 100;
+      localStorage.setItem("audioMuted", maybeMuted);
     },
     setAudioTime(state, currentTime) {
       state.audio.currentTime = currentTime;
@@ -69,7 +66,7 @@ export default {
     },
     setLoopType(state, type) {
       state.loopType = type;
-      if (type === 1) {
+      if (type === 1) {//单曲循环
         state.audio.loop = true;
       } else {
         state.audio.loop = false;

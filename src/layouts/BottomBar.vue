@@ -35,21 +35,24 @@
     <div class="play-actions">
       <div class="top-control">
         <span
+          title="顺序播放"
           class="iconfont icon-shunxubofang"
           v-if="loopType === 0"
           @click="changeLoopType(1)"
         ></span>
         <span
+          title="单曲循环"
           class="iconfont icon-danquxunhuan"
           v-else-if="loopType === 1"
           @click="changeLoopType(2)"
         ></span>
         <span
+          title="随机播放"
           class="iconfont icon-suiji"
           v-else
           @click="changeLoopType(0)"
         ></span>
-        <span class="iconfont icon-shangyi"></span>
+        <span class="iconfont icon-shangyi" @click="handlePrev"></span>
         <!-- || -->
         <span
           class="iconfont icon-pause"
@@ -61,8 +64,7 @@
           v-else
           @click.stop="setPalyState(true)"
         ></span>
-        <span class="iconfont icon-xiayi"></span>
-        <span class="iconfont icon-list"></span>
+        <span class="iconfont icon-xiayi" @click="handleNext"></span>
       </div>
       <div class="bottom-slider">
         <span class="start-time">{{
@@ -90,7 +92,7 @@
           class="iconfont"
           :class="muted ? 'icon-jingyin' : 'icon-laba'"
           slot="reference"
-          @click="volumeClick"
+          @click="setMuted"
         ></p>
         <div class="volume-box">
           <el-slider
@@ -111,7 +113,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from "vuex";
+import { mapState, mapGetters,mapActions, mapMutations } from "vuex";
 let volume = parseFloat(window.localStorage.audioVolume) || 50;
 export default {
   name: "BottomBar",
@@ -133,9 +135,9 @@ export default {
     ...mapState("player", [
       "id",
       "audio",
+      "muted",
       "playing",
       "songDetail",
-      "muted",
       "loopType",
       "volume",
       "playList",
@@ -163,7 +165,19 @@ export default {
       "setSongUrl",
       "setSongDetail",
     ]),
-    ended(a) {},
+    ...mapActions('player',['getSongUrl']),
+    ended() {
+      if(this.loopType === 0){//列表循环
+        this.handleNext()
+      }else if(this.loopType === 2){//随机播放
+        this.handleRandom()
+      }
+    },
+    handleRandom(){
+      let randomIndex = Math.floor(Math.random() * this.playList.length)
+      let radomSong = this.playList[randomIndex]
+      this.getSongUrl(radomSong.id,radomSong);
+    },
     timeUpdate() {
       this.currentTime = this.$refs.audioRef.currentTime;
     },
@@ -173,20 +187,28 @@ export default {
     openPlayList() {
       this.playListVisible = !this.playListVisible;
     },
-    //
-    volumeClick() {
-      //静音
-      if (this.muted) {
-        this.setMuted(false);
-      } else {
-        //取消静音
-        this.setMuted(true);
+    handlePrev(){//上一首
+      let index = this.playList.findIndex(item => item.id === this.id);
+      if(index === 0){
+        index = this.playList.length - 1;
+      }else{
+        index--;
       }
+      let preSong = this.playList[index];
+      console.log('handlePrev: ',  index, preSong);
+      this.getSongUrl(preSong.id,preSong);
     },
-    async getSongUrl(id) {
-      let { data } = await this.$http(`/song/url?id=${id}`);
-      return data;
-    },
+    handleNext(){//下一首
+      let index = this.playList.findIndex(item => item.id === this.id);
+      if(index === this.playList.length - 1){
+        index = 0;
+      }else{
+        index++;
+      }
+      let nextSong = this.playList[index];
+      console.log('handleNext: ',  index, nextSong);
+      this.getSongUrl(nextSong.id,nextSong);
+    }
   },
 
   mounted() {
@@ -228,9 +250,7 @@ export default {
         } else {
           this.setAudioTime(0);
           this.setSongDetail(firstSong);
-          this.getSongUrl(firstSong.id).then((data) => {
-            this.setSongUrl(data);
-          });
+          this.getSongUrl(firstSong.id,firstSong) 
         }
       },
       deep: true,
