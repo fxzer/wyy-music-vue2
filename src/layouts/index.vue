@@ -8,7 +8,10 @@
   <div>
     <Header />
     <LeftMenu />
-    <div class="main-wrap"><RouterView class="content-wrap" /></div>
+    <div class="main-wrap">
+      <RouterView class="content-wrap" />
+      <MusicDetail :visible.sync="musicLyVisible" />
+      </div>
     <BottomBar />
   </div>
 </template>
@@ -17,6 +20,8 @@
 import Header from "@/layouts/Header";
 import LeftMenu from "@/layouts/LeftMenu";
 import BottomBar from "@/layouts/BottomBar";
+import MusicDetail from "@/layouts/components/MusicDetail";
+import { mapState ,mapMutations } from 'vuex'
 export default {
   name: "Layout",
   props: {},
@@ -28,10 +33,19 @@ export default {
     Header,
     LeftMenu,
     BottomBar,
+    MusicDetail,
   },
-  methods: {},
+  computed:{
+    ...mapState('player',['musicLyVisible'])
+  },
+  methods: {
+    ...mapMutations('player',['setMusicLyric'])
+  },
   mounted() {},
   watch: {},
+  beforeDestroy(){
+     this.setMusicLyric(false)
+  }
 };
 </script>
 <style scoped lang='scss'>

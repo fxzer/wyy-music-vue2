@@ -18,6 +18,7 @@ export default {
     muted: audioMuted, //是否静音
     id: 0, //当前播放音乐的id
     url: "", //当前播放歌曲url
+    currentTime: 0, //当前播放时间
     loopType: 0, //0:列表循环 1:单曲循环 2:随机播放
     playing: false, //是否正在播放
     playList: [], //播放列表
@@ -25,6 +26,7 @@ export default {
     songDetail: {}, //当前播放的歌曲的详情
     curSongListId: "", //当前歌单id
     curSongList: [], //当前歌单
+    musicLyVisible: false, //播放器是否显示
   },
   getters: {
     totalDt(state) {
@@ -50,11 +52,18 @@ export default {
       state.audio.volume = maybeMuted ? 0 : state.volume / 100;
       localStorage.setItem("audioMuted", maybeMuted);
     },
-    setAudioTime(state, currentTime) {
-      state.audio.currentTime = currentTime;
+    setMusicLyric(state, visible) {
+      console.log('visible: ', visible);
+      state.musicLyVisible = visible;
+    },
+    setCurrentTime(state, time) {
+      state.currentTime = time;
     },
     setPalyState(state, playState) {
       state.playing = playState; //true:播放 false:暂停
+      if(playState && !state.playList.length && state.id){
+        state.playList.push(state.songDetail);
+      }
       if (playState) {
         if (!state.audio.src) {
           state.audio.src = state.url;

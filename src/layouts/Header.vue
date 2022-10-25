@@ -76,7 +76,8 @@ export default {
     HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
   },
   methods: {
-    ...mapMutations("search", ["setKw", "addOne", "setSearchPanel"]),
+    ...mapMutations("search", ["setKw", "addOne", "setSearchPanel",]),
+    ...mapMutations("player", ["setMusicLyric"]),
     //获取默认搜索关键字
     async getDefaultKeywoard() {
       let {
@@ -91,6 +92,7 @@ export default {
       if (!this.kw) {
         this.setKw(this.placeholder);
       }
+      this.setMusicLyric(false)
       this.$router.push({
         path: "/searchResult/songs",
         query: {
@@ -132,6 +134,7 @@ export default {
       this.setKw(kw);
       this.addOne(kw);
       this.setSearchPanel(false);
+      this.setMusicLyric(false)
       this.showHotSearchBoard = false;
       let pathMap = {
         1: "/songs",
@@ -178,7 +181,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 99;
+z-index: 1999;
   width: 100%;
   height: 60px;
   color: #fff;

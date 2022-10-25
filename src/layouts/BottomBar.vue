@@ -14,7 +14,14 @@
       style="displa: none; z-index: -999"
     ></audio>
     <div class="song-box">
-      <img :src="picSrc" class="song-img" />
+      <div class="img-box">
+        <img :src="picSrc" class="song-img" />
+        <div
+          class="extend-btn iconfont"
+          :class="musicLyVisible ? 'icon-arrow-down' : 'icon-arrow_up'"
+          @click="extendMusic"
+        ></div>
+      </div>
       <div class="song-info">
         <div class="song-info-top">
           <div class="song-name text-overflow">
@@ -25,10 +32,8 @@
           </div>
           <span class="iconfont icon-heart"></span>
         </div>
-        <div class="singer-name">
-          <span class="name-item" v-for="ar in ars" :key="ar.id">{{
-            ar.name
-          }}</span>
+        <div class="singer-name text-of-single" :title="arns">
+          {{ arns }}
         </div>
       </div>
     </div>
@@ -52,7 +57,7 @@
           v-else
           @click="changeLoopType(0)"
         ></span>
-        <span class="iconfont icon-shangyi" @click="handlePrev"></span>
+        <span class="iconfont icon-shangyi" :class="{'disabled':disabled}" @click="handlePrev"></span>
         <!-- || -->
         <span
           class="iconfont icon-pause"
@@ -64,7 +69,7 @@
           v-else
           @click.stop="setPalyState(true)"
         ></span>
-        <span class="iconfont icon-xiayi" @click="handleNext"></span>
+        <span class="iconfont icon-xiayi":class="{'disabled':disabled}" @click="handleNext" ></span>
       </div>
       <div class="bottom-slider">
         <span class="start-time">{{
@@ -74,7 +79,7 @@
           v-model="currentTime"
           :show-tooltip="false"
           :max="duration"
-          @change="setAudioTime"
+          @change="timeChange"
         ></el-slider>
         <span class="end-time">{{ totalDt | formatDuration }}</span>
       </div>
@@ -109,11 +114,14 @@
       </el-badge>
     </div>
     <PlayList :visible="playListVisible" />
+    <!-- <MusicDetail :visible.sync="musicVisible"/> -->
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters,mapActions, mapMutations } from "vuex";
+// import  MusicDetail from './components/MusicDetail'
+// import { create } from "@/utils/createComp";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 let volume = parseFloat(window.localStorage.audioVolume) || 50;
 export default {
   name: "BottomBar",
@@ -125,11 +133,13 @@ export default {
       currentVolume: volume,
       showVolume: false,
       playListVisible: false,
+      musicVisible: false,
       defaultPicUrl: require("../assets/images/default_music_pic.png"),
     };
   },
   components: {
     PlayList: () => import("./components/PlayList.vue"),
+    // MusicDetail
   },
   computed: {
     ...mapState("player", [
@@ -141,6 +151,7 @@ export default {
       "loopType",
       "volume",
       "playList",
+      "musicLyVisible",
     ]),
     ...mapGetters("player", ["totalDt"]),
     //时长
@@ -150,36 +161,51 @@ export default {
     picSrc() {
       return this.songDetail.al.picUrl || this.defaultPicUrl;
     },
-    ars() {
-      return this.songDetail.ar || [{ id: 999999, name: "FXJ" }];
+    arns() {
+      return this.songDetail.ar.map((item) => item.name).join("/") || "FXJ";
+    },
+    disabled() {
+      return this.playList.length < 2;
     },
   },
   methods: {
     ...mapMutations("player", [
       "init",
-      "setAudioTime",
       "setPalyState",
       "setLoopType",
       "setVolume",
       "setMuted",
       "setSongUrl",
       "setSongDetail",
+      "setMusicLyric",
+      "setCurrentTime"
     ]),
-    ...mapActions('player',['getSongUrl']),
+    ...mapActions("player", ["getSongUrl"]),
     ended() {
-      if(this.loopType === 0){//列表循环
-        this.handleNext()
-      }else if(this.loopType === 2){//随机播放
-        this.handleRandom()
+      if (this.loopType === 0) {
+        //列表循环
+        this.handleNext();
+      } else if (this.loopType === 2) {
+        //随机播放
+        this.handleRandom();
       }
     },
-    handleRandom(){
-      let randomIndex = Math.floor(Math.random() * this.playList.length)
-      let radomSong = this.playList[randomIndex]
-      this.getSongUrl(radomSong.id,radomSong);
+    handleRandom() {
+      let randomIndex = Math.floor(Math.random() * this.playList.length);
+      let radomSong = this.playList[randomIndex];
+      this.getSongUrl(radomSong.id, radomSong);
     },
     timeUpdate() {
-      this.currentTime = this.$refs.audioRef.currentTime;
+      let time =  parseInt(this.$refs.audioRef.currentTime)
+      this.currentTime =time ;
+      this.setCurrentTime(time)
+    },
+    timeChange(val) {
+      this.setPalyState(false);
+      this.$refs.audioRef.currentTime = parseInt(val);
+      this.setCurrentTime(parseInt(val))
+      this.setPalyState(true);
+      
     },
     changeLoopType(type) {
       this.setLoopType(type);
@@ -187,28 +213,33 @@ export default {
     openPlayList() {
       this.playListVisible = !this.playListVisible;
     },
-    handlePrev(){//上一首
-      let index = this.playList.findIndex(item => item.id === this.id);
-      if(index === 0){
+    handlePrev() {
+      //上一首
+      if(this.disabled) return
+      let index = this.playList.findIndex((item) => item.id === this.id);
+      if (index === 0) {
         index = this.playList.length - 1;
-      }else{
+      } else {
         index--;
       }
       let preSong = this.playList[index];
-      console.log('handlePrev: ',  index, preSong);
-      this.getSongUrl(preSong.id,preSong);
+      this.getSongUrl(preSong.id, preSong);
     },
-    handleNext(){//下一首
-      let index = this.playList.findIndex(item => item.id === this.id);
-      if(index === this.playList.length - 1){
+    handleNext() {
+      //下一首
+      if(this.disabled) return
+      let index = this.playList.findIndex((item) => item.id === this.id);
+      if (index === this.playList.length - 1) {
         index = 0;
-      }else{
+      } else {
         index++;
       }
       let nextSong = this.playList[index];
-      console.log('handleNext: ',  index, nextSong);
-      this.getSongUrl(nextSong.id,nextSong);
-    }
+      this.getSongUrl(nextSong.id, nextSong);
+    },
+    extendMusic() {
+      this.setMusicLyric(!this.musicLyVisible);
+    },
   },
 
   mounted() {
@@ -248,9 +279,9 @@ export default {
           //第一首歌为上一次暂停播放的歌曲,则继续播放
           this.setPalyState(true);
         } else {
-          this.setAudioTime(0);
+          this.$refs.audioRef.currentTime = 0;
           this.setSongDetail(firstSong);
-          this.getSongUrl(firstSong.id,firstSong) 
+          this.getSongUrl(firstSong.id, firstSong);
         }
       },
       deep: true,
@@ -275,11 +306,36 @@ export default {
     width: 364px;
     display: flex;
     cursor: pointer;
-    .song-img {
-      width: 52px;
+    .img-box {
+      min-width: 52px;
       height: 52px;
       border-radius: 5px;
       margin-right: 12px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .extend-btn {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+      &:hover .extend-btn {
+        bottom: 0;
+      }
     }
     .song-info {
       color: #373737;
@@ -309,7 +365,8 @@ export default {
       }
       .singer-name {
         font-size: 12px;
-        color: #373737;
+        color: #555;
+        max-width: 220px;
       }
     }
   }
@@ -331,6 +388,10 @@ export default {
         &:hover {
           color: #ec4141;
         }
+        &.disabled {
+          color: #999;
+          cursor: not-allowed;
+        }
       }
       .icon-playfill,
       .icon-pause {
@@ -347,19 +408,17 @@ export default {
       align-items: center;
       .start-time,
       .end-time {
+        display: inline-block;
+        min-width: 36px;
         font-size: 12px;
         color: #373737;
         vertical-align: middle;
-      }
-      .start-time {
-        margin-right: 10px;
-      }
-      .end-time {
-        margin-left: 8px;
+        text-align: center;
       }
     }
     .el-slider {
       //滑块进度条
+      margin: 0 6px;
       width: 86%;
       ::v-deep .el-slider__runway {
         margin: 10px 0;

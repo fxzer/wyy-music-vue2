@@ -31,7 +31,6 @@
 </template>
 
 <script>
-// import kwsearch from '@/mock/kwsearch'
 import { mapState } from 'vuex'
 export default {
   name: "SearchTips",
