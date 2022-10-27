@@ -24,7 +24,10 @@
         <template slot-scope="{ row }">
           <p class="song-opts">
             <span class="iconfont icon-heart"></span>
-            <span class="iconfont icon-xiazai"></span>
+            <span
+              class="iconfont icon-xiazai"
+              @click="downloadMusic(row)"
+            ></span>
           </p>
         </template>
       </el-table-column>
@@ -60,13 +63,14 @@
 </template>
 
 <script>
-import { mapState,   mapMutations } from "vuex";
+import axios from "axios";
+import { mapState, mapMutations } from "vuex";
 import songTable from "@/mixins/songTable";
-import playSong from '@/mixins/playSong'
+import playSong from "@/mixins/playSong";
 export default {
   name: "SongListDetail",
   props: {},
-  mixins: [songTable,playSong],
+  mixins: [songTable, playSong],
   data() {
     return {
       loading: false,
@@ -79,6 +83,7 @@ export default {
       "curSongList",
       "curSongListDetail",
       "id",
+      "name",
       "playing",
     ]),
   },
@@ -87,7 +92,49 @@ export default {
     ListDetailHeader: () => import("./ListDetailHeader.vue"),
   },
   methods: {
-    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL"]),
+    ...mapMutations("player", ["addSong", "setCurSLId", "setCurSL","setDownloadList","downloadList","setdlProgress"]),
+    downloadMusic(song) {
+      this.$http(`/song/url?id=${song.id}`).then((res) => {
+        let url = res.data[0].url;
+        if (url) {
+          //下载音乐
+          this.download(url, song);
+        } else {
+          this.$message.error("暂无版权");
+        }
+      });
+    },
+    download(url, song) {
+      // let a = document.createElement("a");
+      // a.href = url;
+      // a.download = name;
+      // document.body.appendChild(link);
+      // a.click();
+      // URL.revokeObjectURL(link.href);
+      // document.body.removeChild(a);
+      let dlTime = new Date().getTime();
+      song.dlTime = dlTime
+      this.setDownloadList(song)
+      axios({
+        url,
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) =>{
+          if (progressEvent.lengthComputable) {
+            let dlProgress = +((progressEvent.loaded / progressEvent.total) *100).toFixed(2); //实时获取最新下载进度
+            song.progress = dlProgress;
+            this.setdlProgress({id:song.id,progress:dlProgress,tatal:progressEvent.total})
+          }
+        },
+      }).then((res) => {
+        let link = document.createElement("a");
+        link.href = URL.createObjectURL(res.data);
+        link.download = `${song.name}.mp3`;
+        document.body.appendChild(link);
+        link.click();
+        URL.revokeObjectURL(link.href);
+        document.body.removeChild(link);
+      });
+    },
     //获取歌单所有歌曲
     async getSongListDetail(id) {
       this.loading = true;

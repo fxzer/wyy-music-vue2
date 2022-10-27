@@ -12,7 +12,7 @@ Vue.use(VueRouter)
 
 
 const routes = [
-    { path: '/', redirect: '/discoverMusic/latestMusic' },
+    { path: '/', redirect: '/discoverMusic/personalized' },
     {
         path: '/discoverMusic',
         // name: 'DiscoverMusic',
@@ -161,7 +161,11 @@ const routes = [
 
         ]
     },
-
+    {
+        path:'/downloadList',
+        name:'DownloadList',
+        component:()=>import('@/views/downloadList')
+    }
 ]
 
 const router = new VueRouter({

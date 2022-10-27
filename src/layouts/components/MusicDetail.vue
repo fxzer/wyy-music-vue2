@@ -139,7 +139,7 @@ export default {
   created() {},
   mounted() {
     if(this.visible && this.lyricList.length===0) this.getLyric()
-    this.lywrapHeight = this.$refs.lyricWrap.offsetHeight
+    this.lywrapHeight = this.$refs?.lyricWrap?.offsetHeight || 600
    document.addEventListener('resize',this.getWrapHeight)
   },
   beforeDestroy(){

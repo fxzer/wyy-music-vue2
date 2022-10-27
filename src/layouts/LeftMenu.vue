@@ -35,6 +35,10 @@ export default {
           title:'发现MV',
           path:'/discoverVideo',
         },
+        {
+          title:'我的下载',
+          path:'/downloadList',
+        },
 
       ]
 

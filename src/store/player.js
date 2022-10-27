@@ -26,6 +26,8 @@ export default {
     songDetail: {}, //当前播放的歌曲的详情
     curSongListId: "", //当前歌单id
     curSongList: [], //当前歌单
+    downloadList: [], //下载列表
+    dlProgress:{},//下载进度
     musicLyVisible: false, //播放器是否显示
   },
   getters: {
@@ -106,6 +108,13 @@ export default {
           state.playList.unshift(songs);
         }
       }
+    },
+    setDownloadList(state, song) {
+      state.downloadList.push(song);
+    },
+    setdlProgress(state, data) {
+      state.dlProgress[data.id]['progress'] = data.progress;
+      state.dlProgress[data.id]['total'] = data.total;
     },
     clearPlayList(state) {
       state.playList = [];
