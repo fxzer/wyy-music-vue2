@@ -29,6 +29,15 @@
           </div>
       </div>
     </div>
+    <!-- 歌曲评论 -->
+    <div class="comments-wrap" 
+      v-loading="commentLoading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="transparent"
+      element-loading-text="载入中...">
+        <Comments  :comments="hotComments"  title="精彩评论" />
+        <Comments  :comments="comments"   title="最新评论"/>
+    </div>
   </div>
 </template>
 
@@ -46,7 +55,10 @@ export default {
   data() {
     return {
       lyricList: [],
+      comments: [],
+      hotComments: [],
       lyricLoading: false,
+      commentLoading: false,
       activeIndex: 0,
       lywrapHeight: 0,
       tranformObj: {
@@ -70,10 +82,14 @@ export default {
     async visible(val) {
       if (val) {
        this.getLyric();
+       this.getComment()
       }
     },
     id(id) {
-       if(id&&this.visible) this.getLyric()
+       if(id&&this.visible) {
+        this.getLyric()
+        this.getComment()
+       }
     },
     currentTime(time){
       if(time){
@@ -86,7 +102,9 @@ export default {
       }
     }
   },
-  components: {},
+  components: {
+     Comments: () => import("@/views/discoverVideo/components/Comments.vue"),
+  },
   methods: {
     strToTime(str) {
       let timeArr = str.slice(1).split(".")[0].split(":");
@@ -135,6 +153,15 @@ export default {
       this.lyricHandle(res.lrc.lyric)
       this.lyricLoading = false;
     },
+    //请求歌曲评论
+    async getComment() {
+      this.commentLoading = true;
+      let { comments,hotComments} = await this.$http("/comment/music?limit=10&id=" + this.id);
+      console.log('comments,hotComments: ', comments,hotComments);
+      this.comments = comments
+      this.hotComments = hotComments
+      this.commentLoading = false;
+    },
     getWrapHeight() {
       this.lywrapHeight = this.$refs.lyricWrap.offsetHeight;
     },
@@ -159,6 +186,7 @@ export default {
   height: calc(100vh - 140px);
   width: 100vw;
   z-index: 199;
+  overflow: auto;
   background: linear-gradient(to bottom, #bcbcbc 0%, #f5f5f5 30%, #fff 100%);
   transition: all 0.3s ease-in-out;
   .song-info-box {
@@ -246,6 +274,14 @@ export default {
         }
       }
       }
+    }
+  }
+  .comments-wrap{
+    margin: 20px auto;
+    max-width: 1000px;
+    min-width: 400px;
+    ::v-deep .commment-item{ 
+      border-bottom:1px solid #efefef
     }
   }
 }

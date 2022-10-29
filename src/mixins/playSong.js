@@ -5,13 +5,20 @@ export default {
      }
   },
   computed:{
-    ...mapState('player',['curSongList']),
+    ...mapState('player',['id','playing','curSongList']),
   },
   methods: {
-    ...mapMutations('player', ['addSong']),
+    ...mapMutations('player', ['addSong','setCurrentTime']),
     ...mapActions('player',['getSongUrl']),
     playSong(song) {
-      this.debounce(this.getSongUrl(song.id,song),500);
+      if(song.id === this.id){
+        if(!this.playing){
+          this.setPalyState(true);
+        }
+      }else{
+        this.setCurrentTime(0);
+          this.debounce(this.getSongUrl(song.id,song),500);
+      }
     },
     palyAll(){
       this.addSong(this.curSongList)
