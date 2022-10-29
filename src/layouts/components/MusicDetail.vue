@@ -5,7 +5,7 @@
       v-loading="lyricLoading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="transparent"
-      element-loading-text="载入中..."
+      element-loading-text="载入中..." v-if="show"
     >
       <div class="song-name text-of-single">
         {{ songDetail.name }}
@@ -56,10 +56,13 @@ export default {
   },
   computed: {
     ...mapState("player", ["id", "songDetail","currentTime","playing"]),
+    show(){
+      return Object.keys(this.songDetail).length
+    },
     arns() {
-      let aln = this.songDetail.al.name;
+      let aln = this.songDetail?.al?.name;
       return (
-        this.songDetail.ar.map((item) => item.name).join("/") + aln || "FXJ"
+        this.songDetail?.ar?.map((item) => item.name).join("/") + aln || "FXJ"
       );
     },
   },

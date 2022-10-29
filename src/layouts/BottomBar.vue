@@ -159,10 +159,14 @@ export default {
       return parseInt(this.totalDt / 1000);
     },
     picSrc() {
-      return this.songDetail.al.picUrl || this.defaultPicUrl;
+      return this.songDetail?.al?.picUrl || this.defaultPicUrl;
     },
     arns() {
-      return this.songDetail.ar.map((item) => item.name).join("/") || "FXJ";
+      if(Object.keys(this.songDetail).length){
+        return this.songDetail.ar.map((item) => item.name).join("/") 
+      }else{
+        return "FXJ"
+      }
     },
     disabled() {
       return this.playList.length < 2;

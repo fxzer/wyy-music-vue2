@@ -121,8 +121,7 @@ export default {
         onDownloadProgress: (progressEvent) =>{
           if (progressEvent.lengthComputable) {
             let dlProgress = +((progressEvent.loaded / progressEvent.total) *100).toFixed(2); //实时获取最新下载进度
-            song.progress = dlProgress;
-            this.setdlProgress({id:song.id,progress:dlProgress,tatal:progressEvent.total})
+            this.setdlProgress({id:song.id,progress:dlProgress,total:progressEvent.total})
           }
         },
       }).then((res) => {

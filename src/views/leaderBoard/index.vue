@@ -35,9 +35,9 @@
           @row-dblclick="playSong"
         >
           <el-table-column type="index"></el-table-column>
-          <el-table-column prop="name"> </el-table-column>
-          <el-table-column>
-            <template slot-scope="{ row }">
+          <el-table-column prop="name" show-overflow-tooltip> </el-table-column>
+          <el-table-column >
+            <template slot-scope="{ row }" show-overflow-tooltip >
               <!-- {{row.ar}} -->
               {{ row.ar.map((item) => item.name).join("/") }}
             </template>

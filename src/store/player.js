@@ -32,13 +32,14 @@ export default {
   },
   getters: {
     totalDt(state) {
+      if(Object.keys(state.songDetail).length == 0) return 0;
       return state.songDetail.dt || state.songDetail?.songs[0]?.dt || 0;
     },
   },
   mutations: {
     init(state, audioDom) {
       state.audio = audioDom; //dom
-      state.audio.volume = audioMuted ? 0 : state.volume / 100; //音量
+      state.audio.volume = audioMuted ? 0 : state?.volume / 100; //音量
       state.playing = false; //状态
       state.audio.loop = state.loopType === 1 ? true : false; //模式
     },
@@ -113,8 +114,9 @@ export default {
       state.downloadList.push(song);
     },
     setdlProgress(state, data) {
-      state.dlProgress[data.id]['progress'] = data.progress;
-      state.dlProgress[data.id]['total'] = data.total;
+      console.log('data: ', data);
+      console.log(' state.dlProgress[data.id]: ',  state.dlProgress[data.id]);
+      state.dlProgress[data.id]= data;
     },
     clearPlayList(state) {
       state.playList = [];
