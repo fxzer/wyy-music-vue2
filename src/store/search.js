@@ -4,6 +4,7 @@ export default {
     kw: '', //搜索关键字
     historyList: [], //关键字历史记录
     searchPanelVisible: false, //是否显示搜索面板
+    sessionid: '',  
   },
   getters:{
     getKw(state){
@@ -13,6 +14,9 @@ export default {
   mutations: {
     setKw(state,kw){
       state.kw = kw
+    },
+    setSessionId(id){
+      state.sessionid = id
     },
     addOne(state,kw){
       let index = state.historyList.indexOf(kw)

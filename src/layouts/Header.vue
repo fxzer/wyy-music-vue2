@@ -1,8 +1,8 @@
 <template>
   <div class="header-wrap" id="header-wrap">
-    <a href="#" class="home-link">
+    <router-link to="/" class="home-link">
       <img src="@/assets/images/header-logo.png" alt="首页" />
-    </a>
+    </router-link>
     <div class="search-box">
       <el-input
         :value="kw"
@@ -31,29 +31,34 @@
         </template>
       </Panel>
     </div>
-    <div class="info">
+    <!-- 右侧 -->
+    <div class="info" @click.stop="showLogin">
       <img
         class="avatar"
-        src="https://p1.music.126.net/AU-c-BY7xcLqqL9srI7-yg==/109951164381968028.jpg?param=30y30"
+        :src="avatarSrc"
         alt="avatar"
       />
-      <div class="username">
-        Endorphin_K <i class="el-icon-caret-bottom"></i>
+      <div class="username" >
+        {{username}} <i class="el-icon-caret-bottom"></i>
       </div>
     </div>
+    <Login :visible.sync="loginVisible" />
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import Cookies from 'js-cookie'
 export default {
   name: "Header",
   props: {},
   data() {
     return {
       searchType: 1,
+      defaultAvatar: require("../assets/images/user-avatar-default.png"),
       placeholder: "请输入歌名、歌手、专辑",
       showHotSearchBoard: false,
+      loginVisible: false,
       panelStyle: {
         width: "440px",
         height: "calc(100vh - 180px)",
@@ -68,15 +73,26 @@ export default {
     };
   },
   computed: {
-    ...mapState("search", ["kw", "searchPanelVisible"]),
+    ...mapState("search", ["kw", "sessionid","searchPanelVisible"]),
+    avatarSrc() {
+      if(this.sessionid){
+        console.log('this.sessionid: ', this.sessionid);
+      }else{
+        return this.defaultAvatar
+      }
+    },
+    username(){
+      return  '未登录'
+    }
   },
   components: {
+    Login:() => import('./components/Login.vue'),
     SearchTips: () => import("./components/SearchTips.vue"),
     SearchHistory: () => import("./components/SearchHistory.vue"),
     HotSearchBoard: () => import("./components/HotSearchBoard.vue"),
   },
   methods: {
-    ...mapMutations("search", ["setKw", "addOne", "setSearchPanel",]),
+    ...mapMutations("search", ["setKw", "addOne", "setSearchPanel",'setSessionId']),
     ...mapMutations("player", ["setMusicLyric"]),
     //获取默认搜索关键字
     async getDefaultKeywoard() {
@@ -157,8 +173,16 @@ export default {
         this.showHotSearchBoard = false;
       }
     },
+    //展示登录弹窗
+    showLogin(){
+      this.loginVisible = true
+    }
   },
   created() {
+    let sessionid = Cookies.get('wyy_sessionid')
+    if(sessionid){
+      this.setSessionId(sessionid)
+    }
     this.getDefaultKeywoard();
   },
   mounted() {
@@ -228,7 +252,7 @@ z-index: 1999;
     }
   }
   .info {
-    width: 200px;
+    margin-right:100px;
     display: flex;
     align-items: center;
     color: #f8d9dd;
@@ -238,6 +262,14 @@ z-index: 1999;
       height: 32px;
       border-radius: 50%;
       margin-right: 10px;
+      background-color: #ddd;
+    }
+    .username{
+      display: flex;
+      align-items: center;
+      &:hover{
+        color:#fff;
+      }
     }
   }
   //搜索提示面板
