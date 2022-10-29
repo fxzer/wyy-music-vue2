@@ -23,7 +23,7 @@
       </div>
       <div class="right-lyrics" ref="lyricWrap">
           <div class="lyric-wrap" :style="tranformObj">
-            <p class="lyric-item" v-for="(item, index) in lyricList" :class="{'active':index==activeIndex}" :key="index">
+            <p class="lyric-item" v-for="(item, index) in lyricList" :index="index" :class="{'active':index==activeIndex}" :key="index">
             {{ item.content }}
           </p>
           </div>
@@ -95,7 +95,8 @@ export default {
       if(time){
         this.activeIndex =  this.findIndex(time)
         console.log('this.lywrapHeight: ', this.lywrapHeight/2);
-        let height = 30 * this.activeIndex - this.lywrapHeight /2
+        let height = 0
+        // let height = 30 * this.activeIndex - this.lywrapHeight /2
         this.tranformObj = {
           transform: `translateY(-${height}px)`
         }
