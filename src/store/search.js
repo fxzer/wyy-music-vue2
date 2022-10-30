@@ -5,6 +5,7 @@ export default {
     historyList: [], //关键字历史记录
     searchPanelVisible: false, //是否显示搜索面板
     sessionid: '',  
+    userInfo: {}, //用户信息
   },
   getters:{
     getKw(state){
@@ -15,8 +16,11 @@ export default {
     setKw(state,kw){
       state.kw = kw
     },
-    setSessionId(id){
+    setSessionId(state,id){
       state.sessionid = id
+    },
+    setUserInfo(state,info){
+      state.userInfo = info
     },
     addOne(state,kw){
       let index = state.historyList.indexOf(kw)

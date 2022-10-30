@@ -36,7 +36,6 @@
       <img
         class="avatar"
         :src="avatarSrc"
-        alt="avatar"
       />
       <div class="username" >
         {{username}} <i class="el-icon-caret-bottom"></i>
@@ -73,16 +72,20 @@ export default {
     };
   },
   computed: {
-    ...mapState("search", ["kw", "sessionid","searchPanelVisible"]),
+    ...mapState("search", ["kw", "sessionid","userInfo","searchPanelVisible"]),
     avatarSrc() {
       if(this.sessionid){
-        console.log('this.sessionid: ', this.sessionid);
+        return this.userInfo.avatarUrl
       }else{
         return this.defaultAvatar
       }
     },
     username(){
-      return  '未登录'
+      if(this.sessionid){
+        return this.userInfo.nickname
+      }else{
+        return '未登录'
+      }
     }
   },
   components: {
@@ -175,11 +178,13 @@ export default {
     },
     //展示登录弹窗
     showLogin(){
-      this.loginVisible = true
+      if(!this.sessionid){
+        this.loginVisible = true
+      }
     }
   },
   created() {
-    let sessionid = Cookies.get('wyy_sessionid')
+    let sessionid = Cookies.get('wyyid')
     if(sessionid){
       this.setSessionId(sessionid)
     }
