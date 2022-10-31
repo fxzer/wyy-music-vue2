@@ -165,6 +165,11 @@ const routes = [
         path:'/downloadList',
         name:'DownloadList',
         component:()=>import('@/views/downloadList')
+    },
+    {
+        path:'/singerDetail/:id',
+        name:'SingerDetail',
+        component:()=>import('@/views/singerDetail')
     }
 ]
 

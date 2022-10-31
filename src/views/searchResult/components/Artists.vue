@@ -6,7 +6,7 @@
     style="padding:10px 0 0px;"
   >
     <div class="artist-result">
-      <SingerCover v-for="singer in artistList"  :key="singer.id" :singer="singer" showAlias/>
+      <SingerCover v-for="singer in artistList"  :key="singer.id" :singer="singer" @click.native="toSingerDetail(singer)" showAlias/>
     </div>
     <Pagination v-bind="pageOption" @current-change="handleCurrentChange"/>
   </div>
@@ -40,6 +40,9 @@ export default {
     SingerCover:() => import('@/views/singerList/components/SingerCover.vue')
   },
   methods: {
+     toSingerDetail(singer) {
+      this.$router.push(`/singerDetail/${singer.id}`);
+    },
   },
   created () { 
   },

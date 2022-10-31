@@ -32,7 +32,7 @@
           </div>
           <span class="iconfont icon-heart"></span>
         </div>
-        <div class="singer-name text-of-single" :title="arns">
+        <div class="singer-name text-of-single" :title="arns" @click="toSingerDetail">
           {{ arns }}
         </div>
       </div>
@@ -244,6 +244,12 @@ export default {
     extendMusic() {
       this.setMusicLyric(!this.musicLyVisible);
     },
+    //跳转到歌手详情
+    toSingerDetail() {
+      let id = this.songDetail?.ar[0]?.id || 0;
+      this.$router.push(`/singerDetail/${id}`);
+    },
+    
   },
 
   mounted() {
@@ -371,6 +377,9 @@ export default {
         font-size: 12px;
         color: #555;
         max-width: 220px;
+        &:hover {
+          color: #333;
+        }
       }
     }
   }

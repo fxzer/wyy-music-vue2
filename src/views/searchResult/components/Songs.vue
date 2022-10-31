@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="歌手">
         <template slot-scope="{ row }">
-          {{ arStr(row) }}
+         <el-link  :underline="false" @click="toSingerDetail(row.ar[0])"> {{ arStr(row) }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="专辑" show-overflow-tooltip>
@@ -127,6 +127,9 @@ export default {
       } else {
         return baseStyle;
       }
+    },
+    toSingerDetail(singer) {
+      this.$router.push(`/singerDetail/${singer.id}`);
     },
   },
 
