@@ -147,10 +147,10 @@ export default {
   },
   mounted() {
     this.getBannerData();
-    // this.getAlgList() 
-    // this.getPersonalizedMv() 
-    // this.getPrivateContent()
-    // this.getNewSong()
+    this.getAlgList() 
+    this.getPersonalizedMv() 
+    this.getPrivateContent()
+    this.getNewSong()
   },
   watch: {},
 };
