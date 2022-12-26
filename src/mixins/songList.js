@@ -22,6 +22,7 @@ export default {
     },
     //跳转到歌单详情页
     toSongListDetail(id) {
+      console.log('id: ', id);
       this.$router.push({ path: `/discoverMusic/songListDetail/${id}` });
     },
   },

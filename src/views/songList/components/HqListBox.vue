@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import songList from '@/mixins/songList'
 import { mapMutations } from 'vuex'
 export default {
   name: 'HqListBox',
@@ -34,6 +35,7 @@ export default {
       default:require('../../../assets/images/hq-creator.png')
     },
   },
+  mixins:[songList],
   data () {
     return {
       defaultImg:require('../../../assets/images/highquality.jpg'),

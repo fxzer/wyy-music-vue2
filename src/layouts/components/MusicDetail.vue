@@ -16,7 +16,7 @@
       <div class="left-cover" >
         <div class="img-box" :class="playing?'cover-rotate':'rotate-pause'">
           <img
-            src="https://p2.music.126.net/uG77ErMNkYLeZKxD52FeMw==/109951167953199692.jpg"
+            :src="songDetail.al.picUrl || 'https://p2.music.126.net/uG77ErMNkYLeZKxD52FeMw==/109951167953199692.jpg'"
             alt=""
           />
         </div>

@@ -63,7 +63,9 @@ export default {
 }
 @media screen and (max-width: 768px) {
   .main-wrap {
-    width: auto;
+    width: 250vw;
+    margin-right: 20px !important;
+    height: auto;
     .content-wrap{
       width: 96%;
     }
