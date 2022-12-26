@@ -61,4 +61,13 @@ export default {
     height: 100%;
   }
 }
+@media screen and (max-width: 768px) {
+  .main-wrap {
+    width: auto;
+    .content-wrap{
+      width: 96%;
+    }
+}
+  
+}
 </style>

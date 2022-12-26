@@ -210,7 +210,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
-z-index: 1999;
+ z-index: 1999;
   width: 100%;
   height: 60px;
   color: #fff;
@@ -272,6 +272,7 @@ z-index: 1999;
     .username{
       display: flex;
       align-items: center;
+      width: 100px;
       &:hover{
         color:#fff;
       }
@@ -288,4 +289,20 @@ z-index: 1999;
     top: -2px;
   }
 }
+
+// @media screen and (max-width: 768px) {
+//    .header-wrap .search-box{
+//     display: none;
+//    }
+//    .header-wrap .info{
+//     margin-right: 20px;
+//     font-size: 14px;
+//     >img.avatar{
+//       width: 28px;
+//       height:28px;
+//     }
+//    }
+   
+// }
+  
 </style>

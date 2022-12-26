@@ -100,6 +100,10 @@ export default {
         }
       }
     }
- 
  }
+ @media screen and (max-width: 768px) {
+  .LeftMenu{
+    width: 150px;
+ }
+ }  
 </style>
