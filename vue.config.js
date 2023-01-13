@@ -2,8 +2,8 @@
 const isProduction = process.env.NODE_ENV === 'production'
 console.log('isProduction: ', isProduction);
 const target = isProduction ? 'http://www.coderfxj.site:3000' : 'http://127.0.0.1:3000'
-console.log('target: ', target);
 module.exports = {
+    publicPath:'/music',
     devServer: {
         proxy: {
             '/api': {
