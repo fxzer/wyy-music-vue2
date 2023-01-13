@@ -2,6 +2,8 @@
 const isProduction = process.env.NODE_ENV === "production";
 module.exports = {
   publicPath: "./",
+  outputDir:process.env.OUTPUT_DIR,
+  
   devServer: {
     proxy: {
       "/api": {
