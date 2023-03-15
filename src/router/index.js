@@ -175,7 +175,7 @@ const routes = [
 
 const router = new VueRouter({
     mode: 'history',
-    // base: '/music/',
+    base: process.env.BASE_URL,
     routes
 })
 const VueRouterPush = VueRouter.prototype.push
