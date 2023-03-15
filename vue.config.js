@@ -1,7 +1,7 @@
 //通过判断是否为生产环境,设置不同的请求地址
-const isProduction = process.env.NODE_ENV === "production";
+
 module.exports = {
-  publicPath: isProduction ? "./" : "/music/",
+  publicPath: process.env.BASE_URL,
   outputDir: process.env.OUTPUT_DIR,
   devServer: {
     proxy: {
